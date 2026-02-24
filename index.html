@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>OpenClaw Dashboard v6</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🦞</text></svg>">
+
+  <!-- React 18 via CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    #loading-screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #0f172a; color: #94a3b8;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      z-index: 9999; transition: opacity 0.3s ease;
+    }
+    #loading-screen.fade-out { opacity: 0; pointer-events: none; }
+    .loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #1e293b; border-top: 3px solid #3b82f6;
+      border-radius: 50%; animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #mobile-hinweis {
+      display: none; position: fixed; inset: 0;
+      background: #0f172a; color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      z-index: 10000; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem; text-align: center;
+    }
+    @media (max-width: 767px) {
+      #mobile-hinweis { display: flex; }
+      #root { display: none; }
+      #loading-screen { display: none; }
+    }
+    body { margin: 0; padding: 0; background: #0f172a; }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Hinweis (< 768px) -->
+  <div id="mobile-hinweis">
+    <div style="font-size:4rem;margin-bottom:1.5rem">🦞</div>
+    <h1 style="font-size:1.5rem;font-weight:700;margin:0 0 .5rem 0;color:#f1f5f9">OpenClaw Dashboard</h1>
+    <p style="font-size:1rem;color:#94a3b8;margin:0 0 2rem 0;max-width:320px;line-height:1.6">
+      Das Dashboard ist f&uuml;r die Nutzung am <strong style="color:#e2e8f0">Tablet (Querformat)</strong> oder <strong style="color:#e2e8f0">Desktop/Laptop</strong> optimiert.
+    </p>
+    <p style="font-size:.875rem;color:#64748b;margin:0 0 2rem 0">7 Module &middot; 120 Tasks &middot; Buch-Begleiter</p>
+    <button onclick="document.getElementById('mobile-hinweis').style.display='none';document.getElementById('root').style.display='block'"
+      style="padding:.75rem 1.5rem;background:#1e293b;border:1px solid #334155;border-radius:.5rem;color:#94a3b8;font-size:.875rem;cursor:pointer">
+      Trotzdem &ouml;ffnen
+    </button>
+    <p style="font-size:.75rem;color:#475569;margin-top:1.5rem">
+      Ein unabh&auml;ngiger Leitfaden. Claude ist eine Marke von Anthropic PBC,<br>n8n ist eine Marke der n8n GmbH.
+    </p>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-spinner"></div>
+    <div style="font-size:1.25rem;font-weight:600;margin-bottom:4px">🦞 OpenClaw Dashboard</div>
+    <div style="font-size:.875rem">Wird geladen...</div>
+  </div>
+
+  <div id="root"></div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", function() {
+      setTimeout(function() {
+        var ls = document.getElementById("loading-screen");
+        if (ls) { ls.classList.add("fade-out"); setTimeout(function() { ls.remove(); }, 300); }
+      }, 500);
+    });
+  </script>
+  <script>
+(() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __commonJS = (cb, mod) => function __require() {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
+
+  // cdn-global:react-dom-client
+  var require_react_dom_client = __commonJS({
+    "cdn-global:react-dom-client"(exports, module) {
+      module.exports = window.ReactDOM;
+    }
+  });
+
+  // cdn-global:react
+  var require_react = __commonJS({
+    "cdn-global:react"(exports, module) {
+      module.exports = window.React;
+    }
+  });
+
+  // mnt/OpenClaw-Projekt/dashboard/.dashboard-input.tmp.jsx
+  var import_client = __toESM(require_react_dom_client());
+  var import_react3 = __toESM(require_react());
+  var import_react4 = __toESM(require_react());
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/createLucideIcon.js
+  var import_react2 = __toESM(require_react());
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.js
+  var mergeClasses = (...classes) => classes.filter((className, index, array) => {
+    return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index;
+  }).join(" ").trim();
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/toKebabCase.js
+  var toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/toCamelCase.js
+  var toCamelCase = (string) => string.replace(
+    /^([A-Z])|[\s-_]+(\w)/g,
+    (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
+  );
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/toPascalCase.js
+  var toPascalCase = (string) => {
+    const camelCase = toCamelCase(string);
+    return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+  };
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/Icon.js
+  var import_react = __toESM(require_react());
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/defaultAttributes.js
+  var defaultAttributes = {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 24,
+    height: 24,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  };
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/hasA11yProp.js
+  var hasA11yProp = (props) => {
+    for (const prop in props) {
+      if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/Icon.js
+  var Icon = (0, import_react.forwardRef)(
+    ({
+      color = "currentColor",
+      size = 24,
+      strokeWidth = 2,
+      absoluteStrokeWidth,
+      className = "",
+      children,
+      iconNode,
+      ...rest
+    }, ref) => (0, import_react.createElement)(
+      "svg",
+      {
+        ref,
+        ...defaultAttributes,
+        width: size,
+        height: size,
+        stroke: color,
+        strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size) : strokeWidth,
+        className: mergeClasses("lucide", className),
+        ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
+        ...rest
+      },
+      [
+        ...iconNode.map(([tag, attrs]) => (0, import_react.createElement)(tag, attrs)),
+        ...Array.isArray(children) ? children : [children]
+      ]
+    )
+  );
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/createLucideIcon.js
+  var createLucideIcon = (iconName, iconNode) => {
+    const Component = (0, import_react2.forwardRef)(
+      ({ className, ...props }, ref) => (0, import_react2.createElement)(Icon, {
+        ref,
+        iconNode,
+        className: mergeClasses(
+          `lucide-${toKebabCase(toPascalCase(iconName))}`,
+          `lucide-${iconName}`,
+          className
+        ),
+        ...props
+      })
+    );
+    Component.displayName = toPascalCase(iconName);
+    return Component;
+  };
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/book-open.js
+  var __iconNode = [
+    ["path", { d: "M12 7v14", key: "1akyts" }],
+    [
+      "path",
+      {
+        d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+        key: "ruj8y"
+      }
+    ]
+  ];
+  var BookOpen = createLucideIcon("book-open", __iconNode);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/book.js
+  var __iconNode2 = [
+    [
+      "path",
+      {
+        d: "M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20",
+        key: "k3hazp"
+      }
+    ]
+  ];
+  var Book = createLucideIcon("book", __iconNode2);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/box.js
+  var __iconNode3 = [
+    [
+      "path",
+      {
+        d: "M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z",
+        key: "hh9hay"
+      }
+    ],
+    ["path", { d: "m3.3 7 8.7 5 8.7-5", key: "g66t2b" }],
+    ["path", { d: "M12 22V12", key: "d0xqtd" }]
+  ];
+  var Box = createLucideIcon("box", __iconNode3);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/chart-column.js
+  var __iconNode4 = [
+    ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
+    ["path", { d: "M18 17V9", key: "2bz60n" }],
+    ["path", { d: "M13 17V5", key: "1frdt8" }],
+    ["path", { d: "M8 17v-3", key: "17ska0" }]
+  ];
+  var ChartColumn = createLucideIcon("chart-column", __iconNode4);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/check.js
+  var __iconNode5 = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+  var Check = createLucideIcon("check", __iconNode5);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/chevron-down.js
+  var __iconNode6 = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+  var ChevronDown = createLucideIcon("chevron-down", __iconNode6);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/chevron-right.js
+  var __iconNode7 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+  var ChevronRight = createLucideIcon("chevron-right", __iconNode7);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/circle-alert.js
+  var __iconNode8 = [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+    ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ];
+  var CircleAlert = createLucideIcon("circle-alert", __iconNode8);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/circle-check.js
+  var __iconNode9 = [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ];
+  var CircleCheck = createLucideIcon("circle-check", __iconNode9);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/circle.js
+  var __iconNode10 = [["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]];
+  var Circle = createLucideIcon("circle", __iconNode10);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/clock.js
+  var __iconNode11 = [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }]
+  ];
+  var Clock = createLucideIcon("clock", __iconNode11);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/code.js
+  var __iconNode12 = [
+    ["path", { d: "m16 18 6-6-6-6", key: "eg8j8" }],
+    ["path", { d: "m8 6-6 6 6 6", key: "ppft3o" }]
+  ];
+  var Code = createLucideIcon("code", __iconNode12);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/copy.js
+  var __iconNode13 = [
+    ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+    ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ];
+  var Copy = createLucideIcon("copy", __iconNode13);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/dollar-sign.js
+  var __iconNode14 = [
+    ["line", { x1: "12", x2: "12", y1: "2", y2: "22", key: "7eqyqh" }],
+    ["path", { d: "M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6", key: "1b0p4s" }]
+  ];
+  var DollarSign = createLucideIcon("dollar-sign", __iconNode14);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/download.js
+  var __iconNode15 = [
+    ["path", { d: "M12 15V3", key: "m9g1x1" }],
+    ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+    ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
+  ];
+  var Download = createLucideIcon("download", __iconNode15);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/eye.js
+  var __iconNode16 = [
+    [
+      "path",
+      {
+        d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+        key: "1nclc0"
+      }
+    ],
+    ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ];
+  var Eye = createLucideIcon("eye", __iconNode16);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/file-text.js
+  var __iconNode17 = [
+    [
+      "path",
+      {
+        d: "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z",
+        key: "1oefj6"
+      }
+    ],
+    ["path", { d: "M14 2v5a1 1 0 0 0 1 1h5", key: "wfsgrz" }],
+    ["path", { d: "M10 9H8", key: "b1mrlr" }],
+    ["path", { d: "M16 13H8", key: "t4e002" }],
+    ["path", { d: "M16 17H8", key: "z1uh3a" }]
+  ];
+  var FileText = createLucideIcon("file-text", __iconNode17);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/funnel.js
+  var __iconNode18 = [
+    [
+      "path",
+      {
+        d: "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z",
+        key: "sc7q7i"
+      }
+    ]
+  ];
+  var Funnel = createLucideIcon("funnel", __iconNode18);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/git-branch.js
+  var __iconNode19 = [
+    ["path", { d: "M15 6a9 9 0 0 0-9 9V3", key: "1cii5b" }],
+    ["circle", { cx: "18", cy: "6", r: "3", key: "1h7g24" }],
+    ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }]
+  ];
+  var GitBranch = createLucideIcon("git-branch", __iconNode19);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/info.js
+  var __iconNode20 = [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["path", { d: "M12 16v-4", key: "1dtifu" }],
+    ["path", { d: "M12 8h.01", key: "e9boi3" }]
+  ];
+  var Info = createLucideIcon("info", __iconNode20);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/lock.js
+  var __iconNode21 = [
+    ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+    ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+  ];
+  var Lock = createLucideIcon("lock", __iconNode21);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/menu.js
+  var __iconNode22 = [
+    ["path", { d: "M4 5h16", key: "1tepv9" }],
+    ["path", { d: "M4 12h16", key: "1lakjw" }],
+    ["path", { d: "M4 19h16", key: "1djgab" }]
+  ];
+  var Menu = createLucideIcon("menu", __iconNode22);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/package.js
+  var __iconNode23 = [
+    [
+      "path",
+      {
+        d: "M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z",
+        key: "1a0edw"
+      }
+    ],
+    ["path", { d: "M12 22V12", key: "d0xqtd" }],
+    ["polyline", { points: "3.29 7 12 12 20.71 7", key: "ousv84" }],
+    ["path", { d: "m7.5 4.27 9 5.15", key: "1c824w" }]
+  ];
+  var Package = createLucideIcon("package", __iconNode23);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/rocket.js
+  var __iconNode24 = [
+    ["path", { d: "M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5", key: "qeys4" }],
+    [
+      "path",
+      {
+        d: "M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09",
+        key: "u4xsad"
+      }
+    ],
+    [
+      "path",
+      {
+        d: "M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z",
+        key: "676m9"
+      }
+    ],
+    ["path", { d: "M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05", key: "92ym6u" }]
+  ];
+  var Rocket = createLucideIcon("rocket", __iconNode24);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/save.js
+  var __iconNode25 = [
+    [
+      "path",
+      {
+        d: "M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z",
+        key: "1c8476"
+      }
+    ],
+    ["path", { d: "M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7", key: "1ydtos" }],
+    ["path", { d: "M7 3v4a1 1 0 0 0 1 1h7", key: "t51u73" }]
+  ];
+  var Save = createLucideIcon("save", __iconNode25);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/search.js
+  var __iconNode26 = [
+    ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
+    ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
+  ];
+  var Search = createLucideIcon("search", __iconNode26);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/settings.js
+  var __iconNode27 = [
+    [
+      "path",
+      {
+        d: "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915",
+        key: "1i5ecw"
+      }
+    ],
+    ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ];
+  var Settings = createLucideIcon("settings", __iconNode27);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/shield.js
+  var __iconNode28 = [
+    [
+      "path",
+      {
+        d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+        key: "oel41y"
+      }
+    ]
+  ];
+  var Shield = createLucideIcon("shield", __iconNode28);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/sparkles.js
+  var __iconNode29 = [
+    [
+      "path",
+      {
+        d: "M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z",
+        key: "1s2grr"
+      }
+    ],
+    ["path", { d: "M20 2v4", key: "1rf3ol" }],
+    ["path", { d: "M22 4h-4", key: "gwowj6" }],
+    ["circle", { cx: "4", cy: "20", r: "2", key: "6kqj1y" }]
+  ];
+  var Sparkles = createLucideIcon("sparkles", __iconNode29);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/target.js
+  var __iconNode30 = [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["circle", { cx: "12", cy: "12", r: "6", key: "1vlfrh" }],
+    ["circle", { cx: "12", cy: "12", r: "2", key: "1c9p78" }]
+  ];
+  var Target = createLucideIcon("target", __iconNode30);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/terminal.js
+  var __iconNode31 = [
+    ["path", { d: "M12 19h8", key: "baeox8" }],
+    ["path", { d: "m4 17 6-6-6-6", key: "1yngyt" }]
+  ];
+  var Terminal = createLucideIcon("terminal", __iconNode31);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/trending-up.js
+  var __iconNode32 = [
+    ["path", { d: "M16 7h6v6", key: "box55l" }],
+    ["path", { d: "m22 7-8.5 8.5-5-5L2 17", key: "1t1m79" }]
+  ];
+  var TrendingUp = createLucideIcon("trending-up", __iconNode32);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/undo-2.js
+  var __iconNode33 = [
+    ["path", { d: "M9 14 4 9l5-5", key: "102s5s" }],
+    ["path", { d: "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11", key: "f3b9sd" }]
+  ];
+  var Undo2 = createLucideIcon("undo-2", __iconNode33);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/upload.js
+  var __iconNode34 = [
+    ["path", { d: "M12 3v12", key: "1x0j5s" }],
+    ["path", { d: "m17 8-5-5-5 5", key: "7q97r8" }],
+    ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }]
+  ];
+  var Upload = createLucideIcon("upload", __iconNode34);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/users.js
+  var __iconNode35 = [
+    ["path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", key: "1yyitq" }],
+    ["path", { d: "M16 3.128a4 4 0 0 1 0 7.744", key: "16gr8j" }],
+    ["path", { d: "M22 21v-2a4 4 0 0 0-3-3.87", key: "kshegd" }],
+    ["circle", { cx: "9", cy: "7", r: "4", key: "nufk8" }]
+  ];
+  var Users = createLucideIcon("users", __iconNode35);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/wand-sparkles.js
+  var __iconNode36 = [
+    [
+      "path",
+      {
+        d: "m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72",
+        key: "ul74o6"
+      }
+    ],
+    ["path", { d: "m14 7 3 3", key: "1r5n42" }],
+    ["path", { d: "M5 6v4", key: "ilb8ba" }],
+    ["path", { d: "M19 14v4", key: "blhpug" }],
+    ["path", { d: "M10 2v2", key: "7u0qdc" }],
+    ["path", { d: "M7 8H3", key: "zfb6yr" }],
+    ["path", { d: "M21 16h-4", key: "1cnmox" }],
+    ["path", { d: "M11 3H9", key: "1obp7u" }]
+  ];
+  var WandSparkles = createLucideIcon("wand-sparkles", __iconNode36);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/x.js
+  var __iconNode37 = [
+    ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+    ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
+  ];
+  var X = createLucideIcon("x", __iconNode37);
+
+  // mnt/OpenClaw-Projekt/dashboard/node_modules/lucide-react/dist/esm/icons/zap.js
+  var __iconNode38 = [
+    [
+      "path",
+      {
+        d: "M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",
+        key: "1xq2db"
+      }
+    ]
+  ];
+  var Zap = createLucideIcon("zap", __iconNode38);
+
+  // mnt/OpenClaw-Projekt/dashboard/.dashboard-input.tmp.jsx
+  var SAFE_VARS = [
+    { key: "SERVER_IP", label: "Server-IP", placeholder: "z.B. 195.168.1.42", hint: "Deine Hostinger VPS IP" },
+    { key: "TAILSCALE_IP", label: "Tailscale-IP", placeholder: "z.B. 100.64.0.3", hint: "tailscale ip -4" },
+    { key: "TELEGRAM_BOT_NAME", label: "Telegram Bot-Name", placeholder: "z.B. MeinOpenClawBot", hint: "Von @BotFather" },
+    { key: "TELEGRAM_ID", label: "Telegram-ID", placeholder: "z.B. 123456789", hint: "Deine numerische Chat-ID" },
+    { key: "PROJECT_PATH", label: "Projekt-Pfad", placeholder: "z.B. /opt/openclaw", hint: "Ordner auf dem VPS" },
+    { key: "DOMAIN", label: "Domain (optional)", placeholder: "z.B. mein-server.de", hint: "Falls eigene Domain" }
+  ];
+  var SENSITIVE_VARS = [
+    { key: "ANTHROPIC_API_KEY", label: "Claude API Key" },
+    { key: "GATEWAY_TOKEN", label: "Gateway Token" },
+    { key: "N8N_PASSWORD", label: "n8n Passwort" },
+    { key: "TELEGRAM_BOT_TOKEN", label: "Telegram Bot Token" }
+  ];
+  var SPRINT_TASKS = {
+    sprint1: [
+      "s1-kvm",
+      "s1-docker",
+      "s1-openclaw",
+      "s1-openclaw-deploy",
+      "s1-openclaw-start",
+      "s1-tailscale-account",
+      "s1-tailscale-mac",
+      "s1-tailscale-vps",
+      "s1-tailscale-verify",
+      "s1-firewall",
+      "s1-dashboard-test",
+      "s1-n8n",
+      "s1-api",
+      "s1-telegram",
+      "s1-security",
+      "s1-test",
+      "s1-backup",
+      "s1-docs"
+    ],
+    sprint2: [
+      "s2-architect",
+      "s2-writer",
+      "s2-meta",
+      "s2-tutorial",
+      "s2-checker",
+      "s2-consistency",
+      "s2-editor",
+      "s2-coordinator",
+      "s2-test-chapter",
+      "s2-review"
+    ],
+    sprint3: [
+      "s3-n8n-setup",
+      "s3-workflow-chapter",
+      "s3-workflow-review",
+      "s3-workflow-storage",
+      "s3-automation",
+      "s3-batch",
+      "s3-x-api",
+      "s3-x-workflow",
+      "s3-x-approval",
+      "s3-x-ondemand"
+    ],
+    sprint4: [
+      "s4-texterin",
+      "s4-format-epub",
+      "s4-format-pdf",
+      "s4-cover",
+      "s4-metadata",
+      "s4-preview",
+      "s4-upload"
+    ]
+  };
+  var CHAPTER_STEPS = ["outline", "draft", "check", "review", "final"];
+  var CHAPTER_TASKS = [];
+  for (let i = 1; i <= 15; i++) {
+    CHAPTER_STEPS.forEach((step) => CHAPTER_TASKS.push(`kap${i}-${step}`));
+  }
+  var ALL_TASKS = [
+    ...SPRINT_TASKS.sprint1,
+    ...SPRINT_TASKS.sprint2,
+    ...SPRINT_TASKS.sprint3,
+    ...SPRINT_TASKS.sprint4,
+    ...CHAPTER_TASKS
+  ];
+  var CHAPTERS = {
+    1: {
+      title: "Was ist OpenClaw?",
+      desc: "Einf\xFChrung, Vision und \xDCberblick",
+      part: "A",
+      snippets: [
+        { title: "OpenClaw Version pr\xFCfen", lang: "bash", code: `openclaw --version` },
+        { title: "OpenClaw Hilfe", lang: "bash", code: `openclaw --help` }
+      ]
+    },
+    2: {
+      title: "Installation",
+      desc: "VPS einrichten, Docker, OpenClaw deployen",
+      part: "A",
+      snippets: [
+        { title: "Per SSH verbinden", lang: "bash", code: `ssh root@\${SERVER_IP}` },
+        { title: "System updaten", lang: "bash", code: `apt update && apt upgrade -y` },
+        { title: "Docker pr\xFCfen", lang: "bash", code: `docker --version
+docker compose version` },
+        { title: "OpenClaw Container Status", lang: "bash", code: `docker ps | grep openclaw` },
+        { title: "OpenClaw Logs", lang: "bash", code: `docker logs openclaw --tail 50 -f` }
+      ]
+    },
+    3: {
+      title: "Docker",
+      desc: "docker-compose.yml, Container, Volumes",
+      part: "A",
+      snippets: [
+        { title: "docker-compose.yml", lang: "yaml", code: `version: '3.8'
+services:
+  openclaw:
+    image: node:22-alpine
+    container_name: openclaw
+    restart: unless-stopped
+    volumes:
+      - ./workspace:/root/.openclaw/workspace
+      - ./content:/app/content
+    environment:
+      - ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY}
+    command: sh -c "npm i -g openclaw@latest && openclaw gateway --port 18789"
+    ports: ["18789:18789"]
+    security_opt: [no-new-privileges:true]
+  n8n:
+    image: n8nio/n8n
+    ports: ["5678:5678"]
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=\${N8N_PASSWORD}
+    volumes:
+      - ./n8n:/home/node/.n8n
+      - ./content:/data/content` },
+        { title: "Container neustarten", lang: "bash", code: `cd \${PROJECT_PATH}
+docker compose down
+docker compose up -d` },
+        { title: "Alle Container anzeigen", lang: "bash", code: `docker ps -a` },
+        { title: "Volumes auflisten", lang: "bash", code: `docker volume ls` }
+      ]
+    },
+    4: {
+      title: "Agent-Konzepte",
+      desc: "SOUL.md, AGENTS.md, Sub-Agenten Architektur",
+      part: "A",
+      snippets: [
+        { title: "So funktioniert es", lang: "text", code: `OpenClaw Agent-Architektur:
+
+1 Hauptagent = 1 SOUL.md (Pers\xF6nlichkeit + Regeln)
+                + 1 AGENTS.md (Workspace-Anleitung + Sub-Agenten-Rollen)
+
+Der Hauptagent liest SOUL.md und AGENTS.md beim Start.
+Fuer spezialisierte Aufgaben spawnt er Sub-Agenten.
+Sub-Agenten bekommen NUR AGENTS.md + TOOLS.md injiziert.
+
+Dateien im Workspace:
+  ~/.openclaw/workspace/
+    SOUL.md          <- Wer ist der Agent?
+    AGENTS.md        <- Workspace-Regeln + Sub-Agenten-Rollen
+    USER.md          <- Wer ist der Mensch?
+    MEMORY.md        <- Langzeitged\xE4chtnis
+    TOOLS.md         <- Werkzeug-Notizen
+    memory/          <- Tagesnotizen` },
+        { title: "SOUL.md Aufbau (Auszug)", lang: "markdown", code: `# SOUL.md - Dein Buchprojekt
+
+## Wer Du Bist
+Du leitest die Produktion eines deutschsprachigen Sachbuchs.
+
+## Stil-Regeln
+1. Du-Form. Immer.
+2. Erkl\xE4re jeden Code-Block.
+3. Keine Anglizismen ohne Erkl\xE4rung.
+4. Warnungen bei Sicherheitsthemen.
+5. Kurze S\xE4tze. Max 20 W\xF6rter.
+6. Aktive Sprache.
+7. Praxis vor Theorie.
+
+## Qualit\xE4ts-Checkliste
+- [ ] Du-Form konsistent
+- [ ] Code-Bl\xF6cke erkl\xE4rt
+- [ ] CLI-Befehle korrekt
+- [ ] Querverweise stimmen` },
+        { title: "AGENTS.md Sub-Agenten (Auszug)", lang: "markdown", code: `## Sub-Agenten - Buchprojekt Rollen
+
+### content-architect
+Erstellt Kapitel-Outlines, Lernziele, Querverweise
+
+### technical-writer
+Schreibt Kapitel-Texte (Du-Form, Code erkl\xE4rt)
+
+### fact-checker
+Pr\xFCft Code-Syntax, CLI-Befehle, URLs
+
+### german-editor
+Pr\xFCft Stil, Grammatik, Du-Form-Konsistenz
+
+### consistency-checker
+Terminologie + Querverweise kapitel\xFCbergreifend
+
+Pipeline: architect - writer - checker - editor - consistency - [Mensch]` }
+      ]
+    },
+    5: {
+      title: "Multi-Channel",
+      desc: "Telegram Bot, Channels konfigurieren",
+      part: "A",
+      snippets: [
+        { title: "Telegram Bot erstellen", lang: "text", code: `1. Telegram \xF6ffnen
+2. @BotFather suchen
+3. /newbot senden
+4. Bot-Name eingeben: \${TELEGRAM_BOT_NAME}
+5. Token KOPIEREN und sicher speichern!` },
+        { title: "Bot-Token in OpenClaw Config", lang: "json", code: `{
+  "channels": {
+    "telegram": {
+      "botToken": "\${TELEGRAM_BOT_TOKEN}",
+      "allowFrom": ["\${TELEGRAM_ID}"]
+    }
+  }
+}` },
+        { title: "Eigene Telegram-ID herausfinden", lang: "text", code: `1. @userinfobot in Telegram suchen
+2. /start senden
+3. Deine ID notieren: \${TELEGRAM_ID}` }
+      ]
+    },
+    6: {
+      title: "Security",
+      desc: "Tailscale VPN, Firewall, allowFrom",
+      part: "A",
+      snippets: [
+        { title: "Tailscale installieren (VPS)", lang: "bash", code: `ssh root@\${SERVER_IP}
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+
+# Link im Terminal \xF6ffnen und best\xE4tigen!
+
+tailscale ip -4  # => \${TAILSCALE_IP}` },
+        { title: "Verbindung testen (von deinem Mac/PC)", lang: "bash", code: `ping \${TAILSCALE_IP}` },
+        { title: "Dashboard via Tailscale \xF6ffnen", lang: "bash", code: `# Im Browser:
+http://\${TAILSCALE_IP}:18789` },
+        { title: "WICHTIG: allowFrom setzen!", lang: "json", code: `{
+  "channels": {
+    "telegram": {
+      "allowFrom": ["\${TELEGRAM_ID}"]
+    }
+  }
+}` },
+        { title: "Port-Check: 18789 NICHT \xF6ffentlich!", lang: "bash", code: `# Diesen Port NICHT in der Firewall \xF6ffnen!
+# Zugriff NUR \xFCber Tailscale VPN
+# Pr\xFCfen ob Port von aussen ZU ist:
+curl -m 5 http://\${SERVER_IP}:18789 || echo "Gut! Port ist zu."` }
+      ]
+    },
+    7: {
+      title: "FAQ & Troubleshooting",
+      desc: "H\xE4ufige Probleme und L\xF6sungen",
+      part: "A",
+      snippets: [
+        { title: "Container l\xE4uft nicht?", lang: "bash", code: `docker logs openclaw --tail 100
+docker restart openclaw
+docker compose -f \${PROJECT_PATH}/docker-compose.yml up -d` },
+        { title: "Tailscale verbindet nicht?", lang: "bash", code: `# Auf dem VPS:
+sudo tailscale status
+sudo systemctl restart tailscaled
+sudo tailscale up` },
+        { title: "API-Key testen", lang: "bash", code: `curl -s https://api.anthropic.com/v1/messages \\
+  -H "x-api-key: \${ANTHROPIC_API_KEY}" \\
+  -H "content-type: application/json" \\
+  -H "anthropic-version: 2023-06-01" \\
+  -d '{"model":"claude-sonnet-4-20250514","max_tokens":50,"messages":[{"role":"user","content":"Hi"}]}'` },
+        { title: "Speicherplatz pr\xFCfen", lang: "bash", code: `df -h
+docker system df` }
+      ]
+    },
+    8: {
+      title: "Die Vision",
+      desc: "Wie dieses Buch mit KI entstand",
+      part: "B",
+      snippets: []
+    },
+    9: {
+      title: "Architektur",
+      desc: "System-Design, Agent-Pipeline",
+      part: "B",
+      snippets: [
+        { title: "Agent-Pipeline \xDCbersicht", lang: "text", code: `Telegram Trigger
+  => Content Architect (Outline)
+  => Technical Writer (Draft)
+  => Fact Checker (Verify)
+  => German Editor (Polish)
+  => Consistency Checker (Cross-Ref)
+  => Save to Git` }
+      ]
+    },
+    10: {
+      title: "n8n Workflows",
+      desc: "Automatisierung, Trigger, Pipelines",
+      part: "B",
+      snippets: [
+        { title: "n8n Dashboard \xF6ffnen", lang: "bash", code: `# Im Browser via Tailscale:
+http://\${TAILSCALE_IP}:5678` },
+        { title: "Kapitel-Pipeline Workflow", lang: "json", code: `{
+  "name": "Kapitel-Pipeline",
+  "nodes": [
+    {"name": "Telegram Trigger", "type": "telegramTrigger"},
+    {"name": "Architect", "type": "httpRequest",
+      "parameters": {"url": "http://openclaw:18789/api/chat"}},
+    {"name": "Writer", "type": "httpRequest"},
+    {"name": "Checker", "type": "httpRequest"},
+    {"name": "Save", "type": "writeFile"},
+    {"name": "Notify", "type": "telegram"}
+  ]
+}` }
+      ]
+    },
+    11: {
+      title: "Kosten",
+      desc: "API-Kosten, Hosting, ROI-Rechnung",
+      part: "B",
+      snippets: [
+        { title: "API-Verbrauch pr\xFCfen", lang: "bash", code: `# Anthropic Console:
+# https://console.anthropic.com/usage` }
+      ]
+    },
+    12: {
+      title: "Idee zum Buch",
+      desc: "Meta-Dokumentation des Prozesses",
+      part: "B",
+      snippets: []
+    },
+    13: {
+      title: "Setup Guide",
+      desc: "Kompletter Leitfaden zum Nachmachen",
+      part: "C",
+      snippets: [
+        { title: "Komplett-Setup in 10 Minuten", lang: "bash", code: `# 1. SSH zum Server
+ssh root@\${SERVER_IP}
+
+# 2. Projekt-Ordner anlegen
+mkdir -p \${PROJECT_PATH} && cd \${PROJECT_PATH}
+
+# 3. docker-compose.yml erstellen
+nano docker-compose.yml
+
+# 4. Starten
+docker compose up -d
+
+# 5. Tailscale
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+
+# 6. Testen
+curl http://\${TAILSCALE_IP}:18789` }
+      ]
+    },
+    14: {
+      title: "30 Tage Plan",
+      desc: "Schritt-f\xFCr-Schritt Zeitplan",
+      part: "C",
+      snippets: []
+    },
+    15: {
+      title: "Marketing",
+      desc: "KDP Upload, Keywords, Launch",
+      part: "C",
+      snippets: [
+        { title: "EPUB generieren", lang: "bash", code: `pandoc buch.md -o openclaw.epub \\
+  --toc \\
+  --epub-cover-image=cover.jpg \\
+  --metadata title="OpenClaw"` },
+        { title: "PDF f\xFCr KDP Print (6x9)", lang: "bash", code: `pandoc buch.md -o openclaw.pdf \\
+  --pdf-engine=xelatex \\
+  -V geometry:paperwidth=6in \\
+  -V geometry:paperheight=9in \\
+  -V geometry:margin=0.8in` }
+      ]
+    }
+  };
+  var BOOK_PARTS = [
+    { key: "A", title: "Teil A: Tutorial (Kap 1-7)", icon: BookOpen, color: "blue", chapters: [1, 2, 3, 4, 5, 6, 7] },
+    { key: "B", title: "Teil B: Case Study (Kap 8-12)", icon: Code, color: "purple", chapters: [8, 9, 10, 11, 12] },
+    { key: "C", title: "Teil C: Blueprint (Kap 13-15)", icon: Rocket, color: "green", chapters: [13, 14, 15] }
+  ];
+  var MODULES = [
+    { id: 0, name: "Dashboard", desc: "\xDCbersicht", icon: Target, color: "from-blue-500 to-cyan-400", tabs: ["overview"], tasks: [], isHome: true },
+    { id: 1, name: "Server Setup", desc: "Sprint 1: VPS & Docker", icon: Rocket, color: "from-green-500 to-emerald-400", tabs: ["sprint1"], tasks: SPRINT_TASKS.sprint1 },
+    { id: 2, name: "Agent Setup", desc: "Sprint 2: Multi-Agent", icon: Users, color: "from-cyan-500 to-blue-400", tabs: ["sprint2"], tasks: SPRINT_TASKS.sprint2 },
+    { id: 3, name: "Automation", desc: "Sprint 3: n8n & Batch", icon: Zap, color: "from-yellow-500 to-orange-400", tabs: ["sprint3"], tasks: SPRINT_TASKS.sprint3 },
+    { id: 4, name: "Publishing", desc: "Sprint 4: KDP & Cover", icon: Package, color: "from-pink-500 to-rose-400", tabs: ["sprint4", "kosten"], tasks: SPRINT_TASKS.sprint4 },
+    { id: 5, name: "Buch & Code", desc: "Kapitel & Daten", icon: Book, color: "from-purple-500 to-pink-400", tabs: ["buch", "settings"], tasks: CHAPTER_TASKS },
+    { id: 6, name: "Dein Projekt", desc: "Wundert\xFCte", icon: Sparkles, color: "from-amber-500 to-yellow-400", tabs: ["projekt"], tasks: [] }
+  ];
+  var NAV_TABS = [
+    { id: "overview", icon: Target, label: "\xDCbersicht", moduleId: 0 },
+    { id: "sprint1", icon: Rocket, label: "Server Setup", moduleId: 1 },
+    { id: "sprint2", icon: Users, label: "Agent Setup", moduleId: 2 },
+    { id: "sprint3", icon: Zap, label: "Automation", moduleId: 3 },
+    { id: "sprint4", icon: Package, label: "Publishing", moduleId: 4 },
+    { id: "kosten", icon: DollarSign, label: "Kosten & ROI", moduleId: 4 },
+    { id: "buch", icon: Book, label: "Buch-Companion", moduleId: 5 },
+    { id: "settings", icon: Settings, label: "Meine Daten", moduleId: 5 },
+    { id: "projekt", icon: Sparkles, label: "Dein Projekt", moduleId: 6 }
+  ];
+  var STORAGE_KEY = "openclaw-book-tasks";
+  var STORAGE_VARS_KEY = "openclaw-user-vars";
+  var STORAGE_META_KEY = "openclaw-meta";
+  var DATA_VERSION = 2;
+  var FILTER_OPTIONS = [
+    { id: "all", label: "Alle" },
+    { id: "open", label: "Offen" },
+    { id: "done", label: "Erledigt" }
+  ];
+  var createStorageAdapter = () => {
+    const memoryStore = {};
+    let useMemory = false;
+    const adapter = {
+      type: "unknown",
+      async get(key) {
+        if (useMemory) return memoryStore[key] ? { value: memoryStore[key] } : null;
+        try {
+          if (typeof window.storage !== "undefined" && window.storage.get) {
+            const r = await window.storage.get(key);
+            adapter.type = "persistent";
+            return r;
+          }
+          const val = localStorage.getItem(key);
+          if (val !== null) {
+            adapter.type = "persistent";
+            return { value: val };
+          }
+          adapter.type = "persistent";
+          return null;
+        } catch {
+          useMemory = true;
+          adapter.type = "memory";
+          return memoryStore[key] ? { value: memoryStore[key] } : null;
+        }
+      },
+      async set(key, value) {
+        if (useMemory) {
+          memoryStore[key] = value;
+          return { key, value };
+        }
+        try {
+          if (typeof window.storage !== "undefined" && window.storage.set) {
+            const r = await window.storage.set(key, value);
+            adapter.type = "persistent";
+            return r;
+          }
+          localStorage.setItem(key, value);
+          adapter.type = "persistent";
+          return { key, value };
+        } catch {
+          useMemory = true;
+          adapter.type = "memory";
+          memoryStore[key] = value;
+          return { key, value };
+        }
+      }
+    };
+    return adapter;
+  };
+  var storage = createStorageAdapter();
+  var MIGRATIONS = {};
+  var migrateData = (tasks, fromVersion) => {
+    let current = tasks;
+    let version = fromVersion;
+    while (version < DATA_VERSION) {
+      version++;
+      if (MIGRATIONS[version]) {
+        current = MIGRATIONS[version](current);
+      }
+    }
+    return current;
+  };
+  var loadWithMigration = async () => {
+    let tasks = {};
+    let needsSave = false;
+    try {
+      const r = await storage.get(STORAGE_KEY);
+      if (r && r.value) tasks = JSON.parse(r.value);
+    } catch {
+    }
+    let storedVersion = DATA_VERSION;
+    try {
+      const m = await storage.get(STORAGE_META_KEY);
+      if (m && m.value) {
+        storedVersion = JSON.parse(m.value).version || 0;
+      } else {
+        storedVersion = Object.keys(tasks).length > 0 ? 0 : DATA_VERSION;
+      }
+    } catch {
+    }
+    if (storedVersion < DATA_VERSION) {
+      tasks = migrateData(tasks, storedVersion);
+      needsSave = true;
+    }
+    return { tasks, needsSave, storageType: storage.type };
+  };
+  var saveWithMeta = async (tasks) => {
+    await storage.set(STORAGE_KEY, JSON.stringify(tasks));
+    await storage.set(STORAGE_META_KEY, JSON.stringify({
+      version: DATA_VERSION,
+      lastSaved: (/* @__PURE__ */ new Date()).toISOString()
+    }));
+  };
+  var loadUserVars = async () => {
+    try {
+      const r = await storage.get(STORAGE_VARS_KEY);
+      if (r && r.value) return JSON.parse(r.value);
+    } catch {
+    }
+    return {};
+  };
+  var saveUserVars = async (vars) => {
+    await storage.set(STORAGE_VARS_KEY, JSON.stringify(vars));
+  };
+  var SEARCH_INDEX = [
+    { id: "s1-kvm", title: "VPS Panel \xF6ffnen", desc: "hPanel VPS Server", tab: "sprint1" },
+    { id: "s1-docker", title: "Docker Manager installieren", desc: "Sidebar Docker Manager Install", tab: "sprint1" },
+    { id: "s1-openclaw", title: "OpenClaw im Catalog finden", desc: "Catalog OpenClaw suchen", tab: "sprint1" },
+    { id: "s1-openclaw-deploy", title: "Deploy-Formular ausf\xFCllen", desc: "ANTHROPIC_API_KEY GATEWAY_TOKEN", tab: "sprint1" },
+    { id: "s1-openclaw-start", title: "Deploy starten", desc: "Warten bis Running", tab: "sprint1" },
+    { id: "s1-tailscale-account", title: "Tailscale Account", desc: "login.tailscale.com Sign Up gratis", tab: "sprint1" },
+    { id: "s1-tailscale-mac", title: "Tailscale auf Mac/PC", desc: "App Store Tailscale", tab: "sprint1" },
+    { id: "s1-tailscale-vps", title: "Tailscale auf VPS", desc: "SSH install tailscale up", tab: "sprint1" },
+    { id: "s1-tailscale-verify", title: "Verbindung testen", desc: "ping TAILSCALE-IP", tab: "sprint1" },
+    { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "18789 bleibt zu nur Tailscale", tab: "sprint1" },
+    { id: "s1-dashboard-test", title: "Dashboard testen", desc: "http TAILSCALE-IP 18789", tab: "sprint1" },
+    { id: "s1-n8n", title: "n8n deployen", desc: "Catalog n8n Port 5678", tab: "sprint1" },
+    { id: "s1-api", title: "Claude API testen", desc: "Dashboard Test-Nachricht", tab: "sprint1" },
+    { id: "s1-telegram", title: "Telegram Bot", desc: "BotFather newbot Token", tab: "sprint1" },
+    { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", tab: "sprint1" },
+    { id: "s1-test", title: "System-Test", desc: "Telegram OpenClaw Claude", tab: "sprint1" },
+    { id: "s1-backup", title: "Backup", desc: "VPS Snapshots", tab: "sprint1" },
+    { id: "s1-docs", title: "Dokumentieren", desc: "Tokens IPs Passw\xF6rter sichern", tab: "sprint1" },
+    { id: "s2-architect", title: "Content Architect", desc: "Outlines Struktur", tab: "sprint2" },
+    { id: "s2-writer", title: "Technical Writer", desc: "Technische Texte Code", tab: "sprint2" },
+    { id: "s2-meta", title: "Meta Documenter", desc: "Dokumentiert den Prozess Teil B", tab: "sprint2" },
+    { id: "s2-tutorial", title: "Tutorial Writer", desc: "Step-by-Step Teil C", tab: "sprint2" },
+    { id: "s2-checker", title: "Fact Checker", desc: "Code Claims pr\xFCfen", tab: "sprint2" },
+    { id: "s2-consistency", title: "Consistency Checker", desc: "Terminologie Querverweise", tab: "sprint2" },
+    { id: "s2-editor", title: "German Editor", desc: "Stil Du-Form", tab: "sprint2" },
+    { id: "s2-coordinator", title: "Workflow Coordinator", desc: "n8n Agent-Handoffs", tab: "sprint2" },
+    { id: "s2-test-chapter", title: "PoC Kapitel 1", desc: "Alle Agents zusammen", tab: "sprint2" },
+    { id: "s2-review", title: "Texterin Review", desc: "Human Check", tab: "sprint2" },
+    { id: "s3-n8n-setup", title: "n8n konfigurieren", desc: "Workflows OpenClaw-Anbindung", tab: "sprint3" },
+    { id: "s3-workflow-chapter", title: "Kapitel-Workflow", desc: "Trigger Architect Writer Check Edit Save", tab: "sprint3" },
+    { id: "s3-workflow-review", title: "Review-Trigger", desc: "Benachrichtigung an Texterin", tab: "sprint3" },
+    { id: "s3-workflow-storage", title: "Git-Auto-Commit", desc: "Kapitel wird committed", tab: "sprint3" },
+    { id: "s3-automation", title: "Batch-Test 3 Kapitel", desc: "Parallel testen", tab: "sprint3" },
+    { id: "s3-batch", title: "Alle 15 Kapitel", desc: "Batch \xFCber Nacht", tab: "sprint3" },
+    { id: "s3-x-api", title: "X/Twitter API einrichten", desc: "Developer Account API Keys", tab: "sprint3" },
+    { id: "s3-x-workflow", title: "X Post-Workflow", desc: "OpenClaw generiert n8n postet", tab: "sprint3" },
+    { id: "s3-x-approval", title: "Telegram Approval-Flow", desc: "Vorschau Ja Nein Genehmigung", tab: "sprint3" },
+    { id: "s3-x-ondemand", title: "On-Demand Tweets", desc: "Telegram Befehl Tweet senden", tab: "sprint3" },
+    { id: "s4-texterin", title: "Texterin \xFCberarbeitet", desc: "Stil Flow", tab: "sprint4" },
+    { id: "s4-format-epub", title: "EPUB generieren", desc: "Pandoc EPUB", tab: "sprint4" },
+    { id: "s4-format-pdf", title: "PDF generieren", desc: "6x9 f\xFCr KDP Print", tab: "sprint4" },
+    { id: "s4-cover", title: "Cover-Design", desc: "2560x1600px", tab: "sprint4" },
+    { id: "s4-metadata", title: "KDP Metadata", desc: "Keywords Kategorien", tab: "sprint4" },
+    { id: "s4-preview", title: "Kindle Previewer", desc: "Finale QA", tab: "sprint4" },
+    { id: "s4-upload", title: "KDP Upload", desc: "EUR 39.95 ver\xF6ffentlichen", tab: "sprint4" },
+    ...Array.from({ length: 15 }, (_, i) => i + 1).flatMap(
+      (k) => CHAPTER_STEPS.map((step) => ({
+        id: `kap${k}-${step}`,
+        title: `Kap ${k}: ${CHAPTERS[k].title} - ${step.charAt(0).toUpperCase() + step.slice(1)}`,
+        desc: `Kapitel ${k} ${step}`,
+        tab: "buch"
+      }))
+    )
+  ];
+  var injectStyles = () => {
+    if (document.querySelector("[data-openclaw-styles]")) return;
+    const s = document.createElement("style");
+    s.setAttribute("data-openclaw-styles", "");
+    s.textContent = `
+    @keyframes fadeSlideIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .fade-in { animation: fadeSlideIn 0.25s ease-out both; }
+    @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(99,102,241,0.4); } 50% { box-shadow:0 0 12px 4px rgba(99,102,241,0.15); } }
+    .onboarding-pulse { animation: pulseGlow 2.5s ease-in-out infinite; }
+  `;
+    document.head.appendChild(s);
+  };
+  injectStyles();
+  var interpolateCode = (code, userVars) => {
+    return code.replace(/\$\{(\w+)\}/g, (match, varName) => {
+      const safeVar = SAFE_VARS.find((v) => v.key === varName);
+      const sensitiveVar = SENSITIVE_VARS.find((v) => v.key === varName);
+      if (safeVar && userVars[varName]) {
+        return userVars[varName];
+      }
+      if (sensitiveVar) {
+        return `<${sensitiveVar.label}>`;
+      }
+      if (safeVar) {
+        return safeVar.placeholder;
+      }
+      return match;
+    });
+  };
+  var PersonalizedCodeBlock = ({ code, language = "bash", title, userVars = {} }) => {
+    const [copied, setCopied] = (0, import_react4.useState)(false);
+    const processed = (0, import_react4.useMemo)(() => interpolateCode(code, userVars), [code, userVars]);
+    const handleCopy = () => {
+      navigator.clipboard.writeText(processed);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2e3);
+    };
+    const renderCode = () => {
+      const parts = [];
+      const original = code;
+      const regex = /\$\{(\w+)\}/g;
+      let lastIndex = 0;
+      let m;
+      while ((m = regex.exec(original)) !== null) {
+        if (m.index > lastIndex) {
+          parts.push({ type: "text", value: interpolateCode(original.slice(lastIndex, m.index), userVars) });
+        }
+        const varName = m[1];
+        const safeVar = SAFE_VARS.find((v) => v.key === varName);
+        const sensitiveVar = SENSITIVE_VARS.find((v) => v.key === varName);
+        if (sensitiveVar) {
+          parts.push({ type: "sensitive", value: `<${sensitiveVar.label}>`, label: sensitiveVar.label });
+        } else if (safeVar && userVars[varName]) {
+          parts.push({ type: "personal", value: userVars[varName], label: safeVar.label });
+        } else if (safeVar) {
+          parts.push({ type: "placeholder", value: safeVar.placeholder, label: safeVar.label });
+        } else {
+          parts.push({ type: "text", value: m[0] });
+        }
+        lastIndex = regex.lastIndex;
+      }
+      if (lastIndex < original.length) {
+        parts.push({ type: "text", value: interpolateCode(original.slice(lastIndex), userVars) });
+      }
+      return parts;
+    };
+    const codeParts = renderCode();
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "my-3 bg-gray-950 rounded-lg border border-gray-700 overflow-hidden" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between px-3 sm:px-4 py-2 bg-gray-900 border-b border-gray-700" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(Terminal, { className: "w-3 h-3 text-gray-400" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-gray-400 font-mono" }, language), title && /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-gray-500 hidden sm:inline" }, "- ", title)), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: handleCopy, className: "flex items-center gap-1 text-xs text-gray-400 hover:text-gray-200 transition-colors" }, copied ? /* @__PURE__ */ import_react3.default.createElement(import_react3.default.Fragment, null, /* @__PURE__ */ import_react3.default.createElement(Check, { className: "w-3 h-3 text-green-400" }), "Kopiert!") : /* @__PURE__ */ import_react3.default.createElement(import_react3.default.Fragment, null, /* @__PURE__ */ import_react3.default.createElement(Copy, { className: "w-3 h-3" }), "Kopieren"))), /* @__PURE__ */ import_react3.default.createElement("pre", { className: "p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed" }, /* @__PURE__ */ import_react3.default.createElement("code", null, codeParts.map((part, i) => {
+      if (part.type === "sensitive") {
+        return /* @__PURE__ */ import_react3.default.createElement("span", { key: i, className: "bg-red-900/40 text-red-400 px-1 rounded border border-red-800/50", title: `${part.label} - Aus Passwort-Manager einf\xFCgen!` }, part.value);
+      }
+      if (part.type === "personal") {
+        return /* @__PURE__ */ import_react3.default.createElement("span", { key: i, className: "bg-green-900/40 text-green-400 px-1 rounded border border-green-800/50", title: `${part.label} - Personalisiert` }, part.value);
+      }
+      if (part.type === "placeholder") {
+        return /* @__PURE__ */ import_react3.default.createElement("span", { key: i, className: "bg-yellow-900/40 text-yellow-400 px-1 rounded border border-yellow-800/50", title: `${part.label} - Unter "Meine Daten" eintragen` }, part.value);
+      }
+      return /* @__PURE__ */ import_react3.default.createElement("span", { key: i, className: "text-gray-200" }, part.value);
+    }))));
+  };
+  var ProgressBar = ({ current, total, label, color }) => {
+    const percent = total > 0 ? Math.round(current / total * 100) : 0;
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex justify-between text-sm mb-1" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-300" }, label), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-400" }, current, "/", total, " (", percent, "%)")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-full bg-gray-700 rounded-full h-2" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `bg-gradient-to-r ${color || "from-blue-500 to-purple-500"} h-2 rounded-full transition-all duration-500`, style: { width: `${percent}%` } })));
+  };
+  var TaskItem = ({ id, title, desc, onToggle, done, filter = "all" }) => {
+    if (filter === "open" && done) return null;
+    if (filter === "done" && !done) return null;
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-start gap-3 py-2 hover:bg-gray-800/50 rounded px-2 transition-colors" }, /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => onToggle(id), className: "mt-0.5 shrink-0" }, done ? /* @__PURE__ */ import_react3.default.createElement(CircleCheck, { className: "w-5 h-5 text-green-500" }) : /* @__PURE__ */ import_react3.default.createElement(Circle, { className: "w-5 h-5 text-gray-600" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: `text-sm ${done ? "text-gray-500 line-through" : "text-gray-300"}` }, title), desc && /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 mt-1 truncate" }, desc)));
+  };
+  var Section = ({ icon: Icon2, title, children, open = false, badge, forceKey }) => {
+    const [expanded, setExpanded] = (0, import_react4.useState)(open);
+    (0, import_react4.useEffect)(() => {
+      setExpanded(open);
+    }, [open, forceKey]);
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded-lg border border-gray-700 mb-4" }, /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => setExpanded(!expanded), className: "w-full flex items-center justify-between p-3 sm:p-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0" }, /* @__PURE__ */ import_react3.default.createElement(Icon2, { className: "w-5 h-5 text-blue-400 shrink-0" }), /* @__PURE__ */ import_react3.default.createElement("h3", { className: "font-semibold text-gray-200 text-sm sm:text-base truncate" }, title), badge && /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs bg-blue-600/30 text-blue-300 px-2 py-0.5 rounded-full shrink-0" }, badge)), expanded ? /* @__PURE__ */ import_react3.default.createElement(ChevronDown, { className: "w-5 h-5 text-gray-400 shrink-0" }) : /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-5 h-5 text-gray-400 shrink-0" })), expanded && /* @__PURE__ */ import_react3.default.createElement("div", { className: "p-3 sm:p-4 pt-0 border-t border-gray-700" }, children));
+  };
+  var SprintHeader = ({ icon: Icon2, title, description, taskIds, countDone, color, iconColor }) => /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded-lg border border-gray-700 p-4 sm:p-5" }, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(Icon2, { className: `w-5 h-5 ${iconColor || "text-blue-400"}` }), title), description && /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-300 mb-3" }, description), /* @__PURE__ */ import_react3.default.createElement(ProgressBar, { current: countDone(taskIds), total: taskIds.length, label: title, color }));
+  var TaskFilter = ({ filter, setFilter, taskIds, countDone }) => {
+    const done = countDone(taskIds);
+    const open = taskIds.length - done;
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 mb-4 flex-wrap" }, /* @__PURE__ */ import_react3.default.createElement(Funnel, { className: "w-3.5 h-3.5 text-gray-500" }), FILTER_OPTIONS.map((opt) => {
+      const count = opt.id === "all" ? taskIds.length : opt.id === "open" ? open : done;
+      return /* @__PURE__ */ import_react3.default.createElement(
+        "button",
+        {
+          key: opt.id,
+          onClick: () => setFilter(opt.id),
+          className: `px-3 py-1 rounded-full text-xs font-medium transition-all ${filter === opt.id ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-400 hover:bg-gray-600"}`
+        },
+        opt.label,
+        " (",
+        count,
+        ")"
+      );
+    }));
+  };
+  var ChapterChart = ({ tasks, countDone }) => {
+    const STEP_COLORS = {
+      outline: "bg-blue-500",
+      draft: "bg-cyan-500",
+      check: "bg-yellow-500",
+      review: "bg-orange-500",
+      final: "bg-green-500"
+    };
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-3 mb-3 flex-wrap" }, CHAPTER_STEPS.map((step) => /* @__PURE__ */ import_react3.default.createElement("div", { key: step, className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `w-2.5 h-2.5 rounded-sm ${STEP_COLORS[step]}` }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-gray-400" }, step.charAt(0).toUpperCase() + step.slice(1))))), Array.from({ length: 15 }, (_, i) => i + 1).map((k) => {
+      const chapterDone = countDone(CHAPTER_STEPS.map((s) => `kap${k}-${s}`));
+      return /* @__PURE__ */ import_react3.default.createElement("div", { key: k, className: "flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-gray-500 w-6 text-right shrink-0" }, k), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 flex gap-0.5 h-4" }, CHAPTER_STEPS.map((step) => /* @__PURE__ */ import_react3.default.createElement(
+        "div",
+        {
+          key: step,
+          className: `flex-1 rounded-sm transition-all duration-300 ${tasks[`kap${k}-${step}`] ? STEP_COLORS[step] : "bg-gray-700"}`,
+          title: `Kap ${k}: ${step} ${tasks[`kap${k}-${step}`] ? "(erledigt)" : "(offen)"}`
+        }
+      ))), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-gray-500 w-6 shrink-0" }, chapterDone, "/5"));
+    }));
+  };
+  var SearchOverlay = ({ isOpen, onClose, onNavigate, tasks }) => {
+    const [query, setQuery] = (0, import_react4.useState)("");
+    const inputRef = (0, import_react4.useRef)(null);
+    (0, import_react4.useEffect)(() => {
+      if (isOpen && inputRef.current) {
+        setQuery("");
+        setTimeout(() => inputRef.current?.focus(), 50);
+      }
+    }, [isOpen]);
+    const results = (0, import_react4.useMemo)(() => {
+      if (query.length < 2) return [];
+      const q = query.toLowerCase();
+      return SEARCH_INDEX.filter((item) => item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q)).slice(0, 12);
+    }, [query]);
+    if (!isOpen) return null;
+    const tabLabel = (tabId) => NAV_TABS.find((n) => n.id === tabId)?.label || tabId;
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 z-[100] flex items-start justify-center pt-20 sm:pt-32", onClick: onClose }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 bg-black/60" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "relative w-full max-w-lg mx-4 bg-gray-800 border border-gray-600 rounded-xl shadow-2xl overflow-hidden", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-3 px-4 py-3 border-b border-gray-700" }, /* @__PURE__ */ import_react3.default.createElement(Search, { className: "w-5 h-5 text-gray-400 shrink-0" }), /* @__PURE__ */ import_react3.default.createElement(
+      "input",
+      {
+        ref: inputRef,
+        value: query,
+        onChange: (e) => setQuery(e.target.value),
+        placeholder: "Task suchen... (z.B. Tailscale, Telegram, EPUB)",
+        className: "flex-1 bg-transparent text-sm text-gray-200 outline-none placeholder-gray-500",
+        onKeyDown: (e) => {
+          if (e.key === "Escape") onClose();
+          if (e.key === "Enter" && results.length > 0) {
+            onNavigate(results[0].tab);
+            onClose();
+          }
+        }
+      }
+    ), /* @__PURE__ */ import_react3.default.createElement("kbd", { className: "hidden sm:inline-flex items-center px-2 py-0.5 text-xs text-gray-500 bg-gray-700 rounded" }, "ESC")), query.length >= 2 && /* @__PURE__ */ import_react3.default.createElement("div", { className: "max-h-72 overflow-y-auto" }, results.length === 0 ? /* @__PURE__ */ import_react3.default.createElement("div", { className: "px-4 py-6 text-center text-sm text-gray-500" }, 'Keine Treffer f\xFCr "', query, '"') : results.map((item) => /* @__PURE__ */ import_react3.default.createElement(
+      "button",
+      {
+        key: item.id,
+        onClick: () => {
+          onNavigate(item.tab);
+          onClose();
+        },
+        className: "w-full flex items-start gap-3 px-4 py-2.5 hover:bg-gray-700/50 text-left transition-colors"
+      },
+      tasks[item.id] ? /* @__PURE__ */ import_react3.default.createElement(CircleCheck, { className: "w-4 h-4 text-green-500 mt-0.5 shrink-0" }) : /* @__PURE__ */ import_react3.default.createElement(Circle, { className: "w-4 h-4 text-gray-600 mt-0.5 shrink-0" }),
+      /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-200 truncate" }, item.title), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 truncate" }, tabLabel(item.tab))),
+      /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-4 h-4 text-gray-600 mt-0.5 shrink-0" })
+    ))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "px-4 py-2 border-t border-gray-700 flex items-center gap-4 text-xs text-gray-500" }, /* @__PURE__ */ import_react3.default.createElement("span", null, /* @__PURE__ */ import_react3.default.createElement("kbd", { className: "px-1 py-0.5 bg-gray-700 rounded text-gray-400" }, "Enter"), " zum Springen"), /* @__PURE__ */ import_react3.default.createElement("span", null, /* @__PURE__ */ import_react3.default.createElement("kbd", { className: "px-1 py-0.5 bg-gray-700 rounded text-gray-400" }, "Esc"), " Schliessen"), /* @__PURE__ */ import_react3.default.createElement("span", { className: "ml-auto" }, results.length, " Treffer"))));
+  };
+  var UndoToast = ({ message, onUndo, onDismiss, visible }) => {
+    if (!visible) return null;
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] animate-[fadeSlideIn_0.2s_ease-out]" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-3 px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl shadow-2xl" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-sm text-gray-200" }, message), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: onUndo, className: "flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-medium text-white transition-colors" }, /* @__PURE__ */ import_react3.default.createElement(Undo2, { className: "w-3 h-3" }), "R\xFCckg\xE4ngig"), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: onDismiss, className: "text-gray-500 hover:text-gray-300 p-1" }, /* @__PURE__ */ import_react3.default.createElement(X, { className: "w-3.5 h-3.5" }))));
+  };
+  var StorageInfoBanner = ({ storageType, visible = true, onDismiss }) => {
+    if (storageType !== "memory" || !visible) return null;
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-3 mb-4 flex items-center gap-3 text-xs" }, /* @__PURE__ */ import_react3.default.createElement(Info, { className: "w-4 h-4 text-yellow-400 shrink-0" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-yellow-300 font-semibold" }, "In-Memory Modus:"), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-400 ml-1" }, "Persistent Storage nicht verf\xFCgbar. Nutze Export!")), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: onDismiss, className: "text-gray-500 hover:text-gray-300" }, /* @__PURE__ */ import_react3.default.createElement(X, { className: "w-3 h-3" })));
+  };
+  var VarLegend = ({ onGoSettings }) => /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800/50 border border-gray-700 rounded-lg p-3 mb-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 mb-2" }, /* @__PURE__ */ import_react3.default.createElement(Info, { className: "w-3.5 h-3.5 text-blue-400" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs font-semibold text-gray-300" }, "Farb-Legende Code-Snippets")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex flex-wrap gap-3 text-xs" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "inline-block w-3 h-3 rounded bg-green-900/60 border border-green-700" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-green-400" }, "Dein Wert")), /* @__PURE__ */ import_react3.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "inline-block w-3 h-3 rounded bg-yellow-900/60 border border-yellow-700" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-yellow-400" }, "Noch eintragen")), /* @__PURE__ */ import_react3.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "inline-block w-3 h-3 rounded bg-red-900/60 border border-red-700" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-red-400" }, "Sensibel - manuell")), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: onGoSettings, className: "text-blue-400 hover:text-blue-300 underline underline-offset-2" }, "Meine Daten eintragen")));
+  var SettingsPanel = ({ userVars, setUserVars, onSave }) => {
+    const [localVars, setLocalVars] = (0, import_react4.useState)(userVars);
+    const [saved, setSaved] = (0, import_react4.useState)(false);
+    const hasChanges = JSON.stringify(localVars) !== JSON.stringify(userVars);
+    const updateVar = (key, value) => {
+      setLocalVars((prev) => ({ ...prev, [key]: value }));
+    };
+    const handleSave = () => {
+      setUserVars(localVars);
+      onSave(localVars);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2e3);
+    };
+    const filledCount = SAFE_VARS.filter((v) => localVars[v.key]?.trim()).length;
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 rounded-lg p-4 sm:p-5" }, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(Settings, { className: "w-5 h-5 text-purple-400" }), "Meine Daten"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-300 mb-3" }, "Trage hier deine Server-Daten ein. Alle Code-Snippets im Dashboard werden automatisch mit deinen Werten personalisiert."), /* @__PURE__ */ import_react3.default.createElement(ProgressBar, { current: filledCount, total: SAFE_VARS.length, label: "Felder ausgef\xFCllt", color: "from-purple-500 to-pink-400" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded-lg border border-gray-700 p-4" }, /* @__PURE__ */ import_react3.default.createElement("h3", { className: "font-semibold mb-4 flex items-center gap-2 text-sm" }, /* @__PURE__ */ import_react3.default.createElement(Eye, { className: "w-4 h-4 text-green-400" }), "Gespeicherte Daten", /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-gray-500 font-normal ml-auto" }, filledCount, "/", SAFE_VARS.length)), /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, SAFE_VARS.map((v) => /* @__PURE__ */ import_react3.default.createElement("div", { key: v.key }, /* @__PURE__ */ import_react3.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, v.label), /* @__PURE__ */ import_react3.default.createElement(
+      "input",
+      {
+        type: "text",
+        value: localVars[v.key] || "",
+        onChange: (e) => updateVar(v.key, e.target.value),
+        placeholder: v.placeholder,
+        className: "w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
+      }
+    ), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 mt-1" }, v.hint)))), /* @__PURE__ */ import_react3.default.createElement(
+      "button",
+      {
+        onClick: handleSave,
+        disabled: !hasChanges,
+        className: `mt-4 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${hasChanges ? "bg-green-600 hover:bg-green-500 text-white" : "bg-gray-700 text-gray-500 cursor-not-allowed"}`
+      },
+      saved ? /* @__PURE__ */ import_react3.default.createElement(import_react3.default.Fragment, null, /* @__PURE__ */ import_react3.default.createElement(Check, { className: "w-4 h-4" }), "Gespeichert!") : /* @__PURE__ */ import_react3.default.createElement(import_react3.default.Fragment, null, /* @__PURE__ */ import_react3.default.createElement(Save, { className: "w-4 h-4" }), "Speichern")
+    )), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded-lg border border-red-900/50 p-4" }, /* @__PURE__ */ import_react3.default.createElement("h3", { className: "font-semibold mb-3 flex items-center gap-2 text-sm" }, /* @__PURE__ */ import_react3.default.createElement(Lock, { className: "w-4 h-4 text-red-400" }), "Sensible Daten", /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full ml-2" }, "werden NICHT gespeichert")), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-400 mb-4" }, "Diese Werte erscheinen als rote Platzhalter in den Code-Snippets. F\xFCge sie manuell aus deinem Passwort-Manager ein."), /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-2" }, SENSITIVE_VARS.map((v) => /* @__PURE__ */ import_react3.default.createElement("div", { key: v.key, className: "flex items-center gap-3 py-2 px-3 bg-gray-900/50 rounded border border-gray-700" }, /* @__PURE__ */ import_react3.default.createElement(Lock, { className: "w-3.5 h-3.5 text-red-400 shrink-0" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-sm text-gray-300" }, v.label), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-red-400 ml-auto font-mono" }, "<" + v.label + ">"))))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded-lg border border-gray-700 p-4" }, /* @__PURE__ */ import_react3.default.createElement("h3", { className: "font-semibold mb-3 flex items-center gap-2 text-sm" }, /* @__PURE__ */ import_react3.default.createElement(Eye, { className: "w-4 h-4 text-blue-400" }), "Vorschau: So sehen deine Snippets aus"), /* @__PURE__ */ import_react3.default.createElement(
+      PersonalizedCodeBlock,
+      {
+        code: `ssh root@\${SERVER_IP}
+cd \${PROJECT_PATH}
+export ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY}
+docker compose up -d
+curl http://\${TAILSCALE_IP}:18789`,
+        language: "bash",
+        title: "Beispiel-Snippet",
+        userVars: localVars
+      }
+    )));
+  };
+  var ChapterCompanion = ({ tasks, toggleTask, taskFilter, setTaskFilter, userVars, countDone, switchTab, openPart, setOpenPart }) => {
+    const allChapterTaskIds = CHAPTER_TASKS;
+    const partRefs = (0, import_react4.useRef)({});
+    (0, import_react4.useEffect)(() => {
+      if (openPart && partRefs.current[openPart]) {
+        setTimeout(() => {
+          partRefs.current[openPart]?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 150);
+        setTimeout(() => setOpenPart(null), 1e3);
+      }
+    }, [openPart, setOpenPart]);
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 rounded-lg p-4 sm:p-5" }, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(Book, { className: "w-5 h-5 text-purple-400" }), "Buch-Companion"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-300 mb-3" }, "Dein interaktives Inhaltsverzeichnis: Fortschritt tracken + Code-Snippets direkt kopieren."), /* @__PURE__ */ import_react3.default.createElement(ProgressBar, { current: countDone(allChapterTaskIds), total: allChapterTaskIds.length, label: "Buchfortschritt", color: "from-purple-500 to-pink-400" })), /* @__PURE__ */ import_react3.default.createElement(VarLegend, { onGoSettings: () => switchTab("settings") }), /* @__PURE__ */ import_react3.default.createElement(TaskFilter, { filter: taskFilter, setFilter: setTaskFilter, taskIds: allChapterTaskIds, countDone }), BOOK_PARTS.map((part) => /* @__PURE__ */ import_react3.default.createElement("div", { key: part.key, ref: (el) => partRefs.current[part.key] = el }, /* @__PURE__ */ import_react3.default.createElement(
+      Section,
+      {
+        icon: part.icon,
+        title: part.title,
+        open: openPart ? openPart === part.key : part.key === "A",
+        forceKey: openPart,
+        badge: `${countDone(part.chapters.flatMap((c) => CHAPTER_STEPS.map((s) => `kap${c}-${s}`)))}/${part.chapters.length * 5}`
+      },
+      part.chapters.map((chapterNum) => {
+        const ch = CHAPTERS[chapterNum];
+        const chapterTaskIds = CHAPTER_STEPS.map((step) => `kap${chapterNum}-${step}`);
+        const done = countDone(chapterTaskIds);
+        const total = 5;
+        const visibleCount = taskFilter === "all" ? total : taskFilter === "open" ? total - done : done;
+        if (visibleCount === 0 && ch.snippets.length === 0) return null;
+        const pct = Math.round(done / total * 100);
+        const isComplete = done === total;
+        return /* @__PURE__ */ import_react3.default.createElement("div", { key: chapterNum, className: `mb-4 rounded-lg border overflow-hidden ${isComplete ? "bg-green-900/10 border-green-800/50" : "bg-gray-900/50 border-gray-700"}` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "p-3 sm:p-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between mb-1" }, /* @__PURE__ */ import_react3.default.createElement("h4", { className: "text-sm font-bold text-gray-200 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: `inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold ${isComplete ? "bg-green-600 text-white" : `bg-${part.color}-900/30 text-${part.color}-400 border border-${part.color}-700/50`}` }, chapterNum), ch.title, isComplete && /* @__PURE__ */ import_react3.default.createElement(CircleCheck, { className: "w-4 h-4 text-green-500" })), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-gray-500" }, done, "/", total)), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 mb-3 ml-8" }, ch.desc), /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-full bg-gray-700 rounded-full h-1.5 ml-8 max-w-xs" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `h-1.5 rounded-full transition-all duration-500 ${isComplete ? "bg-green-500" : "bg-gradient-to-r from-purple-500 to-pink-400"}`, style: { width: `${pct}%` } })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "mt-3 ml-8" }, CHAPTER_STEPS.map((step) => /* @__PURE__ */ import_react3.default.createElement(
+          TaskItem,
+          {
+            key: step,
+            id: `kap${chapterNum}-${step}`,
+            title: step.charAt(0).toUpperCase() + step.slice(1),
+            onToggle: toggleTask,
+            done: tasks[`kap${chapterNum}-${step}`],
+            filter: taskFilter
+          }
+        )))), ch.snippets.length > 0 && /* @__PURE__ */ import_react3.default.createElement("div", { className: "border-t border-gray-700 bg-gray-950/30 p-3 sm:p-4" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 uppercase font-semibold mb-2 flex items-center gap-1.5" }, /* @__PURE__ */ import_react3.default.createElement(Code, { className: "w-3 h-3" }), "Code-Snippets (", ch.snippets.length, ")"), ch.snippets.map((snippet, idx) => /* @__PURE__ */ import_react3.default.createElement(
+          PersonalizedCodeBlock,
+          {
+            key: idx,
+            code: snippet.code,
+            language: snippet.lang,
+            title: snippet.title,
+            userVars
+          }
+        ))));
+      })
+    ))));
+  };
+  function App() {
+    const [activeTab, setActiveTab] = (0, import_react4.useState)("overview");
+    const [tasks, setTasks] = (0, import_react4.useState)({});
+    const [userVars, setUserVars] = (0, import_react4.useState)({});
+    const [statusMessage, setStatusMessage] = (0, import_react4.useState)("");
+    const [sidebarOpen, setSidebarOpen] = (0, import_react4.useState)(false);
+    const [taskFilter, setTaskFilter] = (0, import_react4.useState)("all");
+    const [fadeKey, setFadeKey] = (0, import_react4.useState)(0);
+    const [searchOpen, setSearchOpen] = (0, import_react4.useState)(false);
+    const [storageType, setStorageType] = (0, import_react4.useState)("unknown");
+    const [showStorageBanner, setShowStorageBanner] = (0, import_react4.useState)(true);
+    const [undoState, setUndoState] = (0, import_react4.useState)(null);
+    const [openPart, setOpenPart] = (0, import_react4.useState)(null);
+    const undoTimer = (0, import_react4.useRef)(null);
+    const isInitialLoad = (0, import_react4.useRef)(true);
+    const pushUndo = (0, import_react4.useCallback)((prevTasks, message) => {
+      if (undoTimer.current) clearTimeout(undoTimer.current);
+      setUndoState({ prev: prevTasks, message });
+      undoTimer.current = setTimeout(() => setUndoState(null), 5e3);
+    }, []);
+    const performUndo = (0, import_react4.useCallback)(() => {
+      if (!undoState) return;
+      setTasks(undoState.prev);
+      if (undoTimer.current) clearTimeout(undoTimer.current);
+      setUndoState(null);
+      setStatusMessage("R\xFCckg\xE4ngig gemacht");
+      setTimeout(() => setStatusMessage(""), 2e3);
+    }, [undoState]);
+    const dismissUndo = (0, import_react4.useCallback)(() => {
+      if (undoTimer.current) clearTimeout(undoTimer.current);
+      setUndoState(null);
+    }, []);
+    const switchTab = (0, import_react4.useCallback)((tabId) => {
+      if (tabId === activeTab) return;
+      setActiveTab(tabId);
+      setFadeKey((prev) => prev + 1);
+      setTaskFilter("all");
+      setSidebarOpen(false);
+      if (tabId !== "buch") setOpenPart(null);
+    }, [activeTab]);
+    const goToPart = (0, import_react4.useCallback)((partKey) => {
+      setOpenPart(partKey);
+      if (activeTab !== "buch") {
+        setActiveTab("buch");
+        setFadeKey((prev) => prev + 1);
+        setTaskFilter("all");
+        setSidebarOpen(false);
+      }
+    }, [activeTab]);
+    (0, import_react4.useEffect)(() => {
+      (async () => {
+        try {
+          const { tasks: loaded, needsSave, storageType: st } = await loadWithMigration();
+          setTasks(loaded);
+          setStorageType(st);
+          if (needsSave) {
+            await saveWithMeta(loaded);
+            setStatusMessage("Daten migriert");
+            setTimeout(() => setStatusMessage(""), 3e3);
+          }
+          const vars = await loadUserVars();
+          setUserVars(vars);
+        } catch (err) {
+          console.warn("Storage load failed:", err);
+          setStorageType("memory");
+        }
+      })();
+    }, []);
+    (0, import_react4.useEffect)(() => {
+      if (isInitialLoad.current) {
+        isInitialLoad.current = false;
+        return;
+      }
+      (async () => {
+        try {
+          await saveWithMeta(tasks);
+          setStorageType(storage.type);
+          setStatusMessage(storage.type === "memory" ? "Gespeichert (Memory)" : "Gespeichert");
+          setTimeout(() => setStatusMessage(""), 2e3);
+        } catch {
+          setStatusMessage("Speichern fehlgeschlagen!");
+        }
+      })();
+    }, [tasks]);
+    const handleSaveVars = async (vars) => {
+      try {
+        await saveUserVars(vars);
+        setStatusMessage("Daten gespeichert");
+        setTimeout(() => setStatusMessage(""), 2e3);
+      } catch {
+        setStatusMessage("Speichern fehlgeschlagen!");
+      }
+    };
+    const toggleTask = (0, import_react4.useCallback)((id) => {
+      const taskTitle = SEARCH_INDEX.find((s) => s.id === id)?.title || id;
+      const wasDone = tasks[id];
+      pushUndo({ ...tasks }, wasDone ? `"${taskTitle}" deaktiviert` : `"${taskTitle}" erledigt`);
+      setTasks((prev) => ({ ...prev, [id]: !prev[id] }));
+    }, [tasks, pushUndo]);
+    const countDone = (ids) => ids.filter((id) => tasks[id]).length;
+    const currentModule = MODULES.find((m) => m.tabs.includes(activeTab)) || MODULES[0];
+    const totalPercent = ALL_TASKS.length > 0 ? Math.round(countDone(ALL_TASKS) / ALL_TASKS.length * 100) : 0;
+    const filledVarsCount = SAFE_VARS.filter((v) => userVars[v.key]?.trim()).length;
+    const handleExport = (0, import_react4.useCallback)(() => {
+      const exportData = {
+        _meta: { version: DATA_VERSION, exported: (/* @__PURE__ */ new Date()).toISOString() },
+        tasks,
+        userVars
+      };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "openclaw-fortschritt.json";
+      link.click();
+      setStatusMessage("Exportiert");
+      setTimeout(() => setStatusMessage(""), 2e3);
+    }, [tasks, userVars]);
+    const handleImport = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const parsed = JSON.parse(await file.text());
+        let importedTasks, importedVars;
+        if (parsed._meta && parsed.tasks) {
+          const fromV = parsed._meta.version || 0;
+          importedTasks = fromV < DATA_VERSION ? migrateData(parsed.tasks, fromV) : parsed.tasks;
+          importedVars = parsed.userVars || {};
+        } else if (typeof parsed === "object" && parsed !== null) {
+          importedTasks = parsed;
+          importedVars = {};
+        } else {
+          alert("Ung\xFCltige Datei.");
+          return;
+        }
+        pushUndo(tasks, "Import r\xFCckg\xE4ngig machen");
+        setTasks(importedTasks);
+        if (Object.keys(importedVars).length > 0) {
+          setUserVars(importedVars);
+          await saveUserVars(importedVars);
+        }
+        setStatusMessage("Importiert");
+        setTimeout(() => setStatusMessage(""), 2e3);
+      } catch {
+        alert("Import fehlgeschlagen: Kein g\xFCltiges JSON.");
+      }
+    };
+    const handleReset = async () => {
+      if (confirm("Alle Checkboxen zur\xFCcksetzen?")) {
+        pushUndo(tasks, "Reset r\xFCckg\xE4ngig machen");
+        setTasks({});
+      }
+    };
+    return /* @__PURE__ */ import_react3.default.createElement("div", { className: "min-h-screen bg-gray-900 text-gray-100" }, /* @__PURE__ */ import_react3.default.createElement(SearchOverlay, { isOpen: searchOpen, onClose: () => setSearchOpen(false), onNavigate: switchTab, tasks }), /* @__PURE__ */ import_react3.default.createElement(UndoToast, { visible: !!undoState, message: undoState?.message || "", onUndo: performUndo, onDismiss: dismissUndo }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 border-b border-gray-700 sticky top-0 z-50" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "max-w-6xl mx-auto px-3 sm:px-4 py-3" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0" }, /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => setSidebarOpen(!sidebarOpen), className: "lg:hidden p-1 -ml-1 text-gray-400 hover:text-white" }, sidebarOpen ? /* @__PURE__ */ import_react3.default.createElement(X, { className: "w-5 h-5" }) : /* @__PURE__ */ import_react3.default.createElement(Menu, { className: "w-5 h-5" })), /* @__PURE__ */ import_react3.default.createElement(Book, { className: "w-6 sm:w-7 h-6 sm:h-7 text-blue-400 shrink-0" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "min-w-0" }, /* @__PURE__ */ import_react3.default.createElement("h1", { className: "text-base sm:text-xl font-bold truncate" }, "OpenClaw Buchprojekt"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-blue-200 hidden sm:block" }, "Dein Dashboard: Server-Setup bis KDP-Upload - alle Schritte tracken & Code kopieren"))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-green-400 shrink-0" }, statusMessage), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => setSearchOpen(true), className: "flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-800/60 hover:bg-gray-700 border border-gray-600 rounded-lg text-xs text-gray-400 hover:text-gray-200 transition-colors" }, /* @__PURE__ */ import_react3.default.createElement(Search, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "hidden sm:inline" }, "Suche")))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-3 flex-wrap" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 min-w-[120px]" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex justify-between text-xs mb-1" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-300" }, "Fortschritt"), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-400" }, countDone(ALL_TASKS), "/", ALL_TASKS.length, " (", totalPercent, "%)")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-full bg-gray-700 rounded-full h-2" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-400 h-2 rounded-full transition-all duration-500", style: { width: `${totalPercent}%` } }))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => switchTab("sprint1"), className: "flex items-center gap-1 px-2.5 py-1 bg-indigo-600/40 hover:bg-indigo-500/50 border border-indigo-500/50 rounded text-xs text-indigo-200 transition-colors" }, /* @__PURE__ */ import_react3.default.createElement(Rocket, { className: "w-3 h-3" }), "Sprint 1"), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => switchTab("settings"), className: "flex items-center gap-1 px-2.5 py-1 bg-purple-600/40 hover:bg-purple-500/50 border border-purple-500/50 rounded text-xs text-purple-200 transition-colors" }, /* @__PURE__ */ import_react3.default.createElement(Settings, { className: "w-3 h-3" }), "Meine Daten", filledVarsCount > 0 && /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-purple-300" }, filledVarsCount, "/", SAFE_VARS.length)))))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "max-w-6xl mx-auto px-3 sm:px-4 py-4" }, /* @__PURE__ */ import_react3.default.createElement(StorageInfoBanner, { storageType, visible: showStorageBanner, onDismiss: () => setShowStorageBanner(false) }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-blue-900/20 border border-blue-800/50 rounded-lg p-3 sm:p-4 mb-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 mb-3" }, /* @__PURE__ */ import_react3.default.createElement(Target, { className: "w-4 h-4 text-blue-400" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-sm font-semibold text-blue-200" }, "Modul-Navigation"), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-blue-400 ml-auto" }, "Aktiv: ", currentModule.isHome ? "Home" : `M${currentModule.id}`, " ", currentModule.name)), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2" }, MODULES.map((mod) => {
+      const active = mod.id === currentModule.id;
+      const Icon2 = mod.icon;
+      const done = countDone(mod.tasks);
+      const total = mod.tasks.length;
+      return /* @__PURE__ */ import_react3.default.createElement(
+        "button",
+        {
+          key: mod.id,
+          onClick: () => switchTab(mod.tabs[0]),
+          className: `rounded-lg p-2 border text-left transition-all ${active ? "bg-blue-900/40 border-blue-600" : "bg-gray-800/60 border-gray-700 hover:border-gray-500"}`
+        },
+        /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-1 mb-1" }, /* @__PURE__ */ import_react3.default.createElement(Icon2, { className: `w-3 h-3 ${active ? "text-blue-400" : "text-gray-500"}` }), /* @__PURE__ */ import_react3.default.createElement("span", { className: `text-xs font-semibold ${active ? "text-blue-300" : "text-gray-400"}` }, mod.isHome ? "Home" : `M${mod.id}`)),
+        /* @__PURE__ */ import_react3.default.createElement("p", { className: `text-xs ${active ? "text-gray-300" : "text-gray-500"}` }, mod.name),
+        /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-600" }, mod.desc),
+        /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 mt-1" }, total > 0 ? `${done}/${total} Tasks` : "-")
+      );
+    }))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-4 gap-4" }, sidebarOpen && /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: () => setSidebarOpen(false) }), /* @__PURE__ */ import_react3.default.createElement("div", { className: `lg:col-span-1 ${sidebarOpen ? "fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 p-4 pt-20 overflow-y-auto shadow-2xl lg:relative lg:inset-auto lg:z-auto lg:w-auto lg:bg-transparent lg:p-0 lg:pt-0 lg:shadow-none" : "hidden lg:block"}` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded-lg border border-gray-700 p-3 lg:sticky lg:top-40" }, /* @__PURE__ */ import_react3.default.createElement("nav", { className: "space-y-3" }, MODULES.map((mod) => /* @__PURE__ */ import_react3.default.createElement("div", { key: mod.id }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 uppercase mb-1 px-2" }, mod.isHome ? "Home" : `Modul ${mod.id}`), NAV_TABS.filter((t) => t.moduleId === mod.id).map((navItem) => {
+      const Icon2 = navItem.icon;
+      return /* @__PURE__ */ import_react3.default.createElement(
+        "button",
+        {
+          key: navItem.id,
+          onClick: () => switchTab(navItem.id),
+          className: `w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs mb-0.5 ${activeTab === navItem.id ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700"}`
+        },
+        /* @__PURE__ */ import_react3.default.createElement(Icon2, { className: "w-3.5 h-3.5" }),
+        navItem.label
+      );
+    })))))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "lg:col-span-3", key: fadeKey }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "fade-in" }, activeTab === "overview" && /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700 rounded-lg p-4 sm:p-5" }, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(Target, { className: "w-5 h-5 text-blue-400" }), "Projekt-\xDCbersicht", /* @__PURE__ */ import_react3.default.createElement("span", { className: "ml-auto text-sm font-bold text-purple-400" }, totalPercent, "%")), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-300 mb-3" }, "Du baust ein ", /* @__PURE__ */ import_react3.default.createElement("strong", null, "selbst-dokumentierendes OpenClaw-Sachbuch"), " - ein Buch das OpenClaw erkl\xE4rt UND zeigt wie es mit KI-Agents geschrieben wurde."), /* @__PURE__ */ import_react3.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-full bg-gray-700 rounded-full h-2.5" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-400 h-2.5 rounded-full transition-all duration-500", style: { width: `${totalPercent}%` } })), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-400 mt-1" }, countDone(ALL_TASKS), " von ", ALL_TASKS.length, " Tasks erledigt")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3" }, MODULES.filter((m) => m.tasks.length > 0).map((mod) => {
+      const Icon2 = mod.icon;
+      const done = countDone(mod.tasks);
+      return /* @__PURE__ */ import_react3.default.createElement("button", { key: mod.id, onClick: () => switchTab(mod.tabs[0]), className: "bg-gray-800 rounded p-3 border border-gray-700 hover:border-blue-600 transition-all text-left" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-1 mb-1" }, /* @__PURE__ */ import_react3.default.createElement(Icon2, { className: "w-3.5 h-3.5 text-gray-400" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs font-semibold truncate" }, mod.name)), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-lg font-bold text-gray-200" }, done, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-500 text-sm" }, "/", mod.tasks.length)), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500" }, mod.desc));
+    }))), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: ChartColumn, title: "Kapitel-Fortschritt (alle 15)", badge: `${countDone(CHAPTER_TASKS)}/${CHAPTER_TASKS.length}` }, /* @__PURE__ */ import_react3.default.createElement(ChapterChart, { tasks, countDone })), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: BookOpen, title: "Das Buch - 3 Teile" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-3" }, /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => goToPart("A"), className: "w-full text-left bg-blue-900/20 border border-blue-700 rounded p-3 hover:bg-blue-900/40 hover:border-blue-500 transition-all group" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("h4", { className: "font-semibold text-blue-400 text-sm" }, "Teil A: OpenClaw Tutorial"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-400" }, "Kap 1-7 - Installation, Security, Praxis")), /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-4 h-4 text-blue-600 group-hover:text-blue-400 transition-colors" }))), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => goToPart("B"), className: "w-full text-left bg-purple-900/20 border border-purple-700 rounded p-3 hover:bg-purple-900/40 hover:border-purple-500 transition-all group" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("h4", { className: "font-semibold text-purple-400 text-sm" }, "Teil B: Case Study"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-400" }, "Kap 8-12 - Agent-Architektur, Workflows, Learnings")), /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-4 h-4 text-purple-600 group-hover:text-purple-400 transition-colors" }))), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: () => goToPart("C"), className: "w-full text-left bg-green-900/20 border border-green-700 rounded p-3 hover:bg-green-900/40 hover:border-green-500 transition-all group" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("h4", { className: "font-semibold text-green-400 text-sm" }, "Teil C: Blueprint"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-400" }, 'Kap 13-15 - "Dein Sachbuch in 30 Tagen"')), /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-4 h-4 text-green-600 group-hover:text-green-400 transition-colors" }))))), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Clock, title: "Zeitplan" }, [
+      { week: "Woche 1", title: "Hostinger Setup", desc: "Docker, OpenClaw, n8n", taskIds: SPRINT_TASKS.sprint1 },
+      { week: "Woche 2-3", title: "Agent Setup", desc: "Multi-Agent, PoC", taskIds: SPRINT_TASKS.sprint2 },
+      { week: "Woche 3-6", title: "Batch & Automation", desc: "n8n, 15 Kapitel, X/Twitter", taskIds: SPRINT_TASKS.sprint3 },
+      { week: "Monat 2", title: "Review & KDP", desc: "Texterin, EPUB, Cover", taskIds: SPRINT_TASKS.sprint4 }
+    ].map((phase, i) => /* @__PURE__ */ import_react3.default.createElement("div", { key: i, className: "flex items-start gap-3 py-2" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "w-16 text-xs text-gray-500 shrink-0" }, phase.week), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm font-semibold text-gray-200" }, phase.title), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-400" }, phase.desc)), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs text-blue-400 shrink-0" }, countDone(phase.taskIds), "/", phase.taskIds.length))))), activeTab === "sprint1" && /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement(
+      SprintHeader,
+      {
+        icon: Rocket,
+        title: "Sprint 1: Hostinger Setup",
+        iconColor: "text-green-400",
+        description: "1-Click aus dem Docker Manager Catalog + Tailscale VPN!",
+        taskIds: SPRINT_TASKS.sprint1,
+        countDone,
+        color: "from-green-500 to-emerald-400"
+      }
+    ), /* @__PURE__ */ import_react3.default.createElement(TaskFilter, { filter: taskFilter, setFilter: setTaskFilter, taskIds: SPRINT_TASKS.sprint1, countDone }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-purple-900/20 border border-purple-700 rounded p-3" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-purple-400 font-semibold" }, "Backup-Helfer: Kodee"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-300" }, "Hostinger hPanel - Unten rechts: Chat-Icon")), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Box, title: "Hostinger Setup", open: true }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-green-900/20 border border-green-700 rounded p-3 mb-3 text-xs text-green-300" }, "OpenClaw ist im Docker Manager Catalog! Einfach klicken!"), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-kvm", title: "VPS Panel \xF6ffnen", desc: "hPanel - VPS - Server", onToggle: toggleTask, done: tasks["s1-kvm"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-docker", title: "Docker Manager installieren", desc: "Sidebar - Docker Manager - Install", onToggle: toggleTask, done: tasks["s1-docker"], filter: taskFilter })), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Terminal, title: "OpenClaw & Tailscale" }, /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-openclaw", title: "OpenClaw im Catalog finden", desc: "Catalog - 'OpenClaw' suchen", onToggle: toggleTask, done: tasks["s1-openclaw"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-openclaw-deploy", title: "Deploy-Formular ausf\xFCllen", desc: "ANTHROPIC_API_KEY + GATEWAY_TOKEN", onToggle: toggleTask, done: tasks["s1-openclaw-deploy"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(PersonalizedCodeBlock, { code: `# Deploy-Formular Werte:
+ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY}
+GATEWAY_TOKEN=\${GATEWAY_TOKEN}`, language: "bash", title: "Deploy Keys", userVars }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-openclaw-start", title: "Deploy starten", desc: "Warten bis 'Running'", onToggle: toggleTask, done: tasks["s1-openclaw-start"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "mt-3 mb-1 px-2" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-400 uppercase font-semibold" }, "Tailscale VPN")), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-tailscale-account", title: "Tailscale Account", desc: "login.tailscale.com - Sign Up (gratis)", onToggle: toggleTask, done: tasks["s1-tailscale-account"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-tailscale-mac", title: "Tailscale auf Mac/PC", desc: "App Store - Tailscale", onToggle: toggleTask, done: tasks["s1-tailscale-mac"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-tailscale-vps", title: "Tailscale auf VPS", desc: "SSH - install - tailscale up", onToggle: toggleTask, done: tasks["s1-tailscale-vps"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(PersonalizedCodeBlock, { code: `ssh root@\${SERVER_IP}
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+
+# Link \xF6ffnen und best\xE4tigen
+
+tailscale ip -4  # Diese IP notieren!`, title: "Tailscale VPS", userVars }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-tailscale-verify", title: "Verbindung testen", desc: "ping TAILSCALE-IP", onToggle: toggleTask, done: tasks["s1-tailscale-verify"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(PersonalizedCodeBlock, { code: `ping \${TAILSCALE_IP}`, title: "Ping-Test", userVars }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "18789 bleibt zu - nur Tailscale", onToggle: toggleTask, done: tasks["s1-firewall"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-dashboard-test", title: "Dashboard testen", desc: "http://TAILSCALE-IP:18789", onToggle: toggleTask, done: tasks["s1-dashboard-test"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(PersonalizedCodeBlock, { code: `# Im Browser \xF6ffnen:
+http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Settings, title: "n8n & Telegram" }, /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-n8n", title: "n8n deployen", desc: "Catalog - n8n (Port 5678)", onToggle: toggleTask, done: tasks["s1-n8n"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-api", title: "Claude API testen", desc: "Dashboard - Test-Nachricht", onToggle: toggleTask, done: tasks["s1-api"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-telegram", title: "Telegram Bot", desc: "@BotFather - /newbot - Token", onToggle: toggleTask, done: tasks["s1-telegram"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", onToggle: toggleTask, done: tasks["s1-security"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-red-900/20 border border-red-700 rounded p-3 mb-2" }, /* @__PURE__ */ import_react3.default.createElement(PersonalizedCodeBlock, { code: `{
+  "channels": {
+    "telegram": {
+      "botToken": "\${TELEGRAM_BOT_TOKEN}",
+      "allowFrom": ["\${TELEGRAM_ID}"]
+    }
+  }
+}`, language: "json", title: "WICHTIG: allowFrom", userVars }), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-yellow-400" }, "Sonst kann JEDER Befehle senden!")), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-test", title: "System-Test", desc: "Telegram - OpenClaw - Claude", onToggle: toggleTask, done: tasks["s1-test"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-backup", title: "Backup", desc: "VPS Snapshots", onToggle: toggleTask, done: tasks["s1-backup"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s1-docs", title: "Dokumentieren", desc: "Tokens, IPs, Passw\xF6rter sichern", onToggle: toggleTask, done: tasks["s1-docs"], filter: taskFilter }))), activeTab === "sprint2" && /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement(
+      SprintHeader,
+      {
+        icon: Users,
+        title: "Sprint 2: Multi-Agent Setup",
+        iconColor: "text-blue-400",
+        taskIds: SPRINT_TASKS.sprint2,
+        countDone,
+        color: "from-green-500 to-emerald-400"
+      }
+    ), /* @__PURE__ */ import_react3.default.createElement(TaskFilter, { filter: taskFilter, setFilter: setTaskFilter, taskIds: SPRINT_TASKS.sprint2, countDone }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-blue-900/20 border border-blue-700 rounded-lg p-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 mb-2" }, /* @__PURE__ */ import_react3.default.createElement(Info, { className: "w-4 h-4 text-blue-400" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-sm font-semibold text-blue-300" }, "OpenClaw Agent-Architektur")), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-300 mb-2" }, "OpenClaw arbeitet mit ", /* @__PURE__ */ import_react3.default.createElement("strong", null, "einem Hauptagenten"), " (SOUL.md) der ", /* @__PURE__ */ import_react3.default.createElement("strong", null, "Sub-Agenten"), " f\xFCr spezialisierte Aufgaben spawnen kann (AGENTS.md). Der Hauptagent entscheidet selbst, wer wann dran ist."), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500" }, 'Kapitel 4 im Buch erkl\xE4rt die Details. In M6 ("Dein Projekt") generierst du sp\xE4ter dein eigenes Agent-Team.')), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Users, title: "Content Agents", open: true }, /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-architect", title: "Content Architect", desc: "Erstellt Kapitel-Outlines, Lernziele, Querverweise", onToggle: toggleTask, done: tasks["s2-architect"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-writer", title: "Technical Writer", desc: "Schreibt Kapitel-Texte (Du-Form, Code erkl\xE4rt, kurze S\xE4tze)", onToggle: toggleTask, done: tasks["s2-writer"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-meta", title: "Meta Documenter", desc: "Dokumentiert den Entstehungsprozess (Teil B, Kap 8-12)", onToggle: toggleTask, done: tasks["s2-meta"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-tutorial", title: "Tutorial Writer", desc: "Step-by-Step Anleitungen zum Nachmachen (Teil C, Kap 13-15)", onToggle: toggleTask, done: tasks["s2-tutorial"], filter: taskFilter })), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Shield, title: "QA Agents" }, /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-checker", title: "Fact Checker", desc: "Pr\xFCft Code-Syntax, CLI-Befehle, Versionsnummern, URLs", onToggle: toggleTask, done: tasks["s2-checker"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-consistency", title: "Consistency Checker", desc: "Terminologie, Querverweise, Konzepte kapitel\xFCbergreifend", onToggle: toggleTask, done: tasks["s2-consistency"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-editor", title: "German Editor", desc: "Du-Form, Grammatik, Lesefluss, Anglizismen", onToggle: toggleTask, done: tasks["s2-editor"], filter: taskFilter })), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: GitBranch, title: "Coordination" }, /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-coordinator", title: "Workflow Coordinator", desc: "n8n-Workflows, Agent-Handoffs, Trigger-Logik", onToggle: toggleTask, done: tasks["s2-coordinator"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded p-3 my-2 text-xs text-gray-400" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "font-semibold text-gray-300 mb-1" }, "Pipeline pro Kapitel:"), /* @__PURE__ */ import_react3.default.createElement("p", null, "Architect \u2192 Writer \u2192 Fact Check \u2192 German Editor \u2192 Consistency \u2192 Texterin Review")), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-test-chapter", title: "PoC: Kapitel 1", desc: "Alle Agents zusammen testen", onToggle: toggleTask, done: tasks["s2-test-chapter"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-yellow-900/20 border border-yellow-700 rounded p-3 my-2 text-xs text-yellow-300" }, "Meilenstein: Texterin reviewed - OK? Dann Sprint 3!"), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s2-review", title: "Texterin Review", desc: "Human Check", onToggle: toggleTask, done: tasks["s2-review"], filter: taskFilter }))), activeTab === "sprint3" && /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement(
+      SprintHeader,
+      {
+        icon: Zap,
+        title: "Sprint 3: Automation",
+        iconColor: "text-yellow-400",
+        taskIds: SPRINT_TASKS.sprint3,
+        countDone,
+        color: "from-yellow-500 to-orange-400"
+      }
+    ), /* @__PURE__ */ import_react3.default.createElement(TaskFilter, { filter: taskFilter, setFilter: setTaskFilter, taskIds: SPRINT_TASKS.sprint3, countDone }), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Zap, title: "n8n Kapitel-Workflows", open: true }, /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-n8n-setup", title: "n8n konfigurieren", desc: "Workflows & OpenClaw-Anbindung", onToggle: toggleTask, done: tasks["s3-n8n-setup"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-workflow-chapter", title: "Kapitel-Workflow", desc: "Trigger - Architect - Writer - Check - Edit - Save", onToggle: toggleTask, done: tasks["s3-workflow-chapter"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-workflow-review", title: "Review-Trigger", desc: "Benachrichtigung an Texterin", onToggle: toggleTask, done: tasks["s3-workflow-review"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-workflow-storage", title: "Git-Auto-Commit", desc: "Kapitel wird committed", onToggle: toggleTask, done: tasks["s3-workflow-storage"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-automation", title: "Batch-Test: 3 Kapitel", desc: "Parallel testen", onToggle: toggleTask, done: tasks["s3-automation"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-batch", title: "Alle 15 Kapitel", desc: "Batch \xFCber Nacht", onToggle: toggleTask, done: tasks["s3-batch"], filter: taskFilter })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-blue-900/20 border border-blue-700 rounded p-3 text-sm text-blue-400" }, "Kosten: ~$54-81 f\xFCr alle 15 Kapitel"), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: TrendingUp, title: "X/Twitter Automation" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded p-3 mb-3 text-xs text-gray-400" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "font-semibold text-gray-300 mb-1" }, "Zwei Workflows:"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "mb-1" }, /* @__PURE__ */ import_react3.default.createElement("strong", { className: "text-amber-400" }, "Proaktiv:"), " OpenClaw generiert Post \u2192 Telegram-Vorschau \u2192 Du sagst Ja/Nein \u2192 n8n postet auf X"), /* @__PURE__ */ import_react3.default.createElement("p", null, /* @__PURE__ */ import_react3.default.createElement("strong", { className: "text-blue-400" }, "On-Demand:"), ' Du schreibst auf Telegram "Tweet zum Thema..." \u2192 OpenClaw formuliert \u2192 Vorschau \u2192 Genehmigung \u2192 Post')), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-x-api", title: "X/Twitter API einrichten", desc: "Developer Account, API Keys, App erstellen", onToggle: toggleTask, done: tasks["s3-x-api"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-x-workflow", title: "Post-Workflow bauen", desc: "OpenClaw generiert Text, n8n postet via X API", onToggle: toggleTask, done: tasks["s3-x-workflow"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-x-approval", title: "Telegram Approval-Flow", desc: "Vorschau mit Ja/Nein-Buttons, nichts ohne Genehmigung", onToggle: toggleTask, done: tasks["s3-x-approval"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s3-x-ondemand", title: "On-Demand via Telegram", desc: "'Sende Tweet zum Thema...' \u2192 OpenClaw orchestriert", onToggle: toggleTask, done: tasks["s3-x-ondemand"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-red-900/20 border border-red-700 rounded p-3 mt-2 text-xs text-red-300" }, "Wichtig: Menschliche Genehmigung ist IMMER erforderlich. Kein automatisches Posten ohne dein OK!"))), activeTab === "sprint4" && /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement(
+      SprintHeader,
+      {
+        icon: Package,
+        title: "Sprint 4: Publishing",
+        iconColor: "text-purple-400",
+        taskIds: SPRINT_TASKS.sprint4,
+        countDone,
+        color: "from-purple-500 to-pink-400"
+      }
+    ), /* @__PURE__ */ import_react3.default.createElement(TaskFilter, { filter: taskFilter, setFilter: setTaskFilter, taskIds: SPRINT_TASKS.sprint4, countDone }), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: FileText, title: "Polish & KDP", open: true }, /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s4-texterin", title: "Texterin \xFCberarbeitet", desc: "Stil, Flow", onToggle: toggleTask, done: tasks["s4-texterin"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s4-format-epub", title: "EPUB generieren", desc: "Pandoc - EPUB", onToggle: toggleTask, done: tasks["s4-format-epub"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(PersonalizedCodeBlock, { code: `pandoc buch.md -o openclaw.epub --toc --epub-cover-image=cover.jpg`, title: "EPUB", userVars }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s4-format-pdf", title: "PDF generieren", desc: "6x9 f\xFCr KDP Print", onToggle: toggleTask, done: tasks["s4-format-pdf"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s4-cover", title: "Cover-Design", desc: "2560x1600px", onToggle: toggleTask, done: tasks["s4-cover"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s4-metadata", title: "KDP Metadata", desc: "Keywords, Kategorien", onToggle: toggleTask, done: tasks["s4-metadata"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s4-preview", title: "Kindle Previewer", desc: "Finale QA", onToggle: toggleTask, done: tasks["s4-preview"], filter: taskFilter }), /* @__PURE__ */ import_react3.default.createElement(TaskItem, { id: "s4-upload", title: "KDP Upload!", desc: "EUR 39.95 ver\xF6ffentlichen", onToggle: toggleTask, done: tasks["s4-upload"], filter: taskFilter }))), activeTab === "buch" && /* @__PURE__ */ import_react3.default.createElement(
+      ChapterCompanion,
+      {
+        tasks,
+        toggleTask,
+        taskFilter,
+        setTaskFilter,
+        userVars,
+        countDone,
+        switchTab,
+        openPart,
+        setOpenPart
+      }
+    ), activeTab === "kosten" && /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded-lg border border-gray-700 p-4 sm:p-5" }, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(DollarSign, { className: "w-5 h-5 text-green-400" }), "Kosten & ROI")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded border border-gray-700 p-4" }, /* @__PURE__ */ import_react3.default.createElement("h3", { className: "font-semibold mb-3 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(TrendingUp, { className: "w-4 h-4 text-red-400" }), "Kosten"), [["Hostinger (3M)", "EUR 45"], ["Claude API", "EUR 300-600"], ["Texterin", "EUR 1.200-1.800"], ["Cover", "EUR 50-200"]].map(([l, v], i) => /* @__PURE__ */ import_react3.default.createElement("div", { key: i, className: "flex justify-between text-sm py-1" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-400" }, l), /* @__PURE__ */ import_react3.default.createElement("span", null, v))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "border-t border-gray-700 pt-2 mt-2 flex justify-between font-bold" }, /* @__PURE__ */ import_react3.default.createElement("span", null, "GESAMT"), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-red-400" }, "EUR 1.595-2.645"))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded border border-gray-700 p-4" }, /* @__PURE__ */ import_react3.default.createElement("h3", { className: "font-semibold mb-3 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(DollarSign, { className: "w-4 h-4 text-green-400" }), "Einnahmen"), [["50/Mo", "EUR 1.391/Mo", "1-2 Mo"], ["200/Mo", "EUR 5.564/Mo", "Sofort"], ["500/Mo", "EUR 13.910/Mo", "Sofort"]].map(([s, r, b], i) => /* @__PURE__ */ import_react3.default.createElement("div", { key: i, className: "bg-gray-900 rounded p-2 mb-2" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex justify-between text-sm" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-400 text-xs" }, s), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-green-400" }, r)), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500" }, "BE: ", b))))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800 rounded border border-gray-700 p-3 text-sm" }, /* @__PURE__ */ import_react3.default.createElement("strong", null, "KDP:"), " EUR 39.95 x 70% - EUR 0.15 = ", /* @__PURE__ */ import_react3.default.createElement("strong", { className: "text-green-400" }, "~EUR 27.82/Verkauf"))), activeTab === "settings" && /* @__PURE__ */ import_react3.default.createElement(SettingsPanel, { userVars, setUserVars, onSave: handleSaveVars }), activeTab === "projekt" && /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gradient-to-r from-amber-900/30 to-yellow-900/30 border border-amber-700 rounded-lg p-4 sm:p-5" }, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement(Sparkles, { className: "w-5 h-5 text-amber-400" }), "Dein Projekt \u2013 Die Wundert\xFCte"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-300 mb-3" }, "Du hast gesehen, wie dieses Buch mit OpenClaw entstanden ist. Jetzt bist du dran: Generiere dir dein eigenes Agent-Team und ein angepasstes Dashboard f\xFCr dein Buchprojekt."), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-4 text-xs text-gray-400" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react3.default.createElement(WandSparkles, { className: "w-3.5 h-3.5 text-amber-400" }), "Agent-Team Generator"), /* @__PURE__ */ import_react3.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react3.default.createElement(Terminal, { className: "w-3.5 h-3.5 text-blue-400" }), "Dashboard-Konfigurator"))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800/50 border border-gray-700 rounded-lg p-3" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 mb-2" }, /* @__PURE__ */ import_react3.default.createElement(Info, { className: "w-3.5 h-3.5 text-blue-400" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs font-semibold text-gray-300" }, "Deine Journey")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 text-xs text-gray-400 flex-wrap" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "bg-green-900/30 border border-green-700/50 rounded px-2 py-1 text-green-400" }, "Buch lesen"), /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "bg-blue-900/30 border border-blue-700/50 rounded px-2 py-1 text-blue-400" }, "OpenClaw aufsetzen"), /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "bg-amber-900/30 border border-amber-700/50 rounded px-2 py-1 text-amber-400 font-semibold" }, "Eigenes Dashboard"), /* @__PURE__ */ import_react3.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "bg-purple-900/30 border border-purple-700/50 rounded px-2 py-1 text-purple-400 font-semibold" }, "Agents spezialisieren")), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-gray-500 mt-2" }, "M1-M4 erledigt? Dann bist du hier richtig.")), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: WandSparkles, title: "Agent-Team Generator", badge: "Kommt bald", open: true }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-3" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-300" }, "Beschreibe dein Buchprojekt und bekomme ein komplettes Agent-Team generiert: Eine ", /* @__PURE__ */ import_react3.default.createElement("strong", null, "SOUL.md"), " f\xFCr deinen Hauptagenten und eine ", /* @__PURE__ */ import_react3.default.createElement("strong", null, "AGENTS.md"), " mit spezialisierten Sub-Agenten \u2013 abgestimmt auf dein Thema."), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded-lg p-4 space-y-3" }, /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Buchthema"), /* @__PURE__ */ import_react3.default.createElement(
+      "input",
+      {
+        type: "text",
+        disabled: true,
+        placeholder: "z.B. Veganes Kochbuch f\xFCr Fitness-Einsteiger",
+        className: "w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 placeholder-gray-600 cursor-not-allowed"
+      }
+    )), /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Zielgruppe"), /* @__PURE__ */ import_react3.default.createElement(
+      "input",
+      {
+        type: "text",
+        disabled: true,
+        placeholder: "z.B. Einsteiger ohne Vorkenntnisse, 25-40 Jahre",
+        className: "w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 placeholder-gray-600 cursor-not-allowed"
+      }
+    )), /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Stil / Tonalit\xE4t"), /* @__PURE__ */ import_react3.default.createElement(
+      "input",
+      {
+        type: "text",
+        disabled: true,
+        placeholder: "z.B. Locker, Du-Form, mit Humor",
+        className: "w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 placeholder-gray-600 cursor-not-allowed"
+      }
+    )), /* @__PURE__ */ import_react3.default.createElement("button", { disabled: true, className: "flex items-center gap-2 px-4 py-2 bg-amber-600/30 border border-amber-700/50 rounded-lg text-sm text-amber-400/60 cursor-not-allowed" }, /* @__PURE__ */ import_react3.default.createElement(Sparkles, { className: "w-4 h-4" }), "Agent-Team generieren (bald verf\xFCgbar)")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-amber-900/10 border border-amber-800/30 rounded p-3 text-xs text-amber-300/70" }, /* @__PURE__ */ import_react3.default.createElement("strong", null, "Vorschau:"), ' Der Generator erstellt z.B. f\xFCr ein "Veganes Kochbuch" einen Technical Writer der Rezepte statt Docker-Anleitungen schreibt, einen Fact Checker der N\xE4hrwerte statt CLI-Befehle pr\xFCft, und einen German Editor der Food-Terminologie konsistent h\xE4lt.'))), /* @__PURE__ */ import_react3.default.createElement(Section, { icon: Terminal, title: "Dashboard-Konfigurator", badge: "Kommt bald" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-3" }, /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm text-gray-300" }, "Beantworte ein paar Fragen und bekomme einen fertigen Prompt, der dir ein", /* @__PURE__ */ import_react3.default.createElement("strong", null, " angepasstes Dashboard"), " generiert \u2013 mit deinen Kapiteln, Sprints und Tasks."), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded-lg p-4 space-y-3" }, /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Wie viele Kapitel hat dein Buch?"), /* @__PURE__ */ import_react3.default.createElement(
+      "input",
+      {
+        type: "number",
+        disabled: true,
+        placeholder: "z.B. 12",
+        min: "1",
+        max: "30",
+        className: "w-32 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 placeholder-gray-600 cursor-not-allowed"
+      }
+    )), /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Buchteile (z.B. 3 Teile wie hier, oder nur 1)"), /* @__PURE__ */ import_react3.default.createElement(
+      "input",
+      {
+        type: "number",
+        disabled: true,
+        placeholder: "z.B. 3",
+        min: "1",
+        max: "5",
+        className: "w-32 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 placeholder-gray-600 cursor-not-allowed"
+      }
+    )), /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Welche Features brauchst du?"), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex flex-wrap gap-2 mt-1" }, ["Kapitel-Tracker", "Code-Snippets", "Kosten-Rechner", "Personalisierte Variablen", "Export/Import"].map((f) => /* @__PURE__ */ import_react3.default.createElement("span", { key: f, className: "px-2 py-1 bg-gray-800 border border-gray-600 rounded text-xs text-gray-500 cursor-not-allowed" }, f)))), /* @__PURE__ */ import_react3.default.createElement("button", { disabled: true, className: "flex items-center gap-2 px-4 py-2 bg-blue-600/30 border border-blue-700/50 rounded-lg text-sm text-blue-400/60 cursor-not-allowed" }, /* @__PURE__ */ import_react3.default.createElement(Terminal, { className: "w-4 h-4" }), "Prompt generieren (bald verf\xFCgbar)")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-blue-900/10 border border-blue-800/30 rounded p-3 text-xs text-blue-300/70" }, /* @__PURE__ */ import_react3.default.createElement("strong", null, "So funktioniert es:"), " Du kopierst den generierten Prompt \u2192 f\xFCgst ihn in Claude.ai ein \u2192 bekommst ein komplett angepasstes Dashboard als React-Artifact zur\xFCck. Mit Restore-Button zur Original-Version."))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-gray-800/30 border border-gray-700/50 rounded-lg p-3 text-xs text-gray-500 text-center" }, /* @__PURE__ */ import_react3.default.createElement("p", null, "Buch lesen \u2192 OpenClaw aufsetzen \u2192 Eigenes Dashboard \u2192 Agents spezialisieren \u2192 Dein Buch schreiben!"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "mt-1 text-gray-600" }, "Das ist der Kreislauf. Und er beginnt hier."))))))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed bottom-0 left-0 right-0 z-50 bg-gray-800 border-t border-gray-700 shadow-lg" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "max-w-6xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-between" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2 text-xs text-gray-500" }, /* @__PURE__ */ import_react3.default.createElement(Book, { className: "w-3.5 h-3.5 text-blue-400" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "hidden sm:inline" }, "OpenClaw Dashboard v6"), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-gray-600" }, "|"), /* @__PURE__ */ import_react3.default.createElement("span", null, storageType === "memory" ? "In-Memory" : "Persistent")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react3.default.createElement("button", { onClick: handleExport, className: "flex items-center gap-1 px-3 py-1.5 bg-blue-600/80 hover:bg-blue-600 rounded text-xs text-white transition-colors" }, /* @__PURE__ */ import_react3.default.createElement(Download, { className: "w-3 h-3" }), "Export"), /* @__PURE__ */ import_react3.default.createElement("label", { className: "flex items-center gap-1 px-3 py-1.5 bg-green-600/80 hover:bg-green-600 rounded text-xs text-white cursor-pointer transition-colors" }, /* @__PURE__ */ import_react3.default.createElement(Upload, { className: "w-3 h-3" }), "Import", /* @__PURE__ */ import_react3.default.createElement("input", { type: "file", accept: ".json", onChange: handleImport, className: "hidden" })), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: handleReset, className: "flex items-center gap-1 px-3 py-1.5 bg-red-600/80 hover:bg-red-600 rounded text-xs text-white transition-colors" }, /* @__PURE__ */ import_react3.default.createElement(CircleAlert, { className: "w-3 h-3" }), "Reset")))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "h-14" }));
+  }
+  var _root = import_client.default.createRoot(document.getElementById("root"));
+  _root.render(import_react3.default.createElement(App));
+})();
+
+  </script>
+</body>
+</html>
