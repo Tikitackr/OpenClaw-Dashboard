@@ -770,10 +770,17 @@
     return h;
   }
   function CowanWidget(props) {
-    var apiKey = props.apiKey || "";
+    var propsApiKey = props.apiKey || "";
     var isOpen = props.isOpen || false;
     var onClose = props.onClose || function() {
     };
+    var _localApiKey = (0, import_react3.useState)("");
+    var localApiKey = _localApiKey[0];
+    var setLocalApiKey = _localApiKey[1];
+    var _apiKeyStatus = (0, import_react3.useState)("none");
+    var apiKeyStatus = _apiKeyStatus[0];
+    var setApiKeyStatus = _apiKeyStatus[1];
+    var apiKey = propsApiKey || localApiKey;
     var initialMsg = {
       role: "assistant",
       content: 'Hallo! Ich bin **Cowan**, dein Buch-Instanz fuer "Agentic Authorship". Stelle mir eine Frage zum Buch, zu OpenClaw, n8n oder Claude - ich helfe dir gerne weiter!',
@@ -831,7 +838,57 @@
     var chatEndRef = (0, import_react3.useRef)(null);
     (0, import_react3.useEffect)(function() {
       apiKeyRef.current = apiKey;
-    }, [apiKey]);
+      if (propsApiKey) {
+        setApiKeyStatus("valid");
+      }
+    }, [apiKey, propsApiKey]);
+    var validateApiKey = function(key) {
+      if (!key) {
+        setApiKeyStatus("none");
+        return;
+      }
+      if (key.length < 10 || key.indexOf("sk-ant-") !== 0) {
+        setLocalApiKey("");
+        setApiKeyStatus("invalid");
+        return;
+      }
+      setApiKeyStatus("checking");
+      var controller = new AbortController();
+      var timeout = setTimeout(function() {
+        controller.abort();
+      }, 15e3);
+      fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": key,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 10,
+          messages: [{ role: "user", content: "Hi" }]
+        }),
+        signal: controller.signal
+      }).then(function(response) {
+        clearTimeout(timeout);
+        if (response.ok) {
+          setApiKeyStatus("valid");
+          setLocalApiKey(key);
+        } else if (response.status === 401) {
+          setApiKeyStatus("invalid");
+          setLocalApiKey("");
+        } else {
+          setApiKeyStatus("uncertain");
+          setLocalApiKey(key);
+        }
+      }).catch(function() {
+        clearTimeout(timeout);
+        setApiKeyStatus("uncertain");
+        setLocalApiKey(key);
+      });
+    };
     (0, import_react3.useEffect)(function() {
       if (chatEndRef.current) {
         chatEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -1258,39 +1315,151 @@
       },
       "+ Neu"
     ))), /* @__PURE__ */ React.createElement("div", { style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
       padding: "6px 12px",
       backgroundColor: theme.cardBg,
       borderBottom: "1px solid " + theme.border,
       fontSize: "11px",
       flexShrink: 0
-    } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "6px", color: theme.mutedText } }, /* @__PURE__ */ React.createElement("span", { style: {
-      width: "6px",
-      height: "6px",
-      borderRadius: "50%",
-      backgroundColor: apiKeyRef.current ? "#22c55e" : "#ef4444",
-      display: "inline-block"
-    } }), /* @__PURE__ */ React.createElement("span", null, apiKeyRef.current ? "Verbunden" : "Kein API-Key")), /* @__PURE__ */ React.createElement(
-      "select",
-      {
-        value: selectedModel,
-        onChange: function(e) {
-          setSelectedModel(e.target.value);
-        },
-        style: {
-          padding: "2px 6px",
-          borderRadius: "4px",
-          border: "1px solid " + theme.border,
-          backgroundColor: theme.inputBg,
-          color: theme.inputText,
-          fontSize: "11px",
-          outline: "none"
-        }
-      },
-      /* @__PURE__ */ React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
-      /* @__PURE__ */ React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
+    } }, apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? (
+      /* Key vorhanden: kompakte Status-Anzeige */
+      React.createElement(
+        "div",
+        { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
+        React.createElement(
+          "div",
+          { style: { display: "flex", alignItems: "center", gap: "6px", color: theme.mutedText } },
+          React.createElement("span", { style: {
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: apiKeyStatus === "valid" ? "#22c55e" : "#eab308",
+            display: "inline-block"
+          } }),
+          React.createElement("span", null, apiKeyStatus === "valid" ? "Verbunden" : "Key gespeichert"),
+          React.createElement("span", {
+            onClick: function() {
+              setApiKeyStatus("none");
+              setLocalApiKey("");
+            },
+            style: { color: theme.mutedText, cursor: "pointer", textDecoration: "underline", fontSize: "10px", marginLeft: "4px" }
+          }, "\xC4ndern")
+        ),
+        React.createElement(
+          "select",
+          {
+            value: selectedModel,
+            onChange: function(e) {
+              setSelectedModel(e.target.value);
+            },
+            style: {
+              padding: "2px 6px",
+              borderRadius: "4px",
+              border: "1px solid " + theme.border,
+              backgroundColor: theme.inputBg,
+              color: theme.inputText,
+              fontSize: "11px",
+              outline: "none"
+            }
+          },
+          React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
+          React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
+        )
+      )
+    ) : (
+      /* Kein Key: Eingabefeld anzeigen */
+      React.createElement(
+        "div",
+        null,
+        React.createElement(
+          "div",
+          { style: { display: "flex", gap: "6px", alignItems: "center", marginBottom: "4px" } },
+          React.createElement("span", { style: {
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: apiKeyStatus === "invalid" ? "#ef4444" : apiKeyStatus === "checking" ? "#eab308" : "#9ca3af",
+            display: "inline-block"
+          } }),
+          React.createElement(
+            "span",
+            { style: { color: apiKeyStatus === "invalid" ? "#ef4444" : theme.mutedText, fontSize: "11px" } },
+            apiKeyStatus === "invalid" ? "Ung\xFCltiger Key" : apiKeyStatus === "checking" ? "Wird gepr\xFCft..." : "API-Key eingeben"
+          ),
+          React.createElement(
+            "select",
+            {
+              value: selectedModel,
+              onChange: function(e) {
+                setSelectedModel(e.target.value);
+              },
+              style: {
+                padding: "2px 6px",
+                borderRadius: "4px",
+                marginLeft: "auto",
+                border: "1px solid " + theme.border,
+                backgroundColor: theme.inputBg,
+                color: theme.inputText,
+                fontSize: "11px",
+                outline: "none"
+              }
+            },
+            React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
+            React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
+          )
+        ),
+        React.createElement(
+          "div",
+          { style: { display: "flex", gap: "6px" } },
+          React.createElement("input", {
+            type: "password",
+            placeholder: "sk-ant-...",
+            onChange: function(e) {
+              setLocalApiKey(e.target.value);
+            },
+            onKeyDown: function(e) {
+              if (e.key === "Enter") validateApiKey(e.target.value);
+            },
+            style: {
+              flex: 1,
+              padding: "5px 8px",
+              borderRadius: "6px",
+              border: "1px solid " + theme.border,
+              backgroundColor: theme.inputBg,
+              color: theme.inputText,
+              fontSize: "12px",
+              outline: "none",
+              fontFamily: "inherit"
+            }
+          }),
+          React.createElement("button", {
+            onClick: function() {
+              validateApiKey(localApiKey);
+            },
+            disabled: apiKeyStatus === "checking",
+            style: {
+              padding: "5px 12px",
+              borderRadius: "6px",
+              border: "none",
+              backgroundColor: theme.primary,
+              color: "#fff",
+              fontSize: "11px",
+              fontWeight: 600,
+              cursor: apiKeyStatus === "checking" ? "wait" : "pointer"
+            }
+          }, apiKeyStatus === "checking" ? "..." : "Pr\xFCfen")
+        ),
+        React.createElement(
+          "div",
+          { style: { fontSize: "10px", color: theme.mutedText, marginTop: "4px", display: "flex", justifyContent: "space-between" } },
+          React.createElement("span", null, "\u{1F512} Bleibt lokal"),
+          React.createElement("a", {
+            href: "https://console.anthropic.com/settings/keys",
+            target: "_blank",
+            rel: "noopener noreferrer",
+            style: { color: theme.primary, textDecoration: "underline", fontSize: "10px" }
+          }, "Key erstellen")
+        )
+      )
     )), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "12px", minHeight: 0, WebkitOverflowScrolling: "touch" } }, messages.map(function(msg, i) {
       var isAssistant = msg.role === "assistant";
       return /* @__PURE__ */ React.createElement("div", { key: i, style: {
@@ -1368,7 +1537,7 @@
         style: { background: "none", border: "none", fontWeight: 700, cursor: "pointer", color: "inherit", fontSize: "14px" }
       },
       "x"
-    ))), !apiKeyRef.current && /* @__PURE__ */ React.createElement("div", { style: { padding: "8px 12px", flexShrink: 0, borderTop: "1px solid " + theme.border } }, /* @__PURE__ */ React.createElement("div", { style: {
+    ))), !apiKeyRef.current && apiKeyStatus !== "checking" && apiKeyStatus !== "invalid" && /* @__PURE__ */ React.createElement("div", { style: { padding: "8px 12px", flexShrink: 0, borderTop: "1px solid " + theme.border } }, /* @__PURE__ */ React.createElement("div", { style: {
       padding: "8px 10px",
       borderRadius: "6px",
       backgroundColor: "#1e1b4b",
@@ -1376,7 +1545,7 @@
       fontSize: "11px",
       border: "1px solid #334155",
       lineHeight: 1.4
-    } }, "Bitte zuerst deinen Claude API-Key in den Dashboard-Einstellungen eingeben.")), /* @__PURE__ */ React.createElement("div", { style: {
+    } }, "Gib oben deinen Claude API-Key ein, um mit Cowan zu chatten. Den Key bekommst du unter console.anthropic.com.")), /* @__PURE__ */ React.createElement("div", { style: {
       borderTop: "1px solid " + theme.border,
       padding: "10px 12px",
       flexShrink: 0,
