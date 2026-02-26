@@ -612,60 +612,60 @@
       title: "OpenClaw Setup & Installation",
       category: "setup",
       difficulty: "beginner",
-      summary: "Anleitung zur Installation und Ersteinrichtung von OpenClaw inkl. API-Key-Konfiguration.",
+      summary: "Anleitung zur Installation und Ersteinrichtung von OpenClaw auf einem VPS mit Docker.",
       dependencies: [],
-      tags: ["installation", "api-key", "ersteinrichtung", "openclaw"],
-      content: "OpenClaw ist ein Open-Source-Agent-Framework, das speziell fuer die KI-gestuetzte Bucherstellung entwickelt wurde. Es ermoeglicht dir, einen Hauptagenten (definiert durch SOUL.md) und mehrere Sub-Agenten (definiert durch AGENTS.md) zu orchestrieren.\n\n**Installation:**\n\n1. Repository klonen: Lade das OpenClaw-Repository von GitHub herunter.\n2. Abhaengigkeiten installieren: Fuehre npm install im Projektverzeichnis aus.\n3. API-Key konfigurieren: Erstelle eine .env-Datei im Stammverzeichnis und trage deinen Claude API-Key ein.\n4. Erststart: Fuehre npm run dev aus, um das Dashboard zu starten.\n\n**Erste Schritte nach der Installation:**\n\nNach der Installation solltest du zunaechst die SOUL.md-Datei anpassen. Sie definiert die Persoenlichkeit und das Verhalten deines Hauptagenten. Danach kannst du in AGENTS.md die Sub-Agenten-Rollen konfigurieren.\n\n**Tipp:** Starte mit der Standardkonfiguration und passe sie schrittweise an dein Buchprojekt an.",
-      source: "Kapitel 3 - Erste Schritte mit OpenClaw",
-      lastUpdated: "2026-02-01"
+      tags: ["installation", "docker", "vps", "ersteinrichtung", "openclaw", "hostinger"],
+      content: "OpenClaw ist eine Open-Source, selbst-gehostete Gateway-Plattform, die LLMs in persistente, multikanalfaehige KI-Agenten verwandelt. Ein Gateway-Prozess verwaltet Routing, Authentifizierung und Verbindungen zu ueber 20 Messaging-Plattformen ueber einen einzigen Port (Standard: 18789).\n\n**Installation auf einem VPS (z.B. Hostinger):**\n\n1. VPS einrichten: Einen KVM-VPS mit Ubuntu 22.04+ bestellen (z.B. Hostinger VPS mit Docker Manager).\n2. Per SSH verbinden: ssh root@DEINE-SERVER-IP\n3. Docker pruefen: docker --version und docker compose version (bei Hostinger vorinstalliert).\n4. OpenClaw installieren: Den OpenClaw-Container mit Docker Compose deployen.\n5. Gateway starten: openclaw gateway --port 18789\n6. API-Key konfigurieren: ANTHROPIC_API_KEY in ~/.openclaw/.env eintragen.\n7. Status pruefen: openclaw status und openclaw health --json\n\n**Erste Schritte nach der Installation:**\n\nNach der Installation passt du zunaechst die SOUL.md-Datei an \u2013 sie definiert die Persoenlichkeit deines Agenten (Schreibstil, Tonfall, Zielgruppe). Danach konfigurierst du die AGENTS.md als Bedienungsanleitung mit Modi (z.B. WRITER, EDITOR, QA).\n\n**Tipp:** Nutze openclaw doctor zum Diagnostizieren von Problemen und openclaw onboard fuer den Setup-Wizard.",
+      source: "Kapitel 2 - Installation",
+      lastUpdated: "2026-02-26"
     },
     {
       id: "chunk-soul-md",
       title: "SOUL.md verstehen",
       category: "architecture",
       difficulty: "beginner",
-      summary: "SOUL.md definiert die Persoenlichkeit und das Verhalten des Hauptagenten in OpenClaw.",
+      summary: "SOUL.md definiert die Persoenlichkeit, den Schreibstil und die Regeln deines OpenClaw-Agenten.",
       dependencies: ["chunk-openclaw-setup"],
-      tags: ["soul", "agent", "persoenlichkeit", "konfiguration", "hauptagent"],
-      content: "Die SOUL.md ist das Herzstueck deines OpenClaw-Projekts. Sie definiert, wer dein Hauptagent ist, wie er denkt und wie er schreibt.\n\n**Aufbau der SOUL.md:**\n\nDie Datei besteht aus mehreren Abschnitten:\n\n- **Identitaet:** Name, Rolle und Kernaufgabe des Agenten\n- **Schreibstil:** Tonalitaet, Zielgruppe, sprachliche Praeferenzen\n- **Wissensdomaene:** Themengebiete, in denen der Agent kompetent ist\n- **Verhaltensregeln:** Was der Agent tun und lassen soll\n- **Ausgabeformat:** Wie Ergebnisse strukturiert werden sollen\n\n**Best Practices:**\n\n1. Halte die SOUL.md unter 500 Woerter - knapp und praezise\n2. Definiere klare Grenzen: Was soll der Agent NICHT tun?\n3. Verwende konkrete Beispiele fuer den gewuenschten Schreibstil\n4. Aktualisiere die SOUL.md iterativ basierend auf den Ergebnissen",
-      source: "Kapitel 4 - Die Seele deines Agenten",
-      lastUpdated: "2026-02-01"
+      tags: ["soul", "agent", "persoenlichkeit", "konfiguration", "schreibstil"],
+      content: "Die SOUL.md ist das Herzstueck deines OpenClaw-Projekts. Sie definiert, wer dein Agent ist, wie er denkt und wie er schreibt. Die SOUL.md wird immer zuerst geladen und praegt die gesamte Kommunikation des Agenten.\n\n**Aufbau der SOUL.md:**\n\nDie Datei besteht aus mehreren Abschnitten:\n\n- **Identitaet:** Name, Rolle und Kernaufgabe des Agenten\n- **Schreibstil:** Tonalitaet, Zielgruppe, sprachliche Praeferenzen (z.B. Du-Form, kurze Saetze)\n- **Wissensdomaene:** Themengebiete, in denen der Agent kompetent ist\n- **Verhaltensregeln:** Was der Agent tun und lassen soll\n- **Qualitaets-Checkliste:** Kriterien, die erfuellt sein muessen bevor ein Ergebnis als fertig gilt\n- **Toolchain:** Welche Werkzeuge der Agent kennt (Docker, n8n, Pandoc etc.)\n- **Grenzen:** Keine externen Aktionen ohne Rueckfrage, keine erfundenen Befehle\n\n**Best Practices:**\n\n1. Halte die SOUL.md unter 500 Woerter - knapp und praezise\n2. Definiere klare Grenzen: Was soll der Agent NICHT tun?\n3. Verwende konkrete Beispiele fuer den gewuenschten Schreibstil\n4. Aktualisiere die SOUL.md iterativ basierend auf den Ergebnissen\n\n**Wichtig:** SOUL.md ist fuer Persoenlichkeit und Stil zustaendig. Die Workflow-Logik (Modi, Routing) gehoert in die AGENTS.md.",
+      source: "Kapitel 4 - Agent-Konzepte",
+      lastUpdated: "2026-02-26"
     },
     {
       id: "chunk-agents-md",
-      title: "Sub-Agenten mit AGENTS.md",
+      title: "AGENTS.md \u2013 Bedienungsanleitung & Modi",
       category: "agents",
       difficulty: "intermediate",
-      summary: "AGENTS.md definiert die 8 Sub-Agenten-Rollen, die den Hauptagenten bei der Bucherstellung unterstuetzen.",
+      summary: "AGENTS.md ist die Bedienungsanleitung deines Agenten: Regeln, Prioritaeten und Modi (WRITER, EDITOR, QA).",
       dependencies: ["chunk-soul-md"],
-      tags: ["agenten", "rollen", "agents-md", "sub-agenten", "workflow"],
-      content: "In OpenClaw arbeiten bis zu 8 spezialisierte Sub-Agenten zusammen, jeder mit einer klar definierten Rolle. Die Konfiguration erfolgt in der AGENTS.md-Datei.\n\n**Die 8 Sub-Agenten-Rollen:**\n\n1. **content-architect** - Plant die Buchstruktur, Kapitelgliederung und den roten Faden\n2. **technical-writer** - Schreibt die Hauptinhalte basierend auf der Struktur\n3. **fact-checker** - Ueberprueft Fakten, Links und technische Aussagen\n4. **german-editor** - Korrigiert Grammatik, Stil und Ausdruck fuer deutsches Publikum\n5. **consistency-checker** - Stellt Konsistenz ueber alle Kapitel hinweg sicher\n6. **meta-documenter** - Dokumentiert den Erstellungsprozess und Entscheidungen\n7. **tutorial-writer** - Erstellt Schritt-fuer-Schritt-Anleitungen und Praxisbeispiele\n8. **workflow-coordinator** - Koordiniert die Zusammenarbeit aller Agenten\n\n**Tipp:** Nicht alle Rollen muessen aktiv sein. Fuer kuerzere Projekte reichen oft content-architect, technical-writer und german-editor.",
-      source: "Kapitel 5 - Dein Agenten-Team",
-      lastUpdated: "2026-02-01"
+      tags: ["agenten", "modi", "agents-md", "writer", "editor", "qa", "n8n"],
+      content: "Die AGENTS.md in OpenClaw ist KEINE Sub-Agenten-Definition. Sie ist die Bedienungsanleitung und der Speicher deines Agenten \u2013 mit Regeln, Prioritaeten und Verhaltens-Modi.\n\n**Die korrekte Architektur:**\n\nEin Agent arbeitet mit Modi, orchestriert durch n8n:\n\n1. **WRITER-Modus** - Erzeugt Rohtext aus einem Outline und Constraints (Zielgruppe, Stil, Wortanzahl). Output: JSON mit chapter_markdown und code_blocks.\n2. **EDITOR-Modus** - Macht daraus sauberes Kapitel-Markdown (Ueberschriften, Code-Bloecke, Struktur). Output: JSON mit revised_markdown und changes_log.\n3. **QA-Modus** - Prueft Logik, Konsistenz, markiert offene Punkte. Output: JSON mit status, issues und suggestions.\n\n**Wie es funktioniert:**\n\nn8n sendet einen Job-Typ (z.B. write_chapter) an den OpenClaw-Agenten. Der Router in AGENTS.md leitet zum richtigen Modus weiter. Der Agent arbeitet im entsprechenden Modus und liefert strukturiertes JSON zurueck, das n8n parsen und speichern kann.\n\n**Wichtig:** n8n ist der Orchestrator (Trigger, Speicherung, Versionierung). Der Agent ist der Ausfuehrer innerhalb seines aktuellen Modus. Keine echten Sub-Agenten \u2013 nur Prompt-Struktur mit klarer Aufgabentrennung.\n\n**Tipp:** Halte die AGENTS.md unter 150 Zeilen. Fuer den Start reichen die drei Modi WRITER, EDITOR und QA.",
+      source: "Kapitel 4 - Agent-Konzepte",
+      lastUpdated: "2026-02-26"
     },
     {
       id: "chunk-masterprompt",
-      title: "Masterprompt-Technik",
+      title: "Modi-Pattern & n8n-Orchestrierung",
       category: "prompting",
       difficulty: "intermediate",
-      summary: "Strukturierte Prompts (Masterprompts) sind der Schluessel zur konsistenten KI-gestuetzten Bucherstellung.",
+      summary: "Das Modi-Pattern mit n8n-Orchestrierung ist der Schluessel zur konsistenten KI-gestuetzten Bucherstellung.",
       dependencies: ["chunk-soul-md", "chunk-agents-md"],
-      tags: ["prompt", "masterprompt", "technik", "struktur", "prompt-engineering"],
-      content: "Ein Masterprompt ist ein detaillierter, strukturierter Prompt, der alle Informationen enthaelt, die ein KI-Modell braucht, um ein ganzes Buchkapitel konsistent zu erstellen.\n\n**Aufbau eines Masterprompts:**\n\n- **Kontextblock:** Worum geht es im Buch? Welches Kapitel wird geschrieben?\n- **Stilanweisungen:** Tonalitaet, Zielgruppe, Sprachniveau\n- **Strukturvorgabe:** Gliederung mit Ueberschriften und ungefaehren Wortanzahlen\n- **Inhaltliche Leitplanken:** Welche Punkte muessen abgedeckt werden?\n- **Beispiele:** 1-2 Absaetze im gewuenschten Stil als Referenz\n- **Ausgabeformat:** Markdown-Struktur, Sonderformatierungen\n\n**Vorteile gegenueber einfachen Prompts:**\n\nEinfache Prompts wie 'Schreibe ein Kapitel ueber X' liefern inkonsistente Ergebnisse. Ein Masterprompt hingegen sorgt dafuer, dass jedes Kapitel im gleichen Stil, mit der gleichen Tiefe und in der gleichen Struktur geschrieben wird.\n\n**Praxis-Tipp:** Erstelle einen Masterprompt-Template und passe ihn fuer jedes Kapitel an.",
-      source: "Kapitel 6 - Prompt-Engineering fuer Buecher",
-      lastUpdated: "2026-02-01"
+      tags: ["modi", "n8n", "orchestrierung", "pipeline", "workflow", "json"],
+      content: "Statt einfacher Prompts nutzt du ein strukturiertes Modi-Pattern: n8n orchestriert den Agenten durch verschiedene Modi fuer jedes Kapitel.\n\n**Die drei Ebenen:**\n\n1. **n8n (Command-Layer):** Trigger (Kapitel starten), Job-Typ festlegen, Ergebnis speichern, versionieren, exportieren.\n2. **OpenClaw Agent (Ausfuehrer):** Empfaengt Job-Typ, arbeitet im entsprechenden Modus (WRITER, EDITOR, QA), liefert strukturiertes JSON zurueck.\n3. **SOUL.md (Persoenlichkeit):** Schreibstil, Tonfall, Zielgruppe \u2013 bleibt ueber alle Modi hinweg gleich.\n\n**Pipeline pro Kapitel:**\n\n1. n8n sendet job_type=write_chapter mit Outline und Constraints\n2. Agent arbeitet im WRITER-Modus, liefert JSON mit Rohtext\n3. n8n sendet job_type=revise_chapter mit dem Rohtext\n4. Agent arbeitet im EDITOR-Modus, liefert bereinigtes Markdown\n5. n8n sendet job_type=qa_chapter\n6. Agent arbeitet im QA-Modus, prueft und liefert Status-Report\n7. Thomas/Texterin reviewed (menschlicher Schritt)\n\n**Warum JSON-Output?**\n\nStriktes JSON ermoeglicht n8n, die Ergebnisse automatisch zu parsen, in Dateien zu speichern und den naechsten Schritt der Pipeline zu triggern. Kein manuelles Copy-Paste noetig.\n\n**Praxis-Tipp:** Teste die Pipeline zuerst mit einem einzelnen Kapitel (z.B. Kapitel 2 Installation), bevor du alle 15 Kapitel im Batch generierst.",
+      source: "Kapitel 9 - Architektur",
+      lastUpdated: "2026-02-26"
     },
     {
       id: "chunk-dashboard-modules",
-      title: "Dashboard Module M1-M6",
+      title: "Dashboard Module: Home + M1-M6",
       category: "dashboard",
       difficulty: "beginner",
-      summary: "Das OpenClaw-Dashboard besteht aus 6 Modulen (M1-M6), die den gesamten Buchproduktionsprozess abbilden.",
+      summary: "Das OpenClaw-Dashboard besteht aus 7 Modulen (Home + M1-M6) mit 120 Tasks fuer den gesamten Buchproduktionsprozess.",
       dependencies: [],
-      tags: ["dashboard", "module", "uebersicht", "M1", "M2", "M3", "M4", "M5", "M6"],
-      content: "Das OpenClaw-Dashboard ist die zentrale Steuerungseinheit fuer dein Buchprojekt. Es besteht aus 6 Modulen:\n\n**M1 - Projektuebersicht:** Zeigt den aktuellen Status deines Buchprojekts: Fortschritt pro Kapitel, offene Aufgaben und Zeitplan.\n\n**M2 - Agenten-Steuerung:** Hier konfigurierst und startest du deine Agenten (SOUL.md und AGENTS.md). Du kannst einzelne Sub-Agenten aktivieren oder deaktivieren.\n\n**M3 - Content-Pipeline:** Verwaltet den Schreibprozess: Von der Gliederung ueber den Erstentwurf bis zum fertigen Kapitel.\n\n**M4 - Qualitaetssicherung:** Fact-Checking, Konsistenzpruefung und Lektorat.\n\n**M5 - Publishing:** Export und Veroeffentlichung: Formatierung fuer Amazon KDP, EPUB-Generierung und Metadaten-Verwaltung.\n\n**M6 - Dein Projekt (Cowan):** Der KI-Wissensassistent Cowan ist hier eingebettet. Stelle Fragen zum Buchprozess.\n\n**Tipp:** Starte mit M1 und M2, bevor du die anderen Module nutzt.",
-      source: "Kapitel 2 - Das Dashboard im Ueberblick",
-      lastUpdated: "2026-02-01"
+      tags: ["dashboard", "module", "uebersicht", "home", "M1", "M2", "M3", "M4", "M5", "M6"],
+      content: "Das OpenClaw-Dashboard ist die zentrale Steuerungseinheit fuer dein Buchprojekt. Es besteht aus 7 Modulen mit insgesamt 120 Tasks:\n\n**Home - Projektuebersicht:** Zeigt den aktuellen Status deines Buchprojekts: Stat-Boxen, Kapitel-Chart, Buchteile-Uebersicht und Zeitplan.\n\n**M1 - Server Setup (Sprint 1, 18 Tasks):** VPS einrichten, Docker installieren, OpenClaw deployen, Tailscale VPN, Firewall konfigurieren, n8n aufsetzen.\n\n**M2 - Agent Setup (Sprint 2, 10 Tasks):** SOUL.md und AGENTS.md konfigurieren \u2013 Modi (WRITER, EDITOR, QA) einrichten, Testkapitel generieren, Review-Prozess testen.\n\n**M3 - Automation (Sprint 3, 10 Tasks):** n8n-Workflows fuer die Kapitel-Pipeline, Batch-Produktion, X/Twitter-Automatisierung mit Telegram-Approval-Flow.\n\n**M4 - Publishing (Sprint 4, 7 Tasks):** Amazon KDP Upload, Cover-Erstellung, EPUB-Formatierung, Metadaten und Preisgestaltung. Inkl. Kosten- und ROI-Rechnung.\n\n**M5 - Buch & Code (75 Tasks):** 15 Kapitel mit je 5 Schritten (Outline, Draft, Check, Review, Final). Personalisierte Code-Snippets und Settings-Panel fuer deine Variablen.\n\n**M6 - Dein Projekt:** Die Wundertuete! Agent-Team Generator (generiert SOUL.md + AGENTS.md fuer dein Projekt per Claude API) und Dashboard-Konfigurator (Prompt-Generator fuer ein eigenes Dashboard).\n\n**Tipp:** Starte mit M1 (Server), dann M2 (Agent), dann M3 (Automation). M6 ist fuer dein eigenes Buchprojekt.",
+      source: "Dashboard-Uebersicht",
+      lastUpdated: "2026-02-26"
     },
     {
       id: "chunk-n8n-batch",
@@ -2035,24 +2035,28 @@ docker compose up -d` },
     },
     4: {
       title: "Agent-Konzepte",
-      desc: "SOUL.md, AGENTS.md, Sub-Agenten Architektur",
+      desc: "SOUL.md, AGENTS.md, Modi-Pattern",
       part: "A",
       snippets: [
         { title: "So funktioniert es", lang: "text", code: `OpenClaw Agent-Architektur:
 
-1 Hauptagent = 1 SOUL.md (Pers\xF6nlichkeit + Regeln)
-                + 1 AGENTS.md (Workspace-Anleitung + Sub-Agenten-Rollen)
+1 Agent = 1 SOUL.md (Persoenlichkeit + Regeln)
+        + 1 AGENTS.md (Bedienungsanleitung + Modi)
 
-Der Hauptagent liest SOUL.md und AGENTS.md beim Start.
-Fuer spezialisierte Aufgaben spawnt er Sub-Agenten.
-Sub-Agenten bekommen NUR AGENTS.md + TOOLS.md injiziert.
+Der Agent liest SOUL.md und AGENTS.md beim Start.
+Er arbeitet in Modi (WRITER, EDITOR, QA),
+orchestriert durch n8n-Workflows.
+
+n8n = Command-Layer (Trigger, Speicherung, Export)
+Agent = Ausfuehrer (arbeitet im aktuellen Modus)
+SOUL.md = Persoenlichkeit (Stil, Ton, Zielgruppe)
 
 Dateien im Workspace:
   ~/.openclaw/workspace/
     SOUL.md          <- Wer ist der Agent?
-    AGENTS.md        <- Workspace-Regeln + Sub-Agenten-Rollen
+    AGENTS.md        <- Bedienungsanleitung + Modi
     USER.md          <- Wer ist der Mensch?
-    MEMORY.md        <- Langzeitged\xE4chtnis
+    MEMORY.md        <- Langzeitgedaechtnis
     TOOLS.md         <- Werkzeug-Notizen
     memory/          <- Tagesnotizen` },
         { title: "SOUL.md Aufbau (Auszug)", lang: "markdown", code: `# SOUL.md - Dein Buchprojekt
@@ -2062,34 +2066,34 @@ Du leitest die Produktion eines deutschsprachigen Sachbuchs.
 
 ## Stil-Regeln
 1. Du-Form. Immer.
-2. Erkl\xE4re jeden Code-Block.
-3. Keine Anglizismen ohne Erkl\xE4rung.
+2. Erklaere jeden Code-Block.
+3. Keine Anglizismen ohne Erklaerung.
 4. Warnungen bei Sicherheitsthemen.
-5. Kurze S\xE4tze. Max 20 W\xF6rter.
+5. Kurze Saetze. Max 20 Woerter.
 6. Aktive Sprache.
 7. Praxis vor Theorie.
 
-## Qualit\xE4ts-Checkliste
+## Qualitaets-Checkliste
 - [ ] Du-Form konsistent
-- [ ] Code-Bl\xF6cke erkl\xE4rt
+- [ ] Code-Bloecke erklaert
 - [ ] CLI-Befehle korrekt
 - [ ] Querverweise stimmen` },
-        { title: "AGENTS.md Sub-Agenten (Auszug)", lang: "markdown", code: `## Sub-Agenten - Buchprojekt Rollen
+        { title: "AGENTS.md Modi (Auszug)", lang: "markdown", code: `## Modi - Buchprojekt
 
-### content-architect
-Erstellt Kapitel-Outlines, Lernziele, Querverweise
+### WRITER
+Trigger: job_type = "write_chapter"
+Erzeugt Rohtext aus Outline + Constraints
+Output: JSON mit chapter_markdown
 
-### technical-writer
-Schreibt Kapitel-Texte (Du-Form, Code erkl\xE4rt)
+### EDITOR
+Trigger: job_type = "revise_chapter"
+Bereinigt Markdown, prueft Stil + Struktur
+Output: JSON mit revised_markdown
 
-### fact-checker
-Pr\xFCft Code-Syntax, CLI-Befehle, URLs
-
-### german-editor
-Pr\xFCft Stil, Grammatik, Du-Form-Konsistenz
-
-### consistency-checker
-Terminologie + Querverweise kapitel\xFCbergreifend
+### QA
+Trigger: job_type = "qa_chapter"
+Prueft Logik, Code-Syntax, Konsistenz
+Output: JSON mit status + issues
 
 Pipeline: architect - writer - checker - editor - consistency - [Mensch]` }
       ]
@@ -2278,7 +2282,7 @@ _Du bist der Hauptagent f\xFCr ein selbst-dokumentierendes Sachbuch \xFCber Open
 
 Du leitest die Produktion eines deutschsprachigen Sachbuchs (EUR 39,95, Amazon KDP).
 Das Buch erkl\xE4rt OpenClaw \u2013 und dokumentiert gleichzeitig, wie es mit OpenClaw geschrieben wurde.
-Du bist Projektleiter, nicht Einzelk\xE4mpfer. Du orchestrierst Sub-Agenten f\xFCr spezialisierte Aufgaben.
+Du arbeitest in verschiedenen Modi (WRITER, EDITOR, QA), orchestriert durch n8n-Workflows.
 
 **Dein Mensch:** Thomas \u2013 technisch versiert, denkt in Systemen, arbeitet strukturiert.
 Er trifft die finalen Entscheidungen. Seine Texterin reviewed alle Kapitel vor Ver\xF6ffentlichung.
@@ -2340,128 +2344,88 @@ Bevor ein Kapitel "Final" wird:
 
 Jede Sitzung startest du frisch. Diese Datei ist dein Ged\xE4chtnis.
 Lies sie. Halte dich daran. Wenn du \xC4nderungen vorschl\xE4gst, erkl\xE4re warum.`;
-  var MASTERPROMPT_ROLES = {
-    "content-architect": `### content-architect
-**Aufgabe:** Kapitel-Struktur und Outline erstellen
-**Wann spawnen:** Bevor ein neues Kapitel geschrieben wird
-**Input:** Kapitelnummer, Thema, Kontext zu angrenzenden Kapiteln
-**Output:** Outline mit 3-5 Hauptpunkten, Lernziele, Seitenzahl, Querverweise
+  var MASTERPROMPT_MODES = {
+    "writer": `### WRITER-Modus
+**Trigger:** job_type = "write_chapter" oder "write_section"
+**Aufgabe:** Rohtext aus Outline + Constraints erzeugen
+**Input:** Kapitelnummer, Outline, Lernziele, Kontext zu angrenzenden Kapiteln
+**Output:** JSON mit chapter_markdown (3.000-5.000 Woerter) und code_blocks Array
 **Regeln:**
-- Jedes Kapitel braucht Lernziele am Anfang
-- Querverweise zu mindestens 2 anderen Kapiteln
-- Praxis-Anteil > 50% (Code, Schritte, Beispiele)`,
-    "technical-writer": `### technical-writer
-**Aufgabe:** Kapitel-Text auf Basis eines Outlines schreiben
-**Wann spawnen:** Nachdem der Content Architect das Outline geliefert hat
-**Input:** Outline, Lernziele, Stil-Regeln aus SOUL.md
-**Output:** Kompletter Kapitel-Draft (3.000-5.000 Woerter)
-**Regeln:**
-- Du-Form, immer
-- Jeder Code-Block: Erkl\xE4rung vorher + nachher
+- Du-Form, immer, konsistent
+- Jeder Code-Block: Erklaerung vorher + nachher
 - Warnboxen bei Sicherheitsthemen
-- Kurze S\xE4tze (max 20 W\xF6rter)
+- Kurze Saetze (max 20 Woerter)
 - Aktive Sprache ("Du startest..." nicht "Es wird gestartet...")
-- Keine Anglizismen ohne Erkl\xE4rung`,
-    "fact-checker": `### fact-checker
-**Aufgabe:** Technische Korrektheit eines Drafts pr\xFCfen
-**Wann spawnen:** Nachdem der Technical Writer den Draft geliefert hat
-**Input:** Kapitel-Draft
-**Output:** Liste mit Befunden (OK / Fehler / Warnung) + korrigierte Passagen
-**Pr\xFCft:**
+- Keine Anglizismen ohne Erklaerung
+- Praxis-Anteil > 50% (Code, Schritte, Beispiele)
+- Lernziele am Kapitelanfang, Zusammenfassung am Ende
+**Varianten:**
+- Kapitel 8-12 (Teil B): Case-Study-Stil ("So haben wir es gemacht"), ehrlich ueber Fehler, konkrete Zahlen
+- Kapitel 13-15 (Teil C): Tutorial-Stil, jeder Schritt reproduzierbar, Zeitangaben, Checklisten`,
+    "editor": `### EDITOR-Modus
+**Trigger:** job_type = "revise_chapter"
+**Aufgabe:** Rohtext in sauberes Kapitel-Markdown verwandeln
+**Input:** Kapitel-Draft aus WRITER-Modus
+**Output:** JSON mit revised_markdown und changes_log
+**Prueft und korrigiert:**
+- Ueberschriften-Hierarchie und Markdown-Struktur
+- Du-Form konsistent (kein Wechsel zu Sie/man)
+- Grammatik und Rechtschreibung
+- Lesefluss (zu lange Saetze aufbrechen)
+- Ton (freundlich, nicht herablassend)
+- Anglizismen (ersetzen oder erklaeren)
+- Terminologie (gleiche Begriffe fuer gleiche Konzepte)
+- Querverweise (stimmen Kapitelnummern und Titel?)
+- Abkuerzungen (beim ersten Auftreten erklaert?)`,
+    "qa": `### QA-Modus
+**Trigger:** job_type = "qa_chapter"
+**Aufgabe:** Logik, Konsistenz und technische Korrektheit pruefen, offene Punkte markieren
+**Input:** Kapitel-Draft (nach EDITOR-Modus)
+**Output:** JSON mit status (pass/fail), issues Array, suggestions Array
+**Prueft:**
 - Code-Syntax (Bash, YAML, JSON, Docker)
 - CLI-Befehle (existieren sie? korrekte Flags?)
 - Versionsnummern (aktuell? kompatibel?)
 - URLs (erreichbar? korrekt?)
-- Docker-Images (existieren auf Docker Hub?)`,
-    "german-editor": `### german-editor
-**Aufgabe:** Sprachliche Qualit\xE4t sicherstellen
-**Wann spawnen:** Nach dem Fact Check
-**Input:** Kapitel-Draft (fact-checked)
-**Output:** Korrigierter Text + \xC4nderungsprotokoll
-**Pr\xFCft:**
-- Du-Form konsistent (kein Wechsel zu Sie/man)
-- Grammatik und Rechtschreibung
-- Lesefluss (zu lange S\xE4tze aufbrechen)
-- Ton (freundlich, nicht herablassend)
-- Anglizismen (ersetzen oder erkl\xE4ren)`,
-    "consistency-checker": `### consistency-checker
-**Aufgabe:** Konsistenz \xFCber alle Kapitel hinweg
-**Wann spawnen:** Nach dem German Editor, oder als Batch
-**Input:** Aktuelles Kapitel + Referenz auf vorherige Kapitel
-**Output:** Konsistenz-Report (OK / Konflikt / Vorschlag)
-**Pr\xFCft:**
-- Terminologie (gleiche Begriffe f\xFCr gleiche Konzepte?)
-- Querverweise (stimmen Kapitelnummern und Titel?)
-- Konzept-Konsistenz (gleiche Erkl\xE4rungen?)
-- Abk\xFCrzungen (beim ersten Auftreten erkl\xE4rt?)`,
-    "meta-documenter": `### meta-documenter
-**Aufgabe:** Case-Study-Kapitel schreiben (Teil B: Kap 8-12)
-**Wann spawnen:** Fuer Kapitel 8-12
-**Input:** Projekt-Logs, Entscheidungen, Learnings
-**Output:** Meta-Kapitel im Stil "So haben wir es gemacht"
-**Regeln:**
-- Ehrlich \xFCber Fehler und Umwege berichten
-- Konkrete Zahlen (Kosten, Zeit, Token-Verbrauch)
-- Entscheidungen begr\xFCnden (warum Docker? warum Tailscale?)`,
-    "tutorial-writer": `### tutorial-writer
-**Aufgabe:** Blueprint-Kapitel schreiben (Teil C: Kap 13-15)
-**Wann spawnen:** Fuer Kapitel 13-15
-**Input:** Gesamtprojekt-Erfahrung, Setup-Schritte, Zeitpl\xE4ne
-**Output:** Step-by-Step Anleitung zum Nachmachen
-**Regeln:**
-- Jeder Schritt muss reproduzierbar sein
-- Zeitangaben pro Schritt (Minuten/Stunden)
-- Checklisten am Ende jeder Sektion
-- Kostenkalkulationen transparent`,
-    "workflow-coordinator": `### workflow-coordinator
-**Aufgabe:** n8n-Workflows und Agent-Handoffs planen
-**Wann spawnen:** Bei Workflow-Konfiguration oder Pipeline-Problemen
-**Input:** Gew\xFCnschter Ablauf, beteiligte Agents, Trigger
-**Output:** n8n-Workflow-Definition (JSON) + Handoff-Erkl\xE4rung
-**Regeln:**
-- Trigger immer dokumentieren
-- Fehlerbehandlung einplanen
-- Benachrichtigung an Thomas/Texterin bei Review-Schritten`,
-    "social-media-writer": `### social-media-writer
-**Aufgabe:** X/Twitter Posts zum Buchprojekt verfassen
-**Wann spawnen:** Proaktiv (Heartbeat) oder on-demand via Telegram
-**Input:** Thema, Anlass, aktuelle Projektinfos
-**Output:** Post-Text (max 280 Zeichen) + optionaler Thread
-**Regeln:**
-- Authentisch, nicht werblich \u2013 teile echte Learnings und Fortschritte
-- Hashtags sparsam (max 2-3 relevante)
-- Nie ohne menschliche Genehmigung posten
-- Deutsch als Hauptsprache, Englisch wenn Thema es erfordert
-- Call-to-Action nur wenn passend (Link zum Buch, nicht in jedem Post)
-- Variiere zwischen: Projektupdate, Technik-Insight, Behind-the-Scenes, Frage an Community`
+- Docker-Images (existieren auf Docker Hub?)
+- Sicherheitswarnungen vorhanden wo noetig
+- Querverweise zu anderen Kapiteln korrekt
+- Unsichere Aussagen als "zu verifizieren" markieren`
   };
-  var MASTERPROMPT_PIPELINE = `## Pipeline-Reihenfolge pro Kapitel
+  var MASTERPROMPT_PIPELINE = `## Pipeline-Reihenfolge pro Kapitel (n8n-orchestriert)
 
-1. content-architect    - Outline + Lernziele
-2. technical-writer     - Draft auf Basis des Outlines
-3. fact-checker         - Technische Pr\xFCfung
-4. german-editor        - Sprachliche \xDCberarbeitung
-5. consistency-checker  - Abgleich mit anderen Kapiteln
-6. [Thomas/Texterin]    - Menschlicher Review (extern)
+1. n8n sendet job_type="write_chapter" + Outline + Constraints
+2. Agent im WRITER-Modus    \u2192 Erzeugt Rohtext als JSON
+3. n8n speichert Draft, sendet job_type="revise_chapter"
+4. Agent im EDITOR-Modus    \u2192 Bereinigtes Markdown als JSON
+5. n8n speichert Revision, sendet job_type="qa_chapter"
+6. Agent im QA-Modus        \u2192 Status-Report als JSON (pass/fail + Issues)
+7. [Thomas/Texterin]        \u2192 Menschlicher Review (extern)
 
-Ausnahmen:
-- Kapitel 8-12: meta-documenter statt technical-writer
-- Kapitel 13-15: tutorial-writer statt technical-writer
+Status-Tracking: Draft \u2192 Revised \u2192 QA-Passed \u2192 Approved
+
+## WRITER-Varianten nach Buchteil
+
+- Teil A (Kap 1-7): Tutorial-Stil \u2013 Schritt-fuer-Schritt mit Code-Beispielen
+- Teil B (Kap 8-12): Case-Study-Stil \u2013 "So haben wir es gemacht" mit echten Zahlen
+- Teil C (Kap 13-15): Blueprint-Stil \u2013 Reproduzierbare Anleitung mit Zeitplan
 
 ## X/Twitter Pipeline
 
-1. social-media-writer  - Generiert Post-Text (max 280 Zeichen)
-2. [Thomas via Telegram] - Genehmigung (Ja/Nein)
-3. n8n                  - Postet auf X via API
+1. n8n Trigger (Heartbeat oder on-demand via Telegram)
+2. Agent erzeugt Post-Text (max 280 Zeichen) + optionalen Thread
+3. [Thomas via Telegram] \u2013 Genehmigung (Ja/Nein)
+4. n8n postet auf X via API
 
-Trigger: Proaktiv (Heartbeat) oder on-demand ("Sende Tweet zum Thema...")
 Regel: NIE ohne menschliche Genehmigung posten.
 
-Spawn-Hinweise:
-- Einen Sub-Agenten pro Aufgabe, nicht mehrere gleichzeitig
-- Ergebnis abwarten, dann n\xE4chsten starten
-- Bei Fehlern: korrigieren + wiederholen, nicht \xFCberspringen
-- Kosten: ~$54-81 f\xFCr alle 15 Kapitel x 5 Schritte`;
+## Orchestrierungs-Hinweise
+
+- n8n steuert die Reihenfolge, NICHT der Agent selbst
+- Ein Modus pro Job, Ergebnis abwarten, dann naechsten Schritt triggern
+- Bei Fehlern: n8n wiederholt den Job mit Feedback
+- Striktes JSON-Output fuer automatisches Parsing durch n8n
+- Geschaetzte Kosten: ~$54-81 fuer alle 15 Kapitel (Write + Edit + QA)`;
   var BOOK_PARTS = [
     { key: "A", title: "Teil A: Tutorial (Kap 1-7)", icon: BookOpen, color: "blue", chapters: [1, 2, 3, 4, 5, 6, 7] },
     { key: "B", title: "Teil B: Case Study (Kap 8-12)", icon: Code, color: "purple", chapters: [8, 9, 10, 11, 12] },
@@ -2620,15 +2584,15 @@ Spawn-Hinweise:
     { id: "s1-test", title: "System-Test", desc: "Telegram OpenClaw Claude", tab: "sprint1" },
     { id: "s1-backup", title: "Backup", desc: "VPS Snapshots", tab: "sprint1" },
     { id: "s1-docs", title: "Dokumentieren", desc: "Tokens IPs Passw\xF6rter sichern", tab: "sprint1" },
-    { id: "s2-architect", title: "Content Architect", desc: "Outlines Struktur", tab: "sprint2" },
-    { id: "s2-writer", title: "Technical Writer", desc: "Technische Texte Code", tab: "sprint2" },
-    { id: "s2-meta", title: "Meta Documenter", desc: "Dokumentiert den Prozess Teil B", tab: "sprint2" },
-    { id: "s2-tutorial", title: "Tutorial Writer", desc: "Step-by-Step Teil C", tab: "sprint2" },
-    { id: "s2-checker", title: "Fact Checker", desc: "Code Claims pr\xFCfen", tab: "sprint2" },
-    { id: "s2-consistency", title: "Consistency Checker", desc: "Terminologie Querverweise", tab: "sprint2" },
-    { id: "s2-editor", title: "German Editor", desc: "Stil Du-Form", tab: "sprint2" },
-    { id: "s2-coordinator", title: "Workflow Coordinator", desc: "n8n Agent-Handoffs", tab: "sprint2" },
-    { id: "s2-test-chapter", title: "PoC Kapitel 1", desc: "Alle Agents zusammen", tab: "sprint2" },
+    { id: "s2-architect", title: "Outline-Regeln", desc: "AGENTS.md Outlines Struktur", tab: "sprint2" },
+    { id: "s2-writer", title: "WRITER-Modus", desc: "Rohtext-Erzeugung konfigurieren", tab: "sprint2" },
+    { id: "s2-meta", title: "Case-Study-Variante", desc: "WRITER fuer Teil B", tab: "sprint2" },
+    { id: "s2-tutorial", title: "Tutorial-Variante", desc: "WRITER fuer Teil C", tab: "sprint2" },
+    { id: "s2-checker", title: "QA-Modus", desc: "Code Claims pruefen", tab: "sprint2" },
+    { id: "s2-consistency", title: "Konsistenz-Regeln", desc: "Terminologie Querverweise", tab: "sprint2" },
+    { id: "s2-editor", title: "EDITOR-Modus", desc: "Markdown Stil Du-Form", tab: "sprint2" },
+    { id: "s2-coordinator", title: "n8n Pipeline", desc: "n8n Modi-Wechsel orchestrieren", tab: "sprint2" },
+    { id: "s2-test-chapter", title: "PoC Kapitel 1", desc: "Komplette Pipeline testen", tab: "sprint2" },
     { id: "s2-review", title: "Texterin Review", desc: "Human Check", tab: "sprint2" },
     { id: "s3-n8n-setup", title: "n8n konfigurieren", desc: "Workflows OpenClaw-Anbindung", tab: "sprint3" },
     { id: "s3-workflow-chapter", title: "Kapitel-Workflow", desc: "Trigger Architect Writer Check Edit Save", tab: "sprint3" },
@@ -2969,7 +2933,7 @@ curl http://\${TAILSCALE_IP}:18789`,
       setM6aResultAgents("");
       const prompt = `Du bist ein Experte fuer KI-gestuetzte Bucherstellung mit dem OpenClaw-Framework.
 
-Der Leser moechte ein Agent-Team fuer sein eigenes Buchprojekt generieren.
+Der Leser moechte seinen OpenClaw-Agenten fuer sein eigenes Buchprojekt konfigurieren.
 
 **Buchprojekt des Lesers:**
 - Thema: ${m6aThema}
@@ -2979,20 +2943,21 @@ Der Leser moechte ein Agent-Team fuer sein eigenes Buchprojekt generieren.
 **Deine Aufgabe:**
 Generiere zwei Dateien, die auf das Buchprojekt des Lesers zugeschnitten sind:
 
-1. Eine **SOUL.md** - die Persoenlichkeit und Regeln des Hauptagenten, angepasst an das Thema, die Zielgruppe und den Stil des Lesers. Nutze das folgende Template als Basis, aber passe ALLES an das Projekt des Lesers an:
+1. Eine **SOUL.md** - die Persoenlichkeit, Schreibstil und Regeln des Agenten, angepasst an das Thema, die Zielgruppe und den Stil des Lesers. Nutze das folgende Template als Basis, aber passe ALLES an das Projekt des Lesers an:
 
 ${MASTERPROMPT_SOUL}
 
-2. Eine **AGENTS.md** - mit spezialisierten Sub-Agenten-Rollen, die auf das Buchthema zugeschnitten sind. Nutze diese Rollen-Vorlagen als Basis, passe sie aber komplett an:
+2. Eine **AGENTS.md** - die Bedienungsanleitung des Agenten mit Modi (WRITER, EDITOR, QA). WICHTIG: OpenClaw hat KEINE echten Sub-Agenten. AGENTS.md definiert Modi, in denen ein einzelner Agent arbeitet, orchestriert durch n8n-Workflows. Nutze diese Modi-Vorlagen als Basis, passe sie aber komplett an:
 
-${Object.values(MASTERPROMPT_ROLES).join("\n\n")}
+${Object.values(MASTERPROMPT_MODES).join("\n\n")}
 
-Pipeline-Vorlage:
+Pipeline-Vorlage (n8n-orchestriert):
 ${MASTERPROMPT_PIPELINE}
 
 **Ausgabeformat:**
 Gib ZUERST die komplette SOUL.md aus, dann eine Trennlinie "---TRENNER---", dann die komplette AGENTS.md.
-Beide Dateien in Markdown-Format. Passe alle Rollen, Regeln, Beispiele und Pipelines an das Thema "${m6aThema}" an.
+Die AGENTS.md muss folgende Struktur haben: Purpose, Modes (WRITER, EDITOR, QA mit Trigger/Task/Output/Rules), Router, Output Format (JSON), Rules & Priorities.
+Beide Dateien in Markdown-Format. Passe alle Modi, Regeln, Beispiele und Pipelines an das Thema "${m6aThema}" an.
 Schreibe auf Deutsch.`;
       try {
         const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -3073,7 +3038,7 @@ Erstelle das komplette Dashboard als eine einzige React-Komponente. Alle Daten i
       a.click();
       URL.revokeObjectURL(url);
     };
-    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gradient-to-r from-amber-900/30 to-yellow-900/30 border border-amber-700 rounded-lg p-4 sm:p-5" }, /* @__PURE__ */ import_react4.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react4.default.createElement(Sparkles, { className: "w-5 h-5 text-amber-400" }), "Dein Projekt \u2013 Die Wundert\xFCte"), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-300 mb-3" }, "Du hast gesehen, wie dieses Buch mit OpenClaw entstanden ist. Jetzt bist du dran: Generiere dir dein eigenes Agent-Team und ein angepasstes Dashboard f\xFCr dein Buchprojekt."), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-4 text-xs text-gray-400" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react4.default.createElement(WandSparkles, { className: "w-3.5 h-3.5 text-amber-400" }), "Agent-Team Generator"), /* @__PURE__ */ import_react4.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react4.default.createElement(Terminal, { className: "w-3.5 h-3.5 text-blue-400" }), "Dashboard-Konfigurator"))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gray-800/50 border border-gray-700 rounded-lg p-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(Info, { className: "w-3.5 h-3.5 text-blue-400" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs font-semibold text-gray-300" }, "Deine Journey")), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 text-xs text-gray-400 flex-wrap" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-green-900/30 border border-green-700/50 rounded px-2 py-1 text-green-400" }, "Buch lesen"), /* @__PURE__ */ import_react4.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-blue-900/30 border border-blue-700/50 rounded px-2 py-1 text-blue-400" }, "OpenClaw aufsetzen"), /* @__PURE__ */ import_react4.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-amber-900/30 border border-amber-700/50 rounded px-2 py-1 text-amber-400 font-semibold" }, "Eigenes Dashboard"), /* @__PURE__ */ import_react4.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-purple-900/30 border border-purple-700/50 rounded px-2 py-1 text-purple-400 font-semibold" }, "Agents spezialisieren")), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-gray-500 mt-2" }, "M1-M4 erledigt? Dann bist du hier richtig.")), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: WandSparkles, title: "Agent-Team Generator", badge: hasApiKey ? "\u{1F511} API aktiv" : "API-Key ben\xF6tigt", open: true }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-300" }, "Beschreibe dein Buchprojekt und bekomme ein komplettes Agent-Team generiert: Eine ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "SOUL.md"), " f\xFCr deinen Hauptagenten und eine ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "AGENTS.md"), " mit spezialisierten Sub-Agenten \u2013 abgestimmt auf dein Thema."), !hasApiKey && /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-amber-900/20 border border-amber-700/50 rounded-lg p-3 flex items-center gap-3" }, /* @__PURE__ */ import_react4.default.createElement(Lock, { className: "w-4 h-4 text-amber-400 shrink-0" }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-amber-300" }, "\xD6ffne Cowan (\u{1F41A}) und gib dort deinen API-Key ein, um den Generator zu nutzen."), /* @__PURE__ */ import_react4.default.createElement("button", { onClick: () => setCowanOpen(true), className: "shrink-0 px-3 py-1.5 bg-teal-600 hover:bg-teal-500 rounded-lg text-xs text-white font-semibold transition-colors" }, "\u{1F41A} Cowan \xF6ffnen")), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded-lg p-4 space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Buchthema"), /* @__PURE__ */ import_react4.default.createElement(
+    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gradient-to-r from-amber-900/30 to-yellow-900/30 border border-amber-700 rounded-lg p-4 sm:p-5" }, /* @__PURE__ */ import_react4.default.createElement("h2", { className: "text-lg sm:text-xl font-bold mb-2 flex items-center gap-2" }, /* @__PURE__ */ import_react4.default.createElement(Sparkles, { className: "w-5 h-5 text-amber-400" }), "Dein Projekt \u2013 Die Wundert\xFCte"), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-300 mb-3" }, "Du hast gesehen, wie dieses Buch mit OpenClaw entstanden ist. Jetzt bist du dran: Generiere dir dein eigenes Agent-Team und ein angepasstes Dashboard f\xFCr dein Buchprojekt."), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-4 text-xs text-gray-400" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react4.default.createElement(WandSparkles, { className: "w-3.5 h-3.5 text-amber-400" }), "Agent-Team Generator"), /* @__PURE__ */ import_react4.default.createElement("span", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ import_react4.default.createElement(Terminal, { className: "w-3.5 h-3.5 text-blue-400" }), "Dashboard-Konfigurator"))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gray-800/50 border border-gray-700 rounded-lg p-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(Info, { className: "w-3.5 h-3.5 text-blue-400" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs font-semibold text-gray-300" }, "Deine Journey")), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 text-xs text-gray-400 flex-wrap" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-green-900/30 border border-green-700/50 rounded px-2 py-1 text-green-400" }, "Buch lesen"), /* @__PURE__ */ import_react4.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-blue-900/30 border border-blue-700/50 rounded px-2 py-1 text-blue-400" }, "OpenClaw aufsetzen"), /* @__PURE__ */ import_react4.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-amber-900/30 border border-amber-700/50 rounded px-2 py-1 text-amber-400 font-semibold" }, "Eigenes Dashboard"), /* @__PURE__ */ import_react4.default.createElement(ChevronRight, { className: "w-3 h-3 text-gray-600" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "bg-purple-900/30 border border-purple-700/50 rounded px-2 py-1 text-purple-400 font-semibold" }, "Agents spezialisieren")), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-gray-500 mt-2" }, "M1-M4 erledigt? Dann bist du hier richtig.")), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: WandSparkles, title: "Agent-Team Generator", badge: hasApiKey ? "\u{1F511} API aktiv" : "API-Key ben\xF6tigt", open: true }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-300" }, "Beschreibe dein Buchprojekt und bekomme eine komplette Agent-Konfiguration generiert: Eine ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "SOUL.md"), " (Persoenlichkeit und Stil) und eine ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "AGENTS.md"), " mit Modi (WRITER, EDITOR, QA) \u2013 abgestimmt auf dein Thema."), !hasApiKey && /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-amber-900/20 border border-amber-700/50 rounded-lg p-3 flex items-center gap-3" }, /* @__PURE__ */ import_react4.default.createElement(Lock, { className: "w-4 h-4 text-amber-400 shrink-0" }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-amber-300" }, "\xD6ffne Cowan (\u{1F41A}) und gib dort deinen API-Key ein, um den Generator zu nutzen."), /* @__PURE__ */ import_react4.default.createElement("button", { onClick: () => setCowanOpen(true), className: "shrink-0 px-3 py-1.5 bg-teal-600 hover:bg-teal-500 rounded-lg text-xs text-white font-semibold transition-colors" }, "\u{1F41A} Cowan \xF6ffnen")), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded-lg p-4 space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("label", { className: "block text-xs text-gray-400 mb-1" }, "Buchthema"), /* @__PURE__ */ import_react4.default.createElement(
       "input",
       {
         type: "text",
@@ -3462,7 +3427,7 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
         countDone,
         color: "from-green-500 to-emerald-400"
       }
-    ), /* @__PURE__ */ import_react4.default.createElement(TaskFilter, { filter: taskFilter, setFilter: setTaskFilter, taskIds: SPRINT_TASKS.sprint2, countDone }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-blue-900/20 border border-blue-700 rounded-lg p-4" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(Info, { className: "w-4 h-4 text-blue-400" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-sm font-semibold text-blue-300" }, "OpenClaw Agent-Architektur")), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-gray-300 mb-2" }, "OpenClaw arbeitet mit ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "einem Hauptagenten"), " (SOUL.md) der ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "Sub-Agenten"), " f\xFCr spezialisierte Aufgaben spawnen kann (AGENTS.md). Der Hauptagent entscheidet selbst, wer wann dran ist."), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-gray-500" }, 'Kapitel 4 im Buch erkl\xE4rt die Details. In M6 ("Dein Projekt") generierst du sp\xE4ter dein eigenes Agent-Team.')), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Users, title: "Content Agents", open: true }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-architect", title: "Content Architect", desc: "Erstellt Kapitel-Outlines, Lernziele, Querverweise", onToggle: toggleTask, done: tasks["s2-architect"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-writer", title: "Technical Writer", desc: "Schreibt Kapitel-Texte (Du-Form, Code erkl\xE4rt, kurze S\xE4tze)", onToggle: toggleTask, done: tasks["s2-writer"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-meta", title: "Meta Documenter", desc: "Dokumentiert den Entstehungsprozess (Teil B, Kap 8-12)", onToggle: toggleTask, done: tasks["s2-meta"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-tutorial", title: "Tutorial Writer", desc: "Step-by-Step Anleitungen zum Nachmachen (Teil C, Kap 13-15)", onToggle: toggleTask, done: tasks["s2-tutorial"], filter: taskFilter })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Shield, title: "QA Agents" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-checker", title: "Fact Checker", desc: "Pr\xFCft Code-Syntax, CLI-Befehle, Versionsnummern, URLs", onToggle: toggleTask, done: tasks["s2-checker"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-consistency", title: "Consistency Checker", desc: "Terminologie, Querverweise, Konzepte kapitel\xFCbergreifend", onToggle: toggleTask, done: tasks["s2-consistency"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-editor", title: "German Editor", desc: "Du-Form, Grammatik, Lesefluss, Anglizismen", onToggle: toggleTask, done: tasks["s2-editor"], filter: taskFilter })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: GitBranch, title: "Coordination" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-coordinator", title: "Workflow Coordinator", desc: "n8n-Workflows, Agent-Handoffs, Trigger-Logik", onToggle: toggleTask, done: tasks["s2-coordinator"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded p-3 my-2 text-xs text-gray-400" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "font-semibold text-gray-300 mb-1" }, "Pipeline pro Kapitel:"), /* @__PURE__ */ import_react4.default.createElement("p", null, "Architect \u2192 Writer \u2192 Fact Check \u2192 German Editor \u2192 Consistency \u2192 Texterin Review")), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-test-chapter", title: "PoC: Kapitel 1", desc: "Alle Agents zusammen testen", onToggle: toggleTask, done: tasks["s2-test-chapter"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-yellow-900/20 border border-yellow-700 rounded p-3 my-2 text-xs text-yellow-300" }, "Meilenstein: Texterin reviewed - OK? Dann Sprint 3!"), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-review", title: "Texterin Review", desc: "Human Check", onToggle: toggleTask, done: tasks["s2-review"], filter: taskFilter }))), activeTab === "sprint3" && /* @__PURE__ */ import_react4.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react4.default.createElement(
+    ), /* @__PURE__ */ import_react4.default.createElement(TaskFilter, { filter: taskFilter, setFilter: setTaskFilter, taskIds: SPRINT_TASKS.sprint2, countDone }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-blue-900/20 border border-blue-700 rounded-lg p-4" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(Info, { className: "w-4 h-4 text-blue-400" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-sm font-semibold text-blue-300" }, "OpenClaw Agent-Architektur")), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-gray-300 mb-2" }, "OpenClaw arbeitet mit ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "einem Agenten"), " der in verschiedenen ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "Modi"), " arbeitet (WRITER, EDITOR, QA), orchestriert durch ", /* @__PURE__ */ import_react4.default.createElement("strong", null, "n8n-Workflows"), ". SOUL.md definiert die Persoenlichkeit, AGENTS.md die Bedienungsanleitung mit Modi."), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-gray-500" }, 'Kapitel 4 im Buch erklaert die Details. In M6 ("Dein Projekt") generierst du spaeter deine eigene Agent-Konfiguration.')), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Users, title: "WRITER-Modus konfigurieren", open: true }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-architect", title: "Outline-Regeln", desc: "Kapitel-Outlines, Lernziele, Querverweise in AGENTS.md definieren", onToggle: toggleTask, done: tasks["s2-architect"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-writer", title: "WRITER-Modus", desc: "Rohtext-Erzeugung konfigurieren (Du-Form, Code erklaert, kurze Saetze)", onToggle: toggleTask, done: tasks["s2-writer"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-meta", title: "Case-Study-Variante", desc: "WRITER fuer Teil B (Kap 8-12): Prozess-Dokumentation", onToggle: toggleTask, done: tasks["s2-meta"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-tutorial", title: "Tutorial-Variante", desc: "WRITER fuer Teil C (Kap 13-15): Step-by-Step Anleitungen", onToggle: toggleTask, done: tasks["s2-tutorial"], filter: taskFilter })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Shield, title: "EDITOR + QA Modi" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-checker", title: "QA-Modus", desc: "Prueft Code-Syntax, CLI-Befehle, Versionsnummern, URLs", onToggle: toggleTask, done: tasks["s2-checker"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-consistency", title: "Konsistenz-Regeln", desc: "Terminologie, Querverweise, Konzepte kapiteluebergreifend", onToggle: toggleTask, done: tasks["s2-consistency"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-editor", title: "EDITOR-Modus", desc: "Markdown-Struktur, Du-Form, Grammatik, Lesefluss", onToggle: toggleTask, done: tasks["s2-editor"], filter: taskFilter })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: GitBranch, title: "n8n-Orchestrierung" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-coordinator", title: "n8n Pipeline", desc: "n8n-Workflows fuer Modi-Wechsel (WRITER \u2192 EDITOR \u2192 QA)", onToggle: toggleTask, done: tasks["s2-coordinator"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gray-900/50 border border-gray-700 rounded p-3 my-2 text-xs text-gray-400" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "font-semibold text-gray-300 mb-1" }, "Pipeline pro Kapitel (n8n-orchestriert):"), /* @__PURE__ */ import_react4.default.createElement("p", null, "n8n Trigger \u2192 WRITER-Modus \u2192 EDITOR-Modus \u2192 QA-Modus \u2192 Texterin Review")), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-test-chapter", title: "PoC: Kapitel 1", desc: "Komplette Pipeline einmal durchlaufen lassen", onToggle: toggleTask, done: tasks["s2-test-chapter"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-yellow-900/20 border border-yellow-700 rounded p-3 my-2 text-xs text-yellow-300" }, "Meilenstein: Texterin reviewed - OK? Dann Sprint 3!"), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s2-review", title: "Texterin Review", desc: "Human Check", onToggle: toggleTask, done: tasks["s2-review"], filter: taskFilter }))), activeTab === "sprint3" && /* @__PURE__ */ import_react4.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react4.default.createElement(
       SprintHeader,
       {
         icon: Zap,
