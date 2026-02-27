@@ -3887,22 +3887,22 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
         onClick: () => setCowanOpen(true),
         style: {
           position: "fixed",
-          bottom: 24,
-          right: 24,
+          bottom: 32,
+          right: 16,
           zIndex: 1e3,
-          width: 60,
-          height: 60,
+          width: 64,
+          height: 64,
           borderRadius: "50%",
           background: "linear-gradient(135deg, #0d9488, #0f766e)",
           border: "none",
           cursor: "pointer",
-          fontSize: 28,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           boxShadow: "0 4px 20px rgba(13, 148, 136, 0.4)",
           transition: "transform 0.2s, box-shadow 0.2s",
-          animation: "cowanPulse 2s infinite"
+          animation: "cowanPulse 2s infinite",
+          overflow: "visible"
         },
         onMouseEnter: (e) => {
           e.currentTarget.style.transform = "scale(1.1)";
@@ -3914,7 +3914,7 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
         },
         title: "Cowan \xF6ffnen"
       },
-      /* @__PURE__ */ import_react4.default.createElement(IconOpenClaw, { size: 32 })
+      /* @__PURE__ */ import_react4.default.createElement("span", { style: { display: "inline-block", width: 110, height: 110, marginTop: -30, pointerEvents: "none" }, dangerouslySetInnerHTML: { __html: OPENCLAW_SVG } })
     ), /* @__PURE__ */ import_react4.default.createElement("div", { style: {
       position: "fixed",
       top: 0,
