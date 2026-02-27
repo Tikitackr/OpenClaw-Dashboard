@@ -1572,14 +1572,28 @@
         return copy;
       });
     };
-    var theme = {
+    var apiActive = apiKeyStatus === "valid" || apiKeyStatus === "uncertain";
+    var theme = apiActive ? {
+      bg: "#1e3050",
+      text: "#ffffff",
+      cardBg: "#2a4068",
+      border: "#4a6080",
+      inputBg: "#354d72",
+      inputText: "#ffffff",
+      mutedText: "#d0dff0",
+      cowanBubble: "#2a4068",
+      userBubble: "#4a6080",
+      primary: "#ef4444",
+      primaryDark: "#dc2626",
+      primaryLight: "#f87171"
+    } : {
       bg: "#0f172a",
-      text: "#e2e8f0",
+      text: "#f1f5f9",
       cardBg: "#1e293b",
       border: "#334155",
       inputBg: "#334155",
-      inputText: "#e2e8f0",
-      mutedText: "#94a3b8",
+      inputText: "#f1f5f9",
+      mutedText: "#a0b0c4",
       cowanBubble: "#1e293b",
       userBubble: "#334155",
       primary: "#b91c1c",
@@ -1595,7 +1609,8 @@
       color: theme.text,
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       fontSize: "14px",
-      position: "relative"
+      position: "relative",
+      transition: "background-color 0.8s ease, color 0.5s ease"
     } }, /* @__PURE__ */ React.createElement("div", { style: {
       display: "flex",
       gap: "8px",
@@ -1603,8 +1618,10 @@
       borderBottom: "1px solid " + theme.border,
       backgroundColor: theme.cardBg,
       flexShrink: 0,
+      height: "38px",
       alignItems: "center",
-      justifyContent: "space-between"
+      justifyContent: "space-between",
+      boxSizing: "border-box"
     } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "8px" } }, /* @__PURE__ */ React.createElement(
       "button",
       {
@@ -1726,30 +1743,93 @@
       backgroundColor: theme.cardBg,
       borderBottom: "1px solid " + theme.border,
       fontSize: "11px",
-      flexShrink: 0
-    } }, apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? (
-      /* Key vorhanden: kompakte Status-Anzeige */
+      flexShrink: 0,
+      height: "68px",
+      position: "relative",
+      overflow: "hidden"
+    } }, /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      padding: "6px 12px",
+      display: "flex",
+      alignItems: "center",
+      opacity: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? 1 : 0,
+      transition: "opacity 0.8s ease",
+      pointerEvents: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? "auto" : "none"
+    } }, React.createElement(
+      "div",
+      { style: { display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" } },
       React.createElement(
         "div",
-        { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
+        { style: { display: "flex", alignItems: "center", gap: "6px", color: theme.mutedText } },
+        React.createElement("span", { style: {
+          width: "6px",
+          height: "6px",
+          borderRadius: "50%",
+          backgroundColor: apiKeyStatus === "valid" ? "#22c55e" : "#eab308",
+          display: "inline-block"
+        } }),
+        React.createElement("span", null, apiKeyStatus === "valid" ? "Verbunden" : "Key gespeichert"),
+        React.createElement("span", {
+          onClick: function() {
+            setApiKeyStatus("none");
+            setLocalApiKey("");
+          },
+          style: { color: theme.mutedText, cursor: "pointer", textDecoration: "underline", fontSize: "10px", marginLeft: "4px" }
+        }, "\xC4ndern")
+      ),
+      React.createElement(
+        "select",
+        {
+          value: selectedModel,
+          onChange: function(e) {
+            setSelectedModel(e.target.value);
+          },
+          style: {
+            padding: "2px 6px",
+            borderRadius: "4px",
+            border: "1px solid " + theme.border,
+            backgroundColor: theme.inputBg,
+            color: theme.inputText,
+            fontSize: "11px",
+            outline: "none"
+          }
+        },
+        React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
+        React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
+      )
+    )), /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      padding: "6px 12px",
+      display: "flex",
+      alignItems: "center",
+      opacity: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? 0 : 1,
+      transition: "opacity 0.8s ease",
+      pointerEvents: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? "none" : "auto"
+    } }, React.createElement(
+      "div",
+      { style: { width: "100%" } },
+      React.createElement(
+        "div",
+        { style: { display: "flex", gap: "6px", alignItems: "center", marginBottom: "4px" } },
+        React.createElement("span", { style: {
+          width: "6px",
+          height: "6px",
+          borderRadius: "50%",
+          backgroundColor: apiKeyStatus === "invalid" ? "#ef4444" : apiKeyStatus === "checking" ? "#eab308" : "#9ca3af",
+          display: "inline-block"
+        } }),
         React.createElement(
-          "div",
-          { style: { display: "flex", alignItems: "center", gap: "6px", color: theme.mutedText } },
-          React.createElement("span", { style: {
-            width: "6px",
-            height: "6px",
-            borderRadius: "50%",
-            backgroundColor: apiKeyStatus === "valid" ? "#22c55e" : "#eab308",
-            display: "inline-block"
-          } }),
-          React.createElement("span", null, apiKeyStatus === "valid" ? "Verbunden" : "Key gespeichert"),
-          React.createElement("span", {
-            onClick: function() {
-              setApiKeyStatus("none");
-              setLocalApiKey("");
-            },
-            style: { color: theme.mutedText, cursor: "pointer", textDecoration: "underline", fontSize: "10px", marginLeft: "4px" }
-          }, "\xC4ndern")
+          "span",
+          { style: { color: apiKeyStatus === "invalid" ? "#ef4444" : theme.mutedText, fontSize: "11px" } },
+          apiKeyStatus === "invalid" ? "Ung\xFCltiger Key" : apiKeyStatus === "checking" ? "Wird gepr\xFCft..." : "API-Key eingeben"
         ),
         React.createElement(
           "select",
@@ -1761,6 +1841,7 @@
             style: {
               padding: "2px 6px",
               borderRadius: "4px",
+              marginLeft: "auto",
               border: "1px solid " + theme.border,
               backgroundColor: theme.inputBg,
               color: theme.inputText,
@@ -1771,113 +1852,74 @@
           React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
           React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
         )
-      )
-    ) : (
-      /* Kein Key: Eingabefeld anzeigen */
+      ),
       React.createElement(
         "div",
-        null,
-        React.createElement(
-          "div",
-          { style: { display: "flex", gap: "6px", alignItems: "center", marginBottom: "4px" } },
-          React.createElement("span", { style: {
-            width: "6px",
-            height: "6px",
-            borderRadius: "50%",
-            backgroundColor: apiKeyStatus === "invalid" ? "#ef4444" : apiKeyStatus === "checking" ? "#eab308" : "#9ca3af",
-            display: "inline-block"
-          } }),
-          React.createElement(
-            "span",
-            { style: { color: apiKeyStatus === "invalid" ? "#ef4444" : theme.mutedText, fontSize: "11px" } },
-            apiKeyStatus === "invalid" ? "Ung\xFCltiger Key" : apiKeyStatus === "checking" ? "Wird gepr\xFCft..." : "API-Key eingeben"
-          ),
-          React.createElement(
-            "select",
-            {
-              value: selectedModel,
-              onChange: function(e) {
-                setSelectedModel(e.target.value);
-              },
-              style: {
-                padding: "2px 6px",
-                borderRadius: "4px",
-                marginLeft: "auto",
-                border: "1px solid " + theme.border,
-                backgroundColor: theme.inputBg,
-                color: theme.inputText,
-                fontSize: "11px",
-                outline: "none"
-              }
-            },
-            React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
-            React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
-          )
-        ),
-        React.createElement(
-          "div",
-          { style: { display: "flex", gap: "6px" } },
-          React.createElement("input", {
-            type: "password",
-            placeholder: "sk-ant-...",
-            onChange: function(e) {
-              setLocalApiKey(e.target.value);
-            },
-            onKeyDown: function(e) {
-              if (e.key === "Enter") validateApiKey(e.target.value);
-            },
-            style: {
-              flex: 1,
-              padding: "5px 8px",
-              borderRadius: "6px",
-              border: "1px solid " + theme.border,
-              backgroundColor: theme.inputBg,
-              color: theme.inputText,
-              fontSize: "12px",
-              outline: "none",
-              fontFamily: "inherit"
-            }
-          }),
-          React.createElement("button", {
-            onClick: function() {
-              validateApiKey(localApiKey);
-            },
-            disabled: apiKeyStatus === "checking",
-            style: {
-              padding: "5px 12px",
-              borderRadius: "6px",
-              border: "none",
-              backgroundColor: theme.primary,
-              color: "#fff",
-              fontSize: "11px",
-              fontWeight: 600,
-              cursor: apiKeyStatus === "checking" ? "wait" : "pointer"
-            }
-          }, apiKeyStatus === "checking" ? "..." : "Pr\xFCfen")
-        ),
-        React.createElement(
-          "div",
-          { style: { fontSize: "10px", color: theme.mutedText, marginTop: "4px", display: "flex", justifyContent: "space-between" } },
-          React.createElement("span", null, "\u{1F512} Bleibt lokal"),
-          React.createElement("a", {
-            href: "https://console.anthropic.com/settings/keys",
-            target: "_blank",
-            rel: "noopener noreferrer",
-            style: { color: theme.primary, textDecoration: "underline", fontSize: "10px" }
-          }, "Key erstellen")
-        )
+        { style: { display: "flex", gap: "6px" } },
+        React.createElement("input", {
+          type: "password",
+          placeholder: "sk-ant-...",
+          onChange: function(e) {
+            setLocalApiKey(e.target.value);
+          },
+          onKeyDown: function(e) {
+            if (e.key === "Enter") validateApiKey(e.target.value);
+          },
+          style: {
+            flex: 1,
+            padding: "5px 8px",
+            borderRadius: "6px",
+            border: "1px solid " + theme.border,
+            backgroundColor: theme.inputBg,
+            color: theme.inputText,
+            fontSize: "12px",
+            outline: "none",
+            fontFamily: "inherit"
+          }
+        }),
+        React.createElement("button", {
+          onClick: function() {
+            validateApiKey(localApiKey);
+          },
+          disabled: apiKeyStatus === "checking",
+          style: {
+            padding: "5px 12px",
+            borderRadius: "6px",
+            border: "none",
+            backgroundColor: theme.primary,
+            color: "#fff",
+            fontSize: "11px",
+            fontWeight: 600,
+            cursor: apiKeyStatus === "checking" ? "wait" : "pointer"
+          }
+        }, apiKeyStatus === "checking" ? "..." : "Pr\xFCfen")
+      ),
+      React.createElement(
+        "div",
+        { style: { fontSize: "10px", color: theme.mutedText, marginTop: "4px", display: "flex", justifyContent: "space-between" } },
+        React.createElement("span", null, "\u{1F512} Bleibt lokal"),
+        React.createElement("a", {
+          href: "https://console.anthropic.com/settings/keys",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          style: { color: theme.primary, textDecoration: "underline", fontSize: "10px" }
+        }, "Key erstellen")
       )
-    )), apiKeyStatus !== "valid" && apiKeyStatus !== "uncertain" && messageCount === 0 && /* @__PURE__ */ React.createElement("div", { style: {
+    ))), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes cowanWidgetGlow { 0% { filter: drop-shadow(0 0 6px rgba(185, 28, 28, 0.4)); } 50% { filter: drop-shadow(0 0 18px rgba(185, 28, 28, 0.8)) drop-shadow(0 0 40px rgba(185, 28, 28, 0.3)); } 100% { filter: drop-shadow(0 0 6px rgba(185, 28, 28, 0.4)); } } .cowan-widget-input::placeholder { color: " + (apiActive ? "#e0e8f4" : "#64748b") + " !important; opacity: 1; }" } }), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, position: "relative", minHeight: 0, overflow: "hidden" } }, /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      padding: "24px 16px 8px",
-      flex: 1,
-      justifyContent: "center"
+      opacity: apiActive || messageCount > 0 ? 0 : 1,
+      transition: "opacity 1.5s ease",
+      pointerEvents: apiActive || messageCount > 0 ? "none" : "auto"
     } }, /* @__PURE__ */ React.createElement("div", { style: {
-      background: "#2d1214",
-      border: "1px solid #4a1c1e",
-      color: "#fca5a5",
+      background: "#3d1518",
+      border: "1px solid #5a2025",
+      color: "#fde8e8",
       fontSize: 13,
       fontWeight: 600,
       padding: "10px 18px",
@@ -1895,8 +1937,20 @@
       height: 0,
       borderLeft: "8px solid transparent",
       borderRight: "8px solid transparent",
-      borderTop: "8px solid #2d1214"
-    } })), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes cowanWidgetGlow { 0% { filter: drop-shadow(0 0 6px rgba(185, 28, 28, 0.4)); } 50% { filter: drop-shadow(0 0 18px rgba(185, 28, 28, 0.8)) drop-shadow(0 0 40px rgba(185, 28, 28, 0.3)); } 100% { filter: drop-shadow(0 0 6px rgba(185, 28, 28, 0.4)); } }" } }), /* @__PURE__ */ React.createElement("span", { style: { display: "block", width: 170, height: 170, animation: "cowanWidgetGlow 3s ease-in-out infinite" }, dangerouslySetInnerHTML: { __html: OPENCLAW_WIDGET_SVG } })), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "12px", minHeight: 0, WebkitOverflowScrolling: "touch", display: apiKeyStatus !== "valid" && apiKeyStatus !== "uncertain" && messageCount === 0 ? "none" : "block" } }, messages.map(function(msg, i) {
+      borderTop: "8px solid #3d1518"
+    } })), /* @__PURE__ */ React.createElement("span", { style: { display: "block", width: 170, height: 170, animation: "cowanWidgetGlow 3s ease-in-out infinite" }, dangerouslySetInnerHTML: { __html: OPENCLAW_WIDGET_SVG } })), /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      overflowY: "auto",
+      padding: "12px",
+      WebkitOverflowScrolling: "touch",
+      opacity: apiActive || messageCount > 0 ? 1 : 0,
+      transition: "opacity 1.2s ease",
+      pointerEvents: apiActive || messageCount > 0 ? "auto" : "none"
+    } }, messages.map(function(msg, i) {
       var isAssistant = msg.role === "assistant";
       return /* @__PURE__ */ React.createElement("div", { key: i, style: {
         display: "flex",
@@ -1907,7 +1961,8 @@
         borderRadius: "10px",
         padding: "8px 12px",
         backgroundColor: isAssistant ? theme.cowanBubble : theme.userBubble,
-        border: "1px solid " + theme.border
+        border: "1px solid " + theme.border,
+        color: "#ffffff"
       } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: "6px" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "14px", flexShrink: 0 } }, isAssistant ? /* @__PURE__ */ React.createElement(CowanLobsterIcon, { size: 16 }) : "\u{1F464}"), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, minWidth: 0 } }, !isAssistant && msg.imageData && /* @__PURE__ */ React.createElement(
         "img",
         {
@@ -1921,7 +1976,8 @@
           style: {
             lineHeight: 1.5,
             wordBreak: "break-word",
-            fontSize: "13px"
+            fontSize: "13px",
+            color: "#ffffff"
           },
           dangerouslySetInnerHTML: { __html: renderMarkdown(msg.content) }
         }
@@ -1937,8 +1993,8 @@
               padding: "6px 10px",
               borderRadius: "8px",
               border: "1px solid " + theme.border,
-              backgroundColor: "#334155",
-              color: theme.text,
+              backgroundColor: theme.userBubble,
+              color: "#ffffff",
               fontSize: "11px",
               cursor: "pointer",
               fontWeight: 400,
@@ -1961,13 +2017,13 @@
       display: "flex",
       alignItems: "center",
       gap: "6px"
-    } }, /* @__PURE__ */ React.createElement(CowanLobsterIcon, { size: 16 }), /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText, fontSize: "12px", display: "flex", alignItems: "center", gap: "3px" } }, "Denkt nach", /* @__PURE__ */ React.createElement("span", { style: { display: "inline-flex", gap: "2px", marginLeft: "2px" } }, /* @__PURE__ */ React.createElement("span", { style: { width: "4px", height: "4px", borderRadius: "50%", backgroundColor: theme.primary, display: "inline-block", animation: "cowanDot 1.4s infinite ease-in-out", animationDelay: "0s" } }), /* @__PURE__ */ React.createElement("span", { style: { width: "4px", height: "4px", borderRadius: "50%", backgroundColor: theme.primary, display: "inline-block", animation: "cowanDot 1.4s infinite ease-in-out", animationDelay: "0.2s" } }), /* @__PURE__ */ React.createElement("span", { style: { width: "4px", height: "4px", borderRadius: "50%", backgroundColor: theme.primary, display: "inline-block", animation: "cowanDot 1.4s infinite ease-in-out", animationDelay: "0.4s" } }))), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes cowanDot { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1.2); } }" } }))), /* @__PURE__ */ React.createElement("div", { ref: chatEndRef })), error && /* @__PURE__ */ React.createElement("div", { style: { padding: "8px 12px", flexShrink: 0, borderTop: "1px solid " + theme.border } }, /* @__PURE__ */ React.createElement("div", { style: {
+    } }, /* @__PURE__ */ React.createElement(CowanLobsterIcon, { size: 16 }), /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText, fontSize: "12px", display: "flex", alignItems: "center", gap: "3px" } }, "Denkt nach", /* @__PURE__ */ React.createElement("span", { style: { display: "inline-flex", gap: "2px", marginLeft: "2px" } }, /* @__PURE__ */ React.createElement("span", { style: { width: "4px", height: "4px", borderRadius: "50%", backgroundColor: theme.primary, display: "inline-block", animation: "cowanDot 1.4s infinite ease-in-out", animationDelay: "0s" } }), /* @__PURE__ */ React.createElement("span", { style: { width: "4px", height: "4px", borderRadius: "50%", backgroundColor: theme.primary, display: "inline-block", animation: "cowanDot 1.4s infinite ease-in-out", animationDelay: "0.2s" } }), /* @__PURE__ */ React.createElement("span", { style: { width: "4px", height: "4px", borderRadius: "50%", backgroundColor: theme.primary, display: "inline-block", animation: "cowanDot 1.4s infinite ease-in-out", animationDelay: "0.4s" } }))), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes cowanDot { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1.2); } }" } }))), /* @__PURE__ */ React.createElement("div", { ref: chatEndRef }))), error && /* @__PURE__ */ React.createElement("div", { style: { padding: "8px 12px", flexShrink: 0, borderTop: "1px solid " + theme.border } }, /* @__PURE__ */ React.createElement("div", { style: {
       padding: "8px 10px",
       borderRadius: "6px",
-      backgroundColor: "#450a0a",
-      color: "#fca5a5",
+      backgroundColor: "#551015",
+      color: "#fde8e8",
       fontSize: "12px",
-      border: "1px solid #7f1d1d",
+      border: "1px solid #8f2525",
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center"
@@ -1980,13 +2036,21 @@
         style: { background: "none", border: "none", fontWeight: 700, cursor: "pointer", color: "inherit", fontSize: "14px" }
       },
       "x"
-    ))), !apiKeyRef.current && apiKeyStatus !== "checking" && apiKeyStatus !== "invalid" && /* @__PURE__ */ React.createElement("div", { style: { padding: "8px 12px", flexShrink: 0, borderTop: "1px solid " + theme.border } }, /* @__PURE__ */ React.createElement("div", { style: {
+    ))), /* @__PURE__ */ React.createElement("div", { style: {
+      flexShrink: 0,
+      borderTop: apiActive || messageCount > 0 ? "none" : "1px solid " + theme.border,
+      opacity: apiActive || messageCount > 0 ? 0 : 1,
+      maxHeight: apiActive || messageCount > 0 ? 0 : "60px",
+      overflow: "hidden",
+      padding: apiActive || messageCount > 0 ? "0 12px" : "8px 12px",
+      transition: "opacity 1.5s ease, max-height 0.01s ease 2.5s, padding 0.01s ease 2.5s, border-top 0.01s ease 2.5s"
+    } }, /* @__PURE__ */ React.createElement("div", { style: {
       padding: "8px 10px",
       borderRadius: "6px",
-      backgroundColor: "#2d1214",
-      color: "#fca5a5",
+      backgroundColor: "#3d1518",
+      color: "#fde8e8",
       fontSize: "11px",
-      border: "1px solid #334155",
+      border: "1px solid #5a2025",
       lineHeight: 1.4
     } }, "Gib oben deinen Claude API-Key ein, um mit Cowan zu chatten. Den Key bekommst du unter console.anthropic.com.")), currentChapter && currentChapter.number && /* @__PURE__ */ React.createElement("div", { style: {
       borderTop: "1px solid " + theme.border,
@@ -2075,6 +2139,7 @@
     ), /* @__PURE__ */ React.createElement(
       "textarea",
       {
+        className: "cowan-widget-input",
         value: input,
         onChange: function(e) {
           setInput(e.target.value);
@@ -2087,8 +2152,8 @@
           padding: "8px 10px",
           borderRadius: "6px",
           border: "1px solid " + theme.border,
-          backgroundColor: theme.inputBg,
-          color: theme.inputText,
+          backgroundColor: apiActive ? "#2a3d5c" : theme.inputBg,
+          color: "#ffffff",
           fontSize: "13px",
           outline: "none",
           flex: 1,
@@ -3749,10 +3814,7 @@ Erstelle das komplette Dashboard als eine einzige React-Komponente. Alle Daten i
         setTasks({});
       }
     };
-    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "min-h-screen bg-gray-900 text-gray-100", style: {
-      filter: cowanOpen ? "brightness(0.7)" : "none",
-      transition: "filter 0.3s"
-    } }, /* @__PURE__ */ import_react4.default.createElement(SearchOverlay, { isOpen: searchOpen, onClose: () => setSearchOpen(false), onNavigate: switchTab, tasks }), /* @__PURE__ */ import_react4.default.createElement(UndoToast, { visible: !!undoState, message: undoState?.message || "", onUndo: performUndo, onDismiss: dismissUndo }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 border-b border-gray-700 sticky top-0 z-50" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "max-w-6xl mx-auto px-3 sm:px-4 py-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0" }, /* @__PURE__ */ import_react4.default.createElement("button", { onClick: () => setSidebarOpen(!sidebarOpen), className: "lg:hidden p-1 -ml-1 text-gray-400 hover:text-white" }, sidebarOpen ? /* @__PURE__ */ import_react4.default.createElement(X, { className: "w-5 h-5" }) : /* @__PURE__ */ import_react4.default.createElement(Menu, { className: "w-5 h-5" })), /* @__PURE__ */ import_react4.default.createElement(Book, { className: "w-6 sm:w-7 h-6 sm:h-7 text-blue-400 shrink-0" }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "min-w-0" }, /* @__PURE__ */ import_react4.default.createElement("h1", { className: "text-base sm:text-xl font-bold truncate" }, "OpenClaw Buchprojekt"), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-blue-200 hidden sm:block" }, "Dein Dashboard: Server-Setup bis KDP-Upload - alle Schritte tracken & Code kopieren"))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react4.default.createElement(
+    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "min-h-screen bg-gray-900 text-gray-100" }, /* @__PURE__ */ import_react4.default.createElement(SearchOverlay, { isOpen: searchOpen, onClose: () => setSearchOpen(false), onNavigate: switchTab, tasks }), /* @__PURE__ */ import_react4.default.createElement(UndoToast, { visible: !!undoState, message: undoState?.message || "", onUndo: performUndo, onDismiss: dismissUndo }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 border-b border-gray-700 sticky top-0 z-50" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "max-w-6xl mx-auto px-3 sm:px-4 py-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2 sm:gap-3 min-w-0" }, /* @__PURE__ */ import_react4.default.createElement("button", { onClick: () => setSidebarOpen(!sidebarOpen), className: "lg:hidden p-1 -ml-1 text-gray-400 hover:text-white" }, sidebarOpen ? /* @__PURE__ */ import_react4.default.createElement(X, { className: "w-5 h-5" }) : /* @__PURE__ */ import_react4.default.createElement(Menu, { className: "w-5 h-5" })), /* @__PURE__ */ import_react4.default.createElement(Book, { className: "w-6 sm:w-7 h-6 sm:h-7 text-blue-400 shrink-0" }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "min-w-0" }, /* @__PURE__ */ import_react4.default.createElement("h1", { className: "text-base sm:text-xl font-bold truncate" }, "OpenClaw Buchprojekt"), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs text-blue-200 hidden sm:block" }, "Dein Dashboard: Server-Setup bis KDP-Upload - alle Schritte tracken & Code kopieren"))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react4.default.createElement(
       "button",
       {
         onClick: () => {
@@ -3934,7 +3996,7 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
       "@keyframes cowanGlow { 0% { filter: drop-shadow(0 0 6px rgba(13, 148, 136, 0.4)); } 50% { filter: drop-shadow(0 0 18px rgba(13, 148, 136, 0.8)) drop-shadow(0 0 40px rgba(13, 148, 136, 0.3)); } 100% { filter: drop-shadow(0 0 6px rgba(13, 148, 136, 0.4)); } }",
       "@keyframes cowanBubbleIn { 0% { opacity: 0; transform: translateY(8px) scale(0.8); } 100% { opacity: 1; transform: translateY(0) scale(1); } }",
       "@keyframes cowanBubbleOut { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(8px) scale(0.8); } }",
-      "@keyframes cowanPanelGlow { 0% { box-shadow: -8px 0 30px rgba(0,0,0,0.5), 0 0 15px rgba(185,28,28,0.3), inset 0 0 30px rgba(185,28,28,0.05); } 50% { box-shadow: -8px 0 30px rgba(0,0,0,0.5), 0 0 35px rgba(185,28,28,0.6), inset 0 0 60px rgba(185,28,28,0.1); } 100% { box-shadow: -8px 0 30px rgba(0,0,0,0.5), 0 0 15px rgba(185,28,28,0.3), inset 0 0 30px rgba(185,28,28,0.05); } }"
+      "@keyframes cowanPanelGlow { 0% { box-shadow: -8px 0 30px rgba(0,0,0,0.5), 0 0 25px rgba(220,38,38,0.5), 0 0 60px rgba(185,28,28,0.25), inset 0 0 40px rgba(220,38,38,0.08); } 50% { box-shadow: -8px 0 30px rgba(0,0,0,0.5), 0 0 60px rgba(220,38,38,0.85), 0 0 120px rgba(185,28,28,0.4), inset 0 0 80px rgba(220,38,38,0.15); } 100% { box-shadow: -8px 0 30px rgba(0,0,0,0.5), 0 0 25px rgba(220,38,38,0.5), 0 0 60px rgba(185,28,28,0.25), inset 0 0 40px rgba(220,38,38,0.08); } }"
     ].join(" ") } }), !cowanOpen && /* @__PURE__ */ import_react4.default.createElement("div", { style: { position: "fixed", bottom: 8, right: 8, zIndex: 1e3 } }, cowanBubble && /* @__PURE__ */ import_react4.default.createElement("div", { style: {
       position: "absolute",
       bottom: "100%",
@@ -3991,21 +4053,23 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
       zIndex: 1001,
       width: 400,
       height: "100vh",
-      background: "#0f172a",
-      borderLeft: cowanOpen && apiKeyValidated ? "1px solid #7f1d1d" : "1px solid #3b1111",
+      background: cowanOpen && apiKeyValidated ? "#1e3050" : "#0f172a",
+      borderLeft: cowanOpen && apiKeyValidated ? "1px solid #ef4444" : "1px solid #3b1111",
       display: "flex",
       flexDirection: "column",
-      transition: "right 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+      transition: "right 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s ease, border-color 0.8s ease",
       boxShadow: cowanOpen ? "-8px 0 30px rgba(0, 0, 0, 0.5)" : "none",
-      animation: cowanOpen && apiKeyValidated ? "cowanPanelGlow 3s ease-in-out infinite" : "none"
+      animation: cowanOpen && apiKeyValidated ? "cowanPanelGlow 2.5s ease-in-out infinite" : "none"
     } }, /* @__PURE__ */ import_react4.default.createElement("div", { style: {
-      background: apiKeyValidated ? "linear-gradient(135deg, #b91c1c, #991b1b)" : "linear-gradient(135deg, #991b1b, #7f1d1d)",
+      background: apiKeyValidated ? "linear-gradient(135deg, #dc2626, #b91c1c)" : "linear-gradient(135deg, #991b1b, #7f1d1d)",
       padding: "14px 16px",
+      height: "54px",
+      boxSizing: "border-box",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      boxShadow: apiKeyValidated ? "0 2px 20px rgba(185, 28, 28, 0.4)" : "none",
-      transition: "background 0.5s ease, box-shadow 0.5s ease"
+      boxShadow: apiKeyValidated ? "0 2px 30px rgba(220, 38, 38, 0.6), inset 0 -1px 0 rgba(255,255,255,0.1)" : "none",
+      transition: "background 0.8s ease, box-shadow 0.8s ease"
     } }, /* @__PURE__ */ import_react4.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ import_react4.default.createElement(IconOpenClaw, { size: 22 }), /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("div", { style: { fontWeight: 700, fontSize: 16, color: "#fff" } }, "Cowan"), /* @__PURE__ */ import_react4.default.createElement("div", { style: { fontSize: 11, color: "rgba(255,255,255,0.7)" } }, "Die Buch-Instanz"))), /* @__PURE__ */ import_react4.default.createElement(
       "button",
       {
@@ -4058,19 +4122,20 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
           }, {})
         } : null
       }
-    )), cowanOpen && /* @__PURE__ */ import_react4.default.createElement(
+    )), /* @__PURE__ */ import_react4.default.createElement(
       "div",
       {
-        onClick: () => setCowanOpen(false),
+        onClick: () => cowanOpen && setCowanOpen(false),
         style: {
           position: "fixed",
           top: 0,
           left: 0,
           right: 400,
           bottom: 0,
-          background: "rgba(0,0,0,0.3)",
-          zIndex: 999,
-          transition: "opacity 0.3s"
+          background: cowanOpen ? apiKeyValidated ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.4)" : "rgba(0,0,0,0)",
+          zIndex: cowanOpen ? 999 : -1,
+          pointerEvents: cowanOpen ? "auto" : "none",
+          transition: "background 0.8s ease"
         }
       }
     ));
