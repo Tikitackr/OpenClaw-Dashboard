@@ -3544,17 +3544,20 @@ Erstelle das komplette Dashboard als eine einzige React-Komponente. Alle Daten i
     (0, import_react5.useEffect)(() => {
       var bubbleTexts = ["Frag mich was!", "Brauchst du Hilfe?"];
       var idx = 0;
+      var timers = [];
       function showBubble() {
         setCowanBubble(bubbleTexts[idx]);
         idx = (idx + 1) % bubbleTexts.length;
-        setTimeout(() => setCowanBubble(""), 4e3);
+        timers.push(setTimeout(() => setCowanBubble(""), 4e3));
       }
-      var timer = setTimeout(() => {
+      timers.push(setTimeout(() => showBubble(), 15e3));
+      timers.push(setTimeout(() => showBubble(), 12e4));
+      timers.push(setTimeout(() => {
         showBubble();
-        var interval = setInterval(showBubble, 12e3);
-        return () => clearInterval(interval);
-      }, 5e3);
-      return () => clearTimeout(timer);
+        var interval = setInterval(showBubble, 3e5);
+        timers.push(interval);
+      }, 42e4));
+      return () => timers.forEach((t) => clearTimeout(t));
     }, []);
     const pushUndo = (0, import_react5.useCallback)((prevTasks, message) => {
       if (undoTimer.current) clearTimeout(undoTimer.current);
@@ -3904,16 +3907,17 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
     ].join(" ") } }), !cowanOpen && /* @__PURE__ */ import_react4.default.createElement("div", { style: { position: "fixed", bottom: 8, right: 8, zIndex: 1e3 } }, cowanBubble && /* @__PURE__ */ import_react4.default.createElement("div", { style: {
       position: "absolute",
       bottom: "100%",
-      right: 20,
-      marginBottom: -10,
-      background: "linear-gradient(135deg, #0d9488, #0f766e)",
-      color: "#fff",
+      right: 10,
+      marginBottom: -5,
+      background: "#1e293b",
+      border: "1px solid #334155",
+      color: "#e2e8f0",
       fontSize: 13,
       fontWeight: 600,
       padding: "8px 14px",
       borderRadius: 12,
       whiteSpace: "nowrap",
-      boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+      boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
       animation: "cowanBubbleIn 0.3s ease-out",
       pointerEvents: "none"
     } }, cowanBubble, /* @__PURE__ */ import_react4.default.createElement("div", { style: {
@@ -3924,7 +3928,7 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
       height: 0,
       borderLeft: "8px solid transparent",
       borderRight: "8px solid transparent",
-      borderTop: "8px solid #0f766e"
+      borderTop: "8px solid #1e293b"
     } })), /* @__PURE__ */ import_react4.default.createElement(
       "button",
       {
@@ -3935,8 +3939,8 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
           cursor: "pointer",
           padding: 0,
           display: "block",
-          width: 220,
-          height: 220,
+          width: 135,
+          height: 135,
           animation: "cowanGlow 3s ease-in-out infinite",
           transition: "transform 0.2s"
         },
@@ -3948,7 +3952,7 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
         },
         title: "Cowan \xF6ffnen"
       },
-      /* @__PURE__ */ import_react4.default.createElement("span", { style: { display: "block", width: 220, height: 220, pointerEvents: "none" }, dangerouslySetInnerHTML: { __html: OPENCLAW_SVG } })
+      /* @__PURE__ */ import_react4.default.createElement("span", { style: { display: "block", width: 135, height: 135, pointerEvents: "none" }, dangerouslySetInnerHTML: { __html: OPENCLAW_SVG } })
     )), /* @__PURE__ */ import_react4.default.createElement("div", { style: {
       position: "fixed",
       top: 0,
