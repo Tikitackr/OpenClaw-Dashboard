@@ -1100,6 +1100,18 @@
     };
     var currentChapter = props.currentChapter || null;
     var chapterProgress = props.chapterProgress || null;
+    var _showQrModal = (0, import_react3.useState)(false);
+    var showQrModal = _showQrModal[0];
+    var setShowQrModal = _showQrModal[1];
+    var generateQrUrl = function() {
+      var key = propsApiKey || localApiKey;
+      var encodedKey = key ? btoa(key) : "";
+      var companionUrl = "https://tikitackr.github.io/Cowan/?mode=companion&apikey=" + encodeURIComponent(encodedKey);
+      return companionUrl;
+    };
+    var getQrImageUrl = function(data) {
+      return "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(data);
+    };
     var _localApiKey = (0, import_react3.useState)("");
     var localApiKey = _localApiKey[0];
     var setLocalApiKey = _localApiKey[1];
@@ -1725,6 +1737,27 @@
     )))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "8px" } }, /* @__PURE__ */ React.createElement(
       "button",
       {
+        onClick: function() {
+          setShowQrModal(true);
+        },
+        disabled: !apiKey,
+        title: "Handy verbinden (QR-Code)",
+        style: {
+          padding: "4px 10px",
+          borderRadius: "6px",
+          border: "1px solid " + theme.border,
+          backgroundColor: theme.cardBg,
+          color: apiKey ? theme.primary : theme.mutedText,
+          cursor: apiKey ? "pointer" : "not-allowed",
+          fontSize: "11px",
+          fontWeight: 600,
+          opacity: apiKey ? 1 : 0.5
+        }
+      },
+      "\u{1F4F1} Handy"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
         onClick: resetConversation,
         style: {
           padding: "4px 10px",
@@ -2192,7 +2225,42 @@
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center"
-    } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "12px" } }, /* @__PURE__ */ React.createElement("span", null, "T: ", (totalTokens.input + totalTokens.output).toLocaleString("de-DE")), /* @__PURE__ */ React.createElement("span", null, "$" + totalCost.toFixed(4)), /* @__PURE__ */ React.createElement("span", null, PRICING[selectedModel].label))), showChunkBrowser && /* @__PURE__ */ React.createElement("div", { style: {
+    } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "12px" } }, /* @__PURE__ */ React.createElement("span", null, "T: ", (totalTokens.input + totalTokens.output).toLocaleString("de-DE")), /* @__PURE__ */ React.createElement("span", null, "$" + totalCost.toFixed(4)), /* @__PURE__ */ React.createElement("span", null, PRICING[selectedModel].label))), showQrModal && /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0,0,0,0.6)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 10001
+    } }, /* @__PURE__ */ React.createElement("div", { style: {
+      backgroundColor: theme.cardBg,
+      borderRadius: "12px",
+      padding: "24px",
+      maxWidth: "340px",
+      width: "90%",
+      border: "1px solid " + theme.border,
+      textAlign: "center"
+    } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: "16px", fontWeight: 700, color: theme.text } }, "\u{1F4F1} Handy verbinden"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: function() {
+          setShowQrModal(false);
+        },
+        style: { background: "none", border: "none", color: theme.mutedText, fontSize: "16px", cursor: "pointer", fontWeight: 700 }
+      },
+      "x"
+    )), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "16px" } }, /* @__PURE__ */ React.createElement(
+      "img",
+      {
+        src: getQrImageUrl(generateQrUrl()),
+        alt: "QR-Code fuer Handy-Cowan",
+        style: { width: "200px", height: "200px", borderRadius: "8px", border: "1px solid " + theme.border }
+      }
+    )), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "13px", color: theme.text, marginBottom: "8px", fontWeight: 600 } }, "Scanne mit deinem iPhone"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "11px", color: theme.mutedText, lineHeight: 1.5 } }, "Kamera-App oeffnen und QR-Code scannen. Cowan startet automatisch im Companion-Modus mit deinem API-Key."), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "10px", color: theme.mutedText, marginTop: "12px", padding: "8px", backgroundColor: darkMode ? "#1e293b" : "#f1f5f9", borderRadius: "6px", wordBreak: "break-all" } }, generateQrUrl().slice(0, 60) + "..."))), showChunkBrowser && /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
       top: 0,
       left: 0,
