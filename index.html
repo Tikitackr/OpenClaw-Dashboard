@@ -1112,6 +1112,37 @@
     var getQrImageUrl = function(data) {
       return "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(data);
     };
+    var _companionConnected = (0, import_react3.useState)(false);
+    var companionConnected = _companionConnected[0];
+    var setCompanionConnected = _companionConnected[1];
+    var _companionFeed = (0, import_react3.useState)([]);
+    var companionFeed = _companionFeed[0];
+    var setCompanionFeed = _companionFeed[1];
+    var _showFeed = (0, import_react3.useState)(false);
+    var showFeed = _showFeed[0];
+    var setShowFeed = _showFeed[1];
+    var activateCompanionDemo = function() {
+      setCompanionConnected(true);
+      setShowQrModal(false);
+      setShowFeed(true);
+      var demoEvents = [
+        { icon: "\u{1F4F1}", text: "Companion verbunden", time: "gerade eben", type: "system" },
+        { icon: "\u{1F4D6}", text: "Kapitel 2: Agent-Konzepte gescannt", time: "vor 2 Min", type: "scan" },
+        { icon: "\u{1F399}\uFE0F", text: '"Kapitel 2 fertig" \u2013 als gelesen markiert', time: "vor 1 Min", type: "command" },
+        { icon: "\u2753", text: 'Frage: "Was sind Docker Volumes?"', time: "vor 30 Sek", type: "question" }
+      ];
+      setCompanionFeed([demoEvents[0]]);
+      var addEvent = function(idx) {
+        if (idx >= demoEvents.length) return;
+        setTimeout(function() {
+          setCompanionFeed(function(prev) {
+            return [demoEvents[idx]].concat(prev);
+          });
+          addEvent(idx + 1);
+        }, 2500);
+      };
+      addEvent(1);
+    };
     var _localApiKey = (0, import_react3.useState)("");
     var localApiKey = _localApiKey[0];
     var setLocalApiKey = _localApiKey[1];
@@ -1738,23 +1769,28 @@
       "button",
       {
         onClick: function() {
-          setShowQrModal(true);
+          if (companionConnected) {
+            setShowFeed(!showFeed);
+          } else {
+            setShowQrModal(true);
+          }
         },
         disabled: !apiKey,
-        title: "Handy verbinden (QR-Code)",
+        title: companionConnected ? "Aktivitaets-Feed ein-/ausblenden" : "Handy verbinden (QR-Code)",
         style: {
           padding: "4px 10px",
           borderRadius: "6px",
-          border: "1px solid " + theme.border,
-          backgroundColor: theme.cardBg,
-          color: apiKey ? theme.primary : theme.mutedText,
+          border: companionConnected ? "1px solid #22c55e" : "1px solid " + theme.border,
+          backgroundColor: companionConnected ? "rgba(34,197,94,0.15)" : theme.cardBg,
+          color: companionConnected ? "#22c55e" : apiKey ? theme.primary : theme.mutedText,
           cursor: apiKey ? "pointer" : "not-allowed",
           fontSize: "11px",
           fontWeight: 600,
-          opacity: apiKey ? 1 : 0.5
+          opacity: apiKey ? 1 : 0.5,
+          transition: "all 0.3s ease"
         }
       },
-      "\u{1F4F1} Handy"
+      companionConnected ? "\u{1F4F1} Live" : "\u{1F4F1} Handy"
     ), /* @__PURE__ */ React.createElement(
       "button",
       {
@@ -1771,7 +1807,47 @@
         }
       },
       "+ Neu"
-    ))), /* @__PURE__ */ React.createElement("div", { style: {
+    ))), companionConnected && /* @__PURE__ */ React.createElement("div", { style: {
+      borderBottom: "1px solid " + theme.border,
+      backgroundColor: showFeed ? theme.bg === "#1e3050" ? "#1a2a45" : "#0d1420" : theme.cardBg,
+      flexShrink: 0,
+      transition: "background-color 0.3s",
+      overflow: "hidden"
+    } }, /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        onClick: function() {
+          setShowFeed(!showFeed);
+        },
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "6px 12px",
+          cursor: "pointer"
+        }
+      },
+      /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "6px", fontSize: "11px" } }, /* @__PURE__ */ React.createElement("span", { style: {
+        display: "inline-block",
+        width: "7px",
+        height: "7px",
+        borderRadius: "50%",
+        backgroundColor: "#22c55e",
+        animation: "companionPulse 2s ease-in-out infinite"
+      } }), /* @__PURE__ */ React.createElement("span", { style: { color: "#22c55e", fontWeight: 700 } }, "Companion verbunden"), companionFeed.length > 0 && /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText } }, "\u2013 " + companionFeed[0].text)),
+      /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText, fontSize: "10px", transition: "transform 0.2s", transform: showFeed ? "rotate(180deg)" : "rotate(0deg)" } }, "\u25BC")
+    ), showFeed && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 8px 12px", maxHeight: "120px", overflowY: "auto" } }, companionFeed.map(function(event, idx) {
+      return /* @__PURE__ */ React.createElement("div", { key: idx, style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        padding: "4px 0",
+        fontSize: "11px",
+        color: theme.text,
+        opacity: idx === 0 ? 1 : 0.7,
+        animation: idx === 0 ? "feedSlideIn 0.3s ease" : "none"
+      } }, /* @__PURE__ */ React.createElement("span", null, event.icon), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }, event.text), /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText, fontSize: "10px", flexShrink: 0 } }, event.time));
+    }), companionFeed.length === 0 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: "11px", color: theme.mutedText, padding: "8px 0" } }, "Warte auf Aktivitaet vom Handy...")), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes companionPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } @keyframes feedSlideIn { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }" } })), /* @__PURE__ */ React.createElement("div", { style: {
       padding: "6px 12px",
       backgroundColor: theme.cardBg,
       borderBottom: "1px solid " + theme.border,
@@ -2281,9 +2357,27 @@
             if (navigator.clipboard) navigator.clipboard.writeText(generateQrUrl());
           },
           title: "Klicken zum Kopieren",
-          style: { fontSize: "10px", color: "#64748b", padding: "8px", backgroundColor: "#f1f5f9", borderRadius: "6px", wordBreak: "break-all", cursor: "pointer", border: "1px solid #e2e8f0" }
+          style: { fontSize: "10px", color: "#64748b", padding: "8px", backgroundColor: "#f1f5f9", borderRadius: "6px", wordBreak: "break-all", cursor: "pointer", border: "1px solid #e2e8f0", marginBottom: "12px" }
         },
         generateQrUrl().slice(0, 70) + "..."
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          onClick: activateCompanionDemo,
+          style: {
+            width: "100%",
+            padding: "10px",
+            borderRadius: "8px",
+            border: "none",
+            backgroundColor: "#22c55e",
+            color: "#ffffff",
+            fontWeight: 700,
+            fontSize: "13px",
+            cursor: "pointer",
+            transition: "background-color 0.2s"
+          }
+        },
+        "\u2705 Gescannt \u2013 Companion verbinden"
       ))
     ), showChunkBrowser && /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
