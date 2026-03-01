@@ -1113,6 +1113,8 @@
     };
     var currentChapter = props.currentChapter || null;
     var chapterProgress = props.chapterProgress || null;
+    var onRegisterActions = props.onRegisterActions || function() {
+    };
     var _showQrModal = (0, import_react3.useState)(false);
     var showQrModal = _showQrModal[0];
     var setShowQrModal = _showQrModal[1];
@@ -1621,6 +1623,14 @@
     var messageCount = messages.filter(function(m) {
       return !m.isWelcome;
     }).length;
+    (0, import_react3.useEffect)(function() {
+      onRegisterActions({
+        reset: resetConversation,
+        exportJson: exportAsJson,
+        exportText: exportAsText,
+        hasMessages: exportableMessages.length > 0
+      });
+    }, [exportableMessages.length]);
     var toggleChunk = function(id) {
       setExpandedChunks(function(prev) {
         var copy = Object.assign({}, prev);
@@ -1679,151 +1689,7 @@
       fontSize: "14px",
       position: "relative",
       transition: "background-color 0.8s ease, color 0.5s ease"
-    } }, /* @__PURE__ */ React.createElement("div", { style: {
-      display: "flex",
-      gap: "8px",
-      padding: "8px 12px",
-      borderBottom: "1px solid " + theme.glassBorder,
-      backgroundColor: theme.glassBg,
-      backdropFilter: "blur(20px) saturate(180%)",
-      WebkitBackdropFilter: "blur(20px) saturate(180%)",
-      flexShrink: 0,
-      height: "38px",
-      alignItems: "center",
-      justifyContent: "space-between",
-      boxSizing: "border-box"
-    } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "8px" } }, React.createElement(CowanMonogramIcon, { size: 20 }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "13px", fontWeight: 700, color: theme.text } }, "Cowan")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "8px" } }, /* @__PURE__ */ React.createElement("div", { style: { position: "relative" } }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: function() {
-          setShowExportMenu(!showExportMenu);
-        },
-        disabled: exportableMessages.length === 0,
-        title: "Konversation exportieren",
-        style: {
-          padding: "4px 10px",
-          borderRadius: "12px",
-          border: "1px solid " + theme.glassCardBorder,
-          backgroundColor: theme.glassCardBg,
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          color: exportableMessages.length > 0 ? theme.primary : theme.mutedText,
-          cursor: exportableMessages.length > 0 ? "pointer" : "not-allowed",
-          fontSize: "11px",
-          fontWeight: 600,
-          opacity: exportableMessages.length > 0 ? 1 : 0.5,
-          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)"
-        },
-        onMouseEnter: function(e) {
-          if (exportableMessages.length > 0) e.currentTarget.style.backgroundColor = theme.glassHighlight;
-        },
-        onMouseLeave: function(e) {
-          e.currentTarget.style.backgroundColor = theme.glassCardBg;
-        }
-      },
-      React.createElement(
-        "svg",
-        { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", style: { marginRight: "4px", verticalAlign: "middle" } },
-        React.createElement("path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" }),
-        React.createElement("polyline", { points: "17 8 12 3 7 8" }),
-        React.createElement("line", { x1: "12", y1: "3", x2: "12", y2: "15" })
-      ),
-      "Export"
-    ), showExportMenu && /* @__PURE__ */ React.createElement("div", { style: {
-      position: "absolute",
-      top: "100%",
-      right: 0,
-      marginTop: "4px",
-      backgroundColor: theme.glassCardBg,
-      backdropFilter: "blur(24px) saturate(180%)",
-      WebkitBackdropFilter: "blur(24px) saturate(180%)",
-      border: "1px solid " + theme.glassCardBorder,
-      borderRadius: "12px",
-      boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
-      zIndex: 100,
-      overflow: "hidden",
-      minWidth: "140px",
-      animation: "fadeInUp 0.2s ease-out"
-    } }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: exportAsJson,
-        style: {
-          display: "block",
-          width: "100%",
-          padding: "8px 12px",
-          border: "none",
-          backgroundColor: "transparent",
-          color: theme.text,
-          fontSize: "12px",
-          cursor: "pointer",
-          textAlign: "left",
-          borderBottom: "1px solid " + theme.glassCardBorder
-        },
-        onMouseEnter: function(e) {
-          e.target.style.backgroundColor = theme.glassHighlight;
-        },
-        onMouseLeave: function(e) {
-          e.target.style.backgroundColor = "transparent";
-        }
-      },
-      "JSON"
-    ), /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: exportAsText,
-        style: {
-          display: "block",
-          width: "100%",
-          padding: "8px 12px",
-          border: "none",
-          backgroundColor: "transparent",
-          color: theme.text,
-          fontSize: "12px",
-          cursor: "pointer",
-          textAlign: "left"
-        },
-        onMouseEnter: function(e) {
-          e.target.style.backgroundColor = theme.glassHighlight;
-        },
-        onMouseLeave: function(e) {
-          e.target.style.backgroundColor = "transparent";
-        }
-      },
-      "Text"
-    ))), /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: resetConversation,
-        title: "Neues Gespraech",
-        style: {
-          padding: "4px 10px",
-          borderRadius: "12px",
-          border: "1px solid " + theme.glassCardBorder,
-          backgroundColor: theme.glassCardBg,
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          color: theme.primary,
-          cursor: "pointer",
-          fontSize: "11px",
-          fontWeight: 600,
-          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)"
-        },
-        onMouseEnter: function(e) {
-          e.currentTarget.style.backgroundColor = theme.glassHighlight;
-        },
-        onMouseLeave: function(e) {
-          e.currentTarget.style.backgroundColor = theme.glassCardBg;
-        }
-      },
-      React.createElement(
-        "svg",
-        { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", style: { marginRight: "4px", verticalAlign: "middle" } },
-        React.createElement("line", { x1: "12", y1: "5", x2: "12", y2: "19" }),
-        React.createElement("line", { x1: "5", y1: "12", x2: "19", y2: "12" })
-      ),
-      "Neu"
-    ))), companionConnected && /* @__PURE__ */ React.createElement("div", { style: {
+    } }, companionConnected && /* @__PURE__ */ React.createElement("div", { style: {
       borderBottom: "1px solid " + theme.glassBorder,
       backgroundColor: theme.glassCardBg,
       backdropFilter: "blur(12px)",
@@ -1879,7 +1745,7 @@
       transition: "opacity 0.8s ease",
       pointerEvents: messageCount > 0 ? "none" : "auto",
       overflowY: "auto"
-    } }, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: "16px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: theme.text } }, "Cowan"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "12px", color: theme.mutedText, marginTop: "2px" } }, "Dein Buch-Begleiter")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" } }, React.createElement(
+    } }, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: "16px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: "14px", color: theme.mutedText } }, "Dein Buch-Begleiter")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" } }, React.createElement(
       "div",
       {
         onClick: function() {
@@ -4097,6 +3963,8 @@ Erstelle das komplette Dashboard als eine einzige React-Komponente. Alle Daten i
     const [openPart, setOpenPart] = (0, import_react5.useState)(null);
     const [cowanOpen, setCowanOpen] = (0, import_react5.useState)(false);
     const [cowanBubble, setCowanBubble] = (0, import_react5.useState)("");
+    const [cowanActions, setCowanActions] = (0, import_react5.useState)({});
+    const [showExportDrop, setShowExportDrop] = (0, import_react5.useState)(false);
     const [updateAvailable, setUpdateAvailable] = (0, import_react5.useState)(null);
     const undoTimer = (0, import_react5.useRef)(null);
     const isInitialLoad = (0, import_react5.useRef)(true);
@@ -4534,10 +4402,111 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
       justifyContent: "space-between",
       boxShadow: apiKeyValidated ? "0 2px 30px rgba(220, 38, 38, 0.6), inset 0 -1px 0 rgba(255,255,255,0.1)" : "none",
       transition: "background 0.8s ease, box-shadow 0.8s ease"
-    } }, /* @__PURE__ */ import_react4.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("div", { style: { fontWeight: 700, fontSize: 16, color: "#fff" } }, "Cowan"), /* @__PURE__ */ import_react4.default.createElement("div", { style: { fontSize: 11, color: "rgba(255,255,255,0.7)" } }, "Die Buch-Instanz"))), /* @__PURE__ */ import_react4.default.createElement(
+    } }, /* @__PURE__ */ import_react4.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("div", { style: { fontWeight: 700, fontSize: 16, color: "#fff" } }, "Cowan"), /* @__PURE__ */ import_react4.default.createElement("div", { style: { fontSize: 11, color: "rgba(255,255,255,0.7)" } }, "Die Buch-Instanz"))), /* @__PURE__ */ import_react4.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6, position: "relative" } }, /* @__PURE__ */ import_react4.default.createElement(
       "button",
       {
-        onClick: () => setCowanOpen(false),
+        onClick: () => setShowExportDrop(!showExportDrop),
+        title: "Chat exportieren",
+        style: {
+          background: "rgba(255,255,255,0.15)",
+          border: "none",
+          color: "#fff",
+          width: 30,
+          height: 30,
+          borderRadius: "50%",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: cowanActions.hasMessages ? 1 : 0.4,
+          pointerEvents: cowanActions.hasMessages ? "auto" : "none"
+        },
+        onMouseEnter: (e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+        },
+        onMouseLeave: (e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+        }
+      },
+      /* @__PURE__ */ import_react4.default.createElement("svg", { width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ import_react4.default.createElement("path", { d: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" }), /* @__PURE__ */ import_react4.default.createElement("polyline", { points: "7 10 12 15 17 10" }), /* @__PURE__ */ import_react4.default.createElement("line", { x1: "12", y1: "15", x2: "12", y2: "3" }))
+    ), showExportDrop && /* @__PURE__ */ import_react4.default.createElement("div", { style: {
+      position: "absolute",
+      top: 36,
+      right: 36,
+      zIndex: 10,
+      background: "rgba(30,48,80,0.95)",
+      backdropFilter: "blur(12px)",
+      borderRadius: 10,
+      border: "1px solid rgba(255,255,255,0.15)",
+      boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+      minWidth: 150,
+      overflow: "hidden"
+    } }, /* @__PURE__ */ import_react4.default.createElement(
+      "button",
+      {
+        onClick: () => {
+          if (cowanActions.exportJson) cowanActions.exportJson();
+          setShowExportDrop(false);
+        },
+        style: { display: "block", width: "100%", padding: "10px 14px", background: "none", border: "none", color: "#fff", fontSize: 13, textAlign: "left", cursor: "pointer" },
+        onMouseEnter: (e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+        },
+        onMouseLeave: (e) => {
+          e.currentTarget.style.background = "none";
+        }
+      },
+      "JSON exportieren"
+    ), /* @__PURE__ */ import_react4.default.createElement(
+      "button",
+      {
+        onClick: () => {
+          if (cowanActions.exportText) cowanActions.exportText();
+          setShowExportDrop(false);
+        },
+        style: { display: "block", width: "100%", padding: "10px 14px", background: "none", border: "none", color: "#fff", fontSize: 13, textAlign: "left", cursor: "pointer" },
+        onMouseEnter: (e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+        },
+        onMouseLeave: (e) => {
+          e.currentTarget.style.background = "none";
+        }
+      },
+      "Text exportieren"
+    )), /* @__PURE__ */ import_react4.default.createElement(
+      "button",
+      {
+        onClick: () => {
+          if (cowanActions.reset) cowanActions.reset();
+        },
+        title: "Neues Gespr\xE4ch",
+        style: {
+          background: "rgba(255,255,255,0.15)",
+          border: "none",
+          color: "#fff",
+          width: 30,
+          height: 30,
+          borderRadius: "50%",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        },
+        onMouseEnter: (e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+        },
+        onMouseLeave: (e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+        }
+      },
+      /* @__PURE__ */ import_react4.default.createElement("svg", { width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ import_react4.default.createElement("line", { x1: "12", y1: "5", x2: "12", y2: "19" }), /* @__PURE__ */ import_react4.default.createElement("line", { x1: "5", y1: "12", x2: "19", y2: "12" }))
+    ), /* @__PURE__ */ import_react4.default.createElement(
+      "button",
+      {
+        onClick: () => {
+          setCowanOpen(false);
+          setShowExportDrop(false);
+        },
         style: {
           background: "rgba(255,255,255,0.15)",
           border: "none",
@@ -4559,7 +4528,7 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
         }
       },
       "\u2715"
-    )), /* @__PURE__ */ import_react4.default.createElement(
+    ))), /* @__PURE__ */ import_react4.default.createElement(
       cowan_widget_default,
       {
         apiKey: cowanApiKey,
@@ -4584,7 +4553,8 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
             acc[s] = !!tasks[`kap${lastInteractedChapter}-${s}`];
             return acc;
           }, {})
-        } : null
+        } : null,
+        onRegisterActions: setCowanActions
       }
     )), /* @__PURE__ */ import_react4.default.createElement(
       "div",
