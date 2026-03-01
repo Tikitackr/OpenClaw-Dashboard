@@ -129,38 +129,38 @@
     }
   });
 
-  // dashboard/.dashboard-input.tmp.jsx
+  // .dashboard-input.tmp.jsx
   var import_client = __toESM(require_react_dom_client());
   var import_react4 = __toESM(require_react());
   var import_react5 = __toESM(require_react());
 
-  // dashboard/node_modules/lucide-react/dist/esm/createLucideIcon.js
+  // node_modules/lucide-react/dist/esm/createLucideIcon.js
   var import_react2 = __toESM(require_react());
 
-  // dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.js
+  // node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.js
   var mergeClasses = (...classes) => classes.filter((className, index, array) => {
     return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index;
   }).join(" ").trim();
 
-  // dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/toKebabCase.js
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toKebabCase.js
   var toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 
-  // dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/toCamelCase.js
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toCamelCase.js
   var toCamelCase = (string) => string.replace(
     /^([A-Z])|[\s-_]+(\w)/g,
     (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
   );
 
-  // dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/toPascalCase.js
+  // node_modules/lucide-react/dist/esm/shared/src/utils/toPascalCase.js
   var toPascalCase = (string) => {
     const camelCase = toCamelCase(string);
     return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
   };
 
-  // dashboard/node_modules/lucide-react/dist/esm/Icon.js
+  // node_modules/lucide-react/dist/esm/Icon.js
   var import_react = __toESM(require_react());
 
-  // dashboard/node_modules/lucide-react/dist/esm/defaultAttributes.js
+  // node_modules/lucide-react/dist/esm/defaultAttributes.js
   var defaultAttributes = {
     xmlns: "http://www.w3.org/2000/svg",
     width: 24,
@@ -173,7 +173,7 @@
     strokeLinejoin: "round"
   };
 
-  // dashboard/node_modules/lucide-react/dist/esm/shared/src/utils/hasA11yProp.js
+  // node_modules/lucide-react/dist/esm/shared/src/utils/hasA11yProp.js
   var hasA11yProp = (props) => {
     for (const prop in props) {
       if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
@@ -183,7 +183,7 @@
     return false;
   };
 
-  // dashboard/node_modules/lucide-react/dist/esm/Icon.js
+  // node_modules/lucide-react/dist/esm/Icon.js
   var Icon = (0, import_react.forwardRef)(
     ({
       color = "currentColor",
@@ -214,7 +214,7 @@
     )
   );
 
-  // dashboard/node_modules/lucide-react/dist/esm/createLucideIcon.js
+  // node_modules/lucide-react/dist/esm/createLucideIcon.js
   var createLucideIcon = (iconName, iconNode) => {
     const Component = (0, import_react2.forwardRef)(
       ({ className, ...props }, ref) => (0, import_react2.createElement)(Icon, {
@@ -232,7 +232,7 @@
     return Component;
   };
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/book-open.js
+  // node_modules/lucide-react/dist/esm/icons/book-open.js
   var __iconNode = [
     ["path", { d: "M12 7v14", key: "1akyts" }],
     [
@@ -245,7 +245,7 @@
   ];
   var BookOpen = createLucideIcon("book-open", __iconNode);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/book.js
+  // node_modules/lucide-react/dist/esm/icons/book.js
   var __iconNode2 = [
     [
       "path",
@@ -257,7 +257,7 @@
   ];
   var Book = createLucideIcon("book", __iconNode2);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/box.js
+  // node_modules/lucide-react/dist/esm/icons/box.js
   var __iconNode3 = [
     [
       "path",
@@ -271,7 +271,7 @@
   ];
   var Box = createLucideIcon("box", __iconNode3);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/chart-column.js
+  // node_modules/lucide-react/dist/esm/icons/chart-column.js
   var __iconNode4 = [
     ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
     ["path", { d: "M18 17V9", key: "2bz60n" }],
@@ -280,19 +280,19 @@
   ];
   var ChartColumn = createLucideIcon("chart-column", __iconNode4);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/check.js
+  // node_modules/lucide-react/dist/esm/icons/check.js
   var __iconNode5 = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
   var Check = createLucideIcon("check", __iconNode5);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/chevron-down.js
+  // node_modules/lucide-react/dist/esm/icons/chevron-down.js
   var __iconNode6 = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
   var ChevronDown = createLucideIcon("chevron-down", __iconNode6);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/chevron-right.js
+  // node_modules/lucide-react/dist/esm/icons/chevron-right.js
   var __iconNode7 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
   var ChevronRight = createLucideIcon("chevron-right", __iconNode7);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/circle-alert.js
+  // node_modules/lucide-react/dist/esm/icons/circle-alert.js
   var __iconNode8 = [
     ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
     ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
@@ -300,46 +300,46 @@
   ];
   var CircleAlert = createLucideIcon("circle-alert", __iconNode8);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/circle-check.js
+  // node_modules/lucide-react/dist/esm/icons/circle-check.js
   var __iconNode9 = [
     ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
     ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
   ];
   var CircleCheck = createLucideIcon("circle-check", __iconNode9);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/circle.js
+  // node_modules/lucide-react/dist/esm/icons/circle.js
   var __iconNode10 = [["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]];
   var Circle = createLucideIcon("circle", __iconNode10);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/clock.js
+  // node_modules/lucide-react/dist/esm/icons/clock.js
   var __iconNode11 = [
     ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
     ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }]
   ];
   var Clock = createLucideIcon("clock", __iconNode11);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/code.js
+  // node_modules/lucide-react/dist/esm/icons/code.js
   var __iconNode12 = [
     ["path", { d: "m16 18 6-6-6-6", key: "eg8j8" }],
     ["path", { d: "m8 6-6 6 6 6", key: "ppft3o" }]
   ];
   var Code = createLucideIcon("code", __iconNode12);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/copy.js
+  // node_modules/lucide-react/dist/esm/icons/copy.js
   var __iconNode13 = [
     ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
     ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
   ];
   var Copy = createLucideIcon("copy", __iconNode13);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/dollar-sign.js
+  // node_modules/lucide-react/dist/esm/icons/dollar-sign.js
   var __iconNode14 = [
     ["line", { x1: "12", x2: "12", y1: "2", y2: "22", key: "7eqyqh" }],
     ["path", { d: "M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6", key: "1b0p4s" }]
   ];
   var DollarSign = createLucideIcon("dollar-sign", __iconNode14);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/download.js
+  // node_modules/lucide-react/dist/esm/icons/download.js
   var __iconNode15 = [
     ["path", { d: "M12 15V3", key: "m9g1x1" }],
     ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
@@ -347,7 +347,7 @@
   ];
   var Download = createLucideIcon("download", __iconNode15);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/eye.js
+  // node_modules/lucide-react/dist/esm/icons/eye.js
   var __iconNode16 = [
     [
       "path",
@@ -360,7 +360,7 @@
   ];
   var Eye = createLucideIcon("eye", __iconNode16);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/file-text.js
+  // node_modules/lucide-react/dist/esm/icons/file-text.js
   var __iconNode17 = [
     [
       "path",
@@ -376,7 +376,7 @@
   ];
   var FileText = createLucideIcon("file-text", __iconNode17);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/funnel.js
+  // node_modules/lucide-react/dist/esm/icons/funnel.js
   var __iconNode18 = [
     [
       "path",
@@ -388,7 +388,7 @@
   ];
   var Funnel = createLucideIcon("funnel", __iconNode18);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/git-branch.js
+  // node_modules/lucide-react/dist/esm/icons/git-branch.js
   var __iconNode19 = [
     ["path", { d: "M15 6a9 9 0 0 0-9 9V3", key: "1cii5b" }],
     ["circle", { cx: "18", cy: "6", r: "3", key: "1h7g24" }],
@@ -396,7 +396,7 @@
   ];
   var GitBranch = createLucideIcon("git-branch", __iconNode19);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/info.js
+  // node_modules/lucide-react/dist/esm/icons/info.js
   var __iconNode20 = [
     ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
     ["path", { d: "M12 16v-4", key: "1dtifu" }],
@@ -404,14 +404,14 @@
   ];
   var Info = createLucideIcon("info", __iconNode20);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/lock.js
+  // node_modules/lucide-react/dist/esm/icons/lock.js
   var __iconNode21 = [
     ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
     ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
   ];
   var Lock = createLucideIcon("lock", __iconNode21);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/menu.js
+  // node_modules/lucide-react/dist/esm/icons/menu.js
   var __iconNode22 = [
     ["path", { d: "M4 5h16", key: "1tepv9" }],
     ["path", { d: "M4 12h16", key: "1lakjw" }],
@@ -419,7 +419,7 @@
   ];
   var Menu = createLucideIcon("menu", __iconNode22);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/package.js
+  // node_modules/lucide-react/dist/esm/icons/package.js
   var __iconNode23 = [
     [
       "path",
@@ -434,7 +434,7 @@
   ];
   var Package = createLucideIcon("package", __iconNode23);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/rocket.js
+  // node_modules/lucide-react/dist/esm/icons/rocket.js
   var __iconNode24 = [
     ["path", { d: "M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5", key: "qeys4" }],
     [
@@ -455,7 +455,7 @@
   ];
   var Rocket = createLucideIcon("rocket", __iconNode24);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/save.js
+  // node_modules/lucide-react/dist/esm/icons/save.js
   var __iconNode25 = [
     [
       "path",
@@ -469,14 +469,14 @@
   ];
   var Save = createLucideIcon("save", __iconNode25);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/search.js
+  // node_modules/lucide-react/dist/esm/icons/search.js
   var __iconNode26 = [
     ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
     ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
   ];
   var Search = createLucideIcon("search", __iconNode26);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/settings.js
+  // node_modules/lucide-react/dist/esm/icons/settings.js
   var __iconNode27 = [
     [
       "path",
@@ -489,7 +489,7 @@
   ];
   var Settings = createLucideIcon("settings", __iconNode27);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/shield.js
+  // node_modules/lucide-react/dist/esm/icons/shield.js
   var __iconNode28 = [
     [
       "path",
@@ -501,7 +501,7 @@
   ];
   var Shield = createLucideIcon("shield", __iconNode28);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/sparkles.js
+  // node_modules/lucide-react/dist/esm/icons/sparkles.js
   var __iconNode29 = [
     [
       "path",
@@ -516,7 +516,7 @@
   ];
   var Sparkles = createLucideIcon("sparkles", __iconNode29);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/target.js
+  // node_modules/lucide-react/dist/esm/icons/target.js
   var __iconNode30 = [
     ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
     ["circle", { cx: "12", cy: "12", r: "6", key: "1vlfrh" }],
@@ -524,28 +524,28 @@
   ];
   var Target = createLucideIcon("target", __iconNode30);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/terminal.js
+  // node_modules/lucide-react/dist/esm/icons/terminal.js
   var __iconNode31 = [
     ["path", { d: "M12 19h8", key: "baeox8" }],
     ["path", { d: "m4 17 6-6-6-6", key: "1yngyt" }]
   ];
   var Terminal = createLucideIcon("terminal", __iconNode31);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/trending-up.js
+  // node_modules/lucide-react/dist/esm/icons/trending-up.js
   var __iconNode32 = [
     ["path", { d: "M16 7h6v6", key: "box55l" }],
     ["path", { d: "m22 7-8.5 8.5-5-5L2 17", key: "1t1m79" }]
   ];
   var TrendingUp = createLucideIcon("trending-up", __iconNode32);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/undo-2.js
+  // node_modules/lucide-react/dist/esm/icons/undo-2.js
   var __iconNode33 = [
     ["path", { d: "M9 14 4 9l5-5", key: "102s5s" }],
     ["path", { d: "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11", key: "f3b9sd" }]
   ];
   var Undo2 = createLucideIcon("undo-2", __iconNode33);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/upload.js
+  // node_modules/lucide-react/dist/esm/icons/upload.js
   var __iconNode34 = [
     ["path", { d: "M12 3v12", key: "1x0j5s" }],
     ["path", { d: "m17 8-5-5-5 5", key: "7q97r8" }],
@@ -553,7 +553,7 @@
   ];
   var Upload = createLucideIcon("upload", __iconNode34);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/users.js
+  // node_modules/lucide-react/dist/esm/icons/users.js
   var __iconNode35 = [
     ["path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", key: "1yyitq" }],
     ["path", { d: "M16 3.128a4 4 0 0 1 0 7.744", key: "16gr8j" }],
@@ -562,7 +562,7 @@
   ];
   var Users = createLucideIcon("users", __iconNode35);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/wand-sparkles.js
+  // node_modules/lucide-react/dist/esm/icons/wand-sparkles.js
   var __iconNode36 = [
     [
       "path",
@@ -581,14 +581,14 @@
   ];
   var WandSparkles = createLucideIcon("wand-sparkles", __iconNode36);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/x.js
+  // node_modules/lucide-react/dist/esm/icons/x.js
   var __iconNode37 = [
     ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
     ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
   ];
   var X = createLucideIcon("x", __iconNode37);
 
-  // dashboard/node_modules/lucide-react/dist/esm/icons/zap.js
+  // node_modules/lucide-react/dist/esm/icons/zap.js
   var __iconNode38 = [
     [
       "path",
@@ -600,7 +600,7 @@
   ];
   var Zap = createLucideIcon("zap", __iconNode38);
 
-  // dashboard/cowan-widget.jsx
+  // cowan-widget.jsx
   var import_react3 = __toESM(require_react());
   var CowanMonogramIcon = function({ size = 14 }) {
     return React.createElement("div", {
@@ -1692,36 +1692,7 @@
       alignItems: "center",
       justifyContent: "space-between",
       boxSizing: "border-box"
-    } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "8px" } }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: function() {
-          setChunkBrowserIndex(0);
-          setShowChunkBrowser(true);
-        },
-        title: "Wissensbasis durchbl\xE4ttern",
-        style: {
-          padding: "4px 10px",
-          borderRadius: "12px",
-          border: "1px solid " + theme.glassCardBorder,
-          backgroundColor: theme.glassCardBg,
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          color: theme.primary,
-          cursor: "pointer",
-          fontSize: "11px",
-          fontWeight: 600,
-          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)"
-        },
-        onMouseEnter: function(e) {
-          e.currentTarget.style.backgroundColor = theme.glassHighlight;
-        },
-        onMouseLeave: function(e) {
-          e.currentTarget.style.backgroundColor = theme.glassCardBg;
-        }
-      },
-      "\u{1F4DA} Wissen"
-    ), /* @__PURE__ */ React.createElement("div", { style: { position: "relative" } }, /* @__PURE__ */ React.createElement(
+    } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "8px" } }, React.createElement(CowanMonogramIcon, { size: 20 }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "13px", fontWeight: 700, color: theme.text } }, "Cowan")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "8px" } }, /* @__PURE__ */ React.createElement("div", { style: { position: "relative" } }, /* @__PURE__ */ React.createElement(
       "button",
       {
         onClick: function() {
@@ -1750,19 +1721,29 @@
           e.currentTarget.style.backgroundColor = theme.glassCardBg;
         }
       },
-      "\u2197 Export"
+      React.createElement(
+        "svg",
+        { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", style: { marginRight: "4px", verticalAlign: "middle" } },
+        React.createElement("path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" }),
+        React.createElement("polyline", { points: "17 8 12 3 7 8" }),
+        React.createElement("line", { x1: "12", y1: "3", x2: "12", y2: "15" })
+      ),
+      "Export"
     ), showExportMenu && /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
       top: "100%",
       right: 0,
       marginTop: "4px",
-      backgroundColor: theme.cardBg,
-      border: "1px solid " + theme.border,
-      borderRadius: "6px",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+      backgroundColor: theme.glassCardBg,
+      backdropFilter: "blur(24px) saturate(180%)",
+      WebkitBackdropFilter: "blur(24px) saturate(180%)",
+      border: "1px solid " + theme.glassCardBorder,
+      borderRadius: "12px",
+      boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
       zIndex: 100,
       overflow: "hidden",
-      minWidth: "140px"
+      minWidth: "140px",
+      animation: "fadeInUp 0.2s ease-out"
     } }, /* @__PURE__ */ React.createElement(
       "button",
       {
@@ -1777,10 +1758,10 @@
           fontSize: "12px",
           cursor: "pointer",
           textAlign: "left",
-          borderBottom: "1px solid " + theme.border
+          borderBottom: "1px solid " + theme.glassCardBorder
         },
         onMouseEnter: function(e) {
-          e.target.style.backgroundColor = "#334155";
+          e.target.style.backgroundColor = theme.glassHighlight;
         },
         onMouseLeave: function(e) {
           e.target.style.backgroundColor = "transparent";
@@ -1803,51 +1784,18 @@
           textAlign: "left"
         },
         onMouseEnter: function(e) {
-          e.target.style.backgroundColor = "#334155";
+          e.target.style.backgroundColor = theme.glassHighlight;
         },
         onMouseLeave: function(e) {
           e.target.style.backgroundColor = "transparent";
         }
       },
       "Text"
-    )))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "8px" } }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: function() {
-          if (companionConnected) {
-            setShowFeed(!showFeed);
-          } else {
-            setShowQrModal(true);
-          }
-        },
-        disabled: !apiKey,
-        title: companionConnected ? "Aktivitaets-Feed ein-/ausblenden" : "Handy verbinden (QR-Code)",
-        style: {
-          padding: "4px 10px",
-          borderRadius: "12px",
-          border: companionConnected ? "1px solid #22c55e" : "1px solid " + theme.glassCardBorder,
-          backgroundColor: companionConnected ? "rgba(34,197,94,0.12)" : theme.glassCardBg,
-          backdropFilter: companionConnected ? "blur(12px)" : "blur(12px)",
-          WebkitBackdropFilter: companionConnected ? "blur(12px)" : "blur(12px)",
-          color: companionConnected ? "#22c55e" : apiKey ? theme.primary : theme.mutedText,
-          cursor: apiKey ? "pointer" : "not-allowed",
-          fontSize: "11px",
-          fontWeight: 600,
-          opacity: apiKey ? 1 : 0.5,
-          transition: "all 0.3s ease"
-        },
-        onMouseEnter: function(e) {
-          if (apiKey) e.currentTarget.style.backgroundColor = companionConnected ? "rgba(34,197,94,0.15)" : theme.glassHighlight;
-        },
-        onMouseLeave: function(e) {
-          e.currentTarget.style.backgroundColor = companionConnected ? "rgba(34,197,94,0.12)" : theme.glassCardBg;
-        }
-      },
-      companionConnected ? "\u{1F4F1} Live" : "\u{1F4F1} Handy"
-    ), /* @__PURE__ */ React.createElement(
+    ))), /* @__PURE__ */ React.createElement(
       "button",
       {
         onClick: resetConversation,
+        title: "Neues Gespraech",
         style: {
           padding: "4px 10px",
           borderRadius: "12px",
@@ -1868,7 +1816,13 @@
           e.currentTarget.style.backgroundColor = theme.glassCardBg;
         }
       },
-      "+ Neu"
+      React.createElement(
+        "svg",
+        { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", style: { marginRight: "4px", verticalAlign: "middle" } },
+        React.createElement("line", { x1: "12", y1: "5", x2: "12", y2: "19" }),
+        React.createElement("line", { x1: "5", y1: "12", x2: "19", y2: "12" })
+      ),
+      "Neu"
     ))), companionConnected && /* @__PURE__ */ React.createElement("div", { style: {
       borderBottom: "1px solid " + theme.glassBorder,
       backgroundColor: theme.glassCardBg,
@@ -1911,223 +1865,423 @@
         opacity: idx === 0 ? 1 : 0.7,
         animation: idx === 0 ? "feedSlideIn 0.3s ease" : "none"
       } }, /* @__PURE__ */ React.createElement("span", null, event.icon), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }, event.text), /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText, fontSize: "10px", flexShrink: 0 } }, event.time));
-    }), companionFeed.length === 0 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: "11px", color: theme.mutedText, padding: "8px 0" } }, "Warte auf Aktivitaet vom Handy...")), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes companionPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } @keyframes feedSlideIn { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }" } })), /* @__PURE__ */ React.createElement("div", { style: {
-      padding: "6px 12px",
-      backgroundColor: theme.cardBg,
-      borderBottom: "1px solid " + theme.border,
-      fontSize: "11px",
-      flexShrink: 0,
-      height: "68px",
-      position: "relative",
-      overflow: "hidden"
-    } }, /* @__PURE__ */ React.createElement("div", { style: {
+    }), companionFeed.length === 0 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: "11px", color: theme.mutedText, padding: "8px 0" } }, "Warte auf Aktivitaet vom Handy...")), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes companionPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } @keyframes feedSlideIn { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }" } })), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } } .cowan-widget-input::placeholder { color: " + (apiActive ? "#e0e8f4" : "#64748b") + " !important; opacity: 1; }" } }), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, position: "relative", minHeight: 0, overflow: "hidden" } }, /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      padding: "6px 12px",
       display: "flex",
-      alignItems: "center",
-      opacity: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? 1 : 0,
+      flexDirection: "column",
+      justifyContent: "center",
+      padding: "16px 14px",
+      opacity: messageCount > 0 ? 0 : 1,
       transition: "opacity 0.8s ease",
-      pointerEvents: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? "auto" : "none"
-    } }, React.createElement(
+      pointerEvents: messageCount > 0 ? "none" : "auto",
+      overflowY: "auto"
+    } }, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: "16px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: theme.text } }, "Cowan"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "12px", color: theme.mutedText, marginTop: "2px" } }, "Dein Buch-Begleiter")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" } }, React.createElement(
       "div",
-      { style: { display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" } },
-      React.createElement(
-        "div",
-        { style: { display: "flex", alignItems: "center", gap: "6px", color: theme.mutedText } },
-        React.createElement("span", { style: {
-          width: "6px",
-          height: "6px",
-          borderRadius: "50%",
-          backgroundColor: apiKeyStatus === "valid" ? "#22c55e" : "#eab308",
-          display: "inline-block"
-        } }),
-        React.createElement("span", null, apiKeyStatus === "valid" ? "Verbunden" : "Key gespeichert"),
-        React.createElement("span", {
-          onClick: function() {
+      {
+        onClick: function() {
+          if (apiActive) {
             setApiKeyStatus("none");
             setLocalApiKey("");
-          },
-          style: { color: theme.mutedText, cursor: "pointer", textDecoration: "underline", fontSize: "10px", marginLeft: "4px" }
-        }, "\xC4ndern")
-      ),
-      React.createElement(
-        "select",
-        {
-          value: selectedModel,
-          onChange: function(e) {
-            setSelectedModel(e.target.value);
-          },
-          style: {
-            padding: "2px 6px",
-            borderRadius: "4px",
-            border: "1px solid " + theme.border,
-            backgroundColor: theme.inputBg,
-            color: theme.inputText,
-            fontSize: "11px",
-            outline: "none"
           }
         },
-        React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
-        React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
-      )
-    )), /* @__PURE__ */ React.createElement("div", { style: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      padding: "6px 12px",
-      display: "flex",
-      alignItems: "center",
-      opacity: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? 0 : 1,
-      transition: "opacity 0.8s ease",
-      pointerEvents: apiKeyStatus === "valid" || apiKeyStatus === "uncertain" ? "none" : "auto"
-    } }, React.createElement(
-      "div",
-      { style: { width: "100%" } },
-      React.createElement(
+        style: {
+          backgroundColor: theme.glassCardBg,
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: apiActive ? "1px solid rgba(34,197,94,0.3)" : "1px solid " + theme.glassCardBorder,
+          borderRadius: "16px",
+          padding: apiActive ? "14px" : "14px",
+          cursor: apiActive ? "pointer" : "default",
+          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          textAlign: "center",
+          minHeight: "100px",
+          justifyContent: "center"
+        },
+        onMouseEnter: function(e) {
+          e.currentTarget.style.backgroundColor = theme.glassHighlight;
+        },
+        onMouseLeave: function(e) {
+          e.currentTarget.style.backgroundColor = theme.glassCardBg;
+        },
+        onMouseDown: function(e) {
+          e.currentTarget.style.transform = "scale(0.95)";
+        },
+        onMouseUp: function(e) {
+          e.currentTarget.style.transform = "scale(1)";
+        }
+      },
+      /* Icon */
+      apiActive ? React.createElement(
         "div",
-        { style: { display: "flex", gap: "6px", alignItems: "center", marginBottom: "4px" } },
-        React.createElement("span", { style: {
-          width: "6px",
-          height: "6px",
-          borderRadius: "50%",
-          backgroundColor: apiKeyStatus === "invalid" ? "#ef4444" : apiKeyStatus === "checking" ? "#eab308" : "#9ca3af",
-          display: "inline-block"
-        } }),
+        { style: {
+          width: "40px",
+          height: "40px",
+          borderRadius: "12px",
+          backgroundColor: "rgba(34,197,94,0.15)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        } },
         React.createElement(
-          "span",
-          { style: { color: apiKeyStatus === "invalid" ? "#ef4444" : theme.mutedText, fontSize: "11px" } },
-          apiKeyStatus === "invalid" ? "Ung\xFCltiger Key" : apiKeyStatus === "checking" ? "Wird gepr\xFCft..." : "API-Key eingeben"
-        ),
+          "svg",
+          { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "#22c55e", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" },
+          React.createElement("polyline", { points: "20 6 9 17 4 12" })
+        )
+      ) : React.createElement(
+        "div",
+        { style: {
+          width: "40px",
+          height: "40px",
+          borderRadius: "12px",
+          backgroundColor: "rgba(217,119,6,0.15)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        } },
+        React.createElement(
+          "svg",
+          { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: theme.primary, strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" },
+          React.createElement("rect", { x: "3", y: "11", width: "18", height: "11", rx: "2", ry: "2" }),
+          React.createElement("path", { d: "M7 11V7a5 5 0 0 1 10 0v4" })
+        )
+      ),
+      /* Status / Input */
+      apiActive ? React.createElement(
+        "div",
+        null,
+        React.createElement("div", { style: { fontSize: "13px", fontWeight: 600, color: "#22c55e" } }, "Verbunden"),
+        React.createElement("div", { style: { fontSize: "10px", color: theme.mutedText, marginTop: "2px" } }, "Key aendern"),
         React.createElement(
           "select",
           {
             value: selectedModel,
+            onClick: function(e) {
+              e.stopPropagation();
+            },
             onChange: function(e) {
               setSelectedModel(e.target.value);
             },
             style: {
-              padding: "2px 6px",
-              borderRadius: "4px",
-              marginLeft: "auto",
-              border: "1px solid " + theme.border,
-              backgroundColor: theme.inputBg,
-              color: theme.inputText,
+              marginTop: "6px",
+              padding: "3px 8px",
+              borderRadius: "8px",
+              border: "1px solid " + theme.glassCardBorder,
+              backgroundColor: theme.glassCardBg,
+              color: theme.text,
               fontSize: "11px",
-              outline: "none"
+              outline: "none",
+              cursor: "pointer"
             }
           },
           React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
           React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
         )
-      ),
-      React.createElement(
+      ) : React.createElement(
         "div",
-        { style: { display: "flex", gap: "6px" } },
-        React.createElement("input", {
-          type: "password",
-          placeholder: "sk-ant-...",
-          onChange: function(e) {
-            setLocalApiKey(e.target.value);
-          },
-          onKeyDown: function(e) {
-            if (e.key === "Enter") validateApiKey(e.target.value);
-          },
-          style: {
-            flex: 1,
-            padding: "5px 8px",
-            borderRadius: "6px",
-            border: "1px solid " + theme.border,
-            backgroundColor: theme.inputBg,
-            color: theme.inputText,
-            fontSize: "12px",
-            outline: "none",
-            fontFamily: "inherit"
-          }
-        }),
-        React.createElement("button", {
-          onClick: function() {
-            validateApiKey(localApiKey);
-          },
-          disabled: apiKeyStatus === "checking",
-          style: {
-            padding: "5px 12px",
-            borderRadius: "6px",
-            border: "none",
-            backgroundColor: theme.primary,
-            color: "#fff",
-            fontSize: "11px",
-            fontWeight: 600,
-            cursor: apiKeyStatus === "checking" ? "wait" : "pointer"
-          }
-        }, apiKeyStatus === "checking" ? "..." : "Pr\xFCfen")
-      ),
-      React.createElement(
-        "div",
-        { style: { fontSize: "10px", color: theme.mutedText, marginTop: "4px", display: "flex", justifyContent: "space-between" } },
-        React.createElement("span", null, "\u{1F512} Bleibt lokal"),
-        React.createElement("a", {
-          href: "https://console.anthropic.com/settings/keys",
-          target: "_blank",
-          rel: "noopener noreferrer",
-          style: { color: theme.primary, textDecoration: "underline", fontSize: "10px" }
-        }, "Key erstellen")
+        null,
+        React.createElement("div", { style: { fontSize: "13px", fontWeight: 600, color: theme.text } }, "API-Key"),
+        React.createElement(
+          "div",
+          { style: { display: "flex", gap: "4px", marginTop: "6px" } },
+          React.createElement("input", {
+            type: "password",
+            placeholder: "sk-ant-...",
+            onChange: function(e) {
+              setLocalApiKey(e.target.value);
+            },
+            onKeyDown: function(e) {
+              if (e.key === "Enter") validateApiKey(e.target.value);
+            },
+            onClick: function(e) {
+              e.stopPropagation();
+            },
+            style: {
+              width: "100px",
+              padding: "4px 6px",
+              borderRadius: "8px",
+              border: "1px solid " + theme.glassCardBorder,
+              backgroundColor: "rgba(30,41,59,0.8)",
+              color: theme.text,
+              fontSize: "11px",
+              outline: "none",
+              fontFamily: "inherit"
+            }
+          }),
+          React.createElement("button", {
+            onClick: function(e) {
+              e.stopPropagation();
+              validateApiKey(localApiKey);
+            },
+            disabled: apiKeyStatus === "checking",
+            style: {
+              padding: "4px 8px",
+              borderRadius: "8px",
+              border: "none",
+              background: "linear-gradient(135deg, #f59e0b, #d97706)",
+              color: "#fff",
+              fontSize: "10px",
+              fontWeight: 600,
+              cursor: apiKeyStatus === "checking" ? "wait" : "pointer",
+              whiteSpace: "nowrap"
+            }
+          }, apiKeyStatus === "checking" ? "..." : "OK")
+        ),
+        apiKeyStatus === "invalid" ? React.createElement("div", { style: { fontSize: "10px", color: "#ef4444", marginTop: "4px" } }, "Ungueltiger Key") : React.createElement(
+          "div",
+          { style: { fontSize: "10px", color: theme.mutedText, marginTop: "4px", display: "flex", justifyContent: "space-between" } },
+          React.createElement("span", null, "Bleibt lokal"),
+          React.createElement(
+            "select",
+            {
+              value: selectedModel,
+              onClick: function(e) {
+                e.stopPropagation();
+              },
+              onChange: function(e) {
+                setSelectedModel(e.target.value);
+              },
+              style: {
+                padding: "1px 4px",
+                borderRadius: "4px",
+                border: "1px solid " + theme.glassCardBorder,
+                backgroundColor: "transparent",
+                color: theme.mutedText,
+                fontSize: "10px",
+                outline: "none",
+                cursor: "pointer"
+              }
+            },
+            React.createElement("option", { value: "claude-haiku-4-5-20251001" }, "Haiku"),
+            React.createElement("option", { value: "claude-sonnet-4-5-20250929" }, "Sonnet")
+          )
+        )
       )
-    ))), /* @__PURE__ */ React.createElement("style", { dangerouslySetInnerHTML: { __html: "@keyframes cowanWidgetGlow { 0% { filter: drop-shadow(0 0 6px rgba(217, 119, 6, 0.4)); } 50% { filter: drop-shadow(0 0 18px rgba(217, 119, 6, 0.8)) drop-shadow(0 0 40px rgba(217, 119, 6, 0.3)); } 100% { filter: drop-shadow(0 0 6px rgba(217, 119, 6, 0.4)); } } .cowan-widget-input::placeholder { color: " + (apiActive ? "#e0e8f4" : "#64748b") + " !important; opacity: 1; }" } }), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, position: "relative", minHeight: 0, overflow: "hidden" } }, /* @__PURE__ */ React.createElement("div", { style: {
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      opacity: apiActive || messageCount > 0 ? 0 : 1,
-      transition: "opacity 1.5s ease",
-      pointerEvents: apiActive || messageCount > 0 ? "none" : "auto"
-    } }, /* @__PURE__ */ React.createElement("div", { style: {
-      background: "rgba(217,119,6,0.15)",
-      backdropFilter: "blur(12px)",
-      WebkitBackdropFilter: "blur(12px)",
-      border: "1px solid rgba(217,119,6,0.3)",
-      color: "#fef3c7",
-      fontSize: 13,
-      fontWeight: 600,
-      padding: "10px 18px",
-      borderRadius: 12,
-      textAlign: "center",
-      lineHeight: 1.5,
-      marginBottom: 8,
-      position: "relative"
-    } }, "Denk an deinen API-Key!", /* @__PURE__ */ React.createElement("div", { style: {
-      position: "absolute",
-      bottom: -7,
-      left: "50%",
-      marginLeft: -8,
-      width: 0,
-      height: 0,
-      borderLeft: "8px solid transparent",
-      borderRight: "8px solid transparent",
-      borderTop: "8px solid rgba(217,119,6,0.15)"
-    } })), React.createElement("div", {
-      style: {
-        width: 120,
-        height: 120,
-        borderRadius: 28,
-        background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        boxShadow: "0 8px 32px rgba(217,119,6,0.4)",
-        animation: "cowanWidgetGlow 3s ease-in-out infinite"
-      }
-    }, React.createElement("span", {
-      style: { color: "#ffffff", fontWeight: 800, fontSize: 64, lineHeight: 1, letterSpacing: "-2px" }
-    }, "C"))), /* @__PURE__ */ React.createElement("div", { style: {
+    ), React.createElement(
+      "div",
+      {
+        onClick: function() {
+          setChunkBrowserIndex(0);
+          setShowChunkBrowser(true);
+        },
+        style: {
+          backgroundColor: theme.glassCardBg,
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: "1px solid " + theme.glassCardBorder,
+          borderRadius: "16px",
+          padding: "14px",
+          cursor: "pointer",
+          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          textAlign: "center",
+          minHeight: "100px",
+          justifyContent: "center"
+        },
+        onMouseEnter: function(e) {
+          e.currentTarget.style.backgroundColor = theme.glassHighlight;
+        },
+        onMouseLeave: function(e) {
+          e.currentTarget.style.backgroundColor = theme.glassCardBg;
+        },
+        onMouseDown: function(e) {
+          e.currentTarget.style.transform = "scale(0.95)";
+        },
+        onMouseUp: function(e) {
+          e.currentTarget.style.transform = "scale(1)";
+        }
+      },
+      React.createElement(
+        "div",
+        { style: {
+          width: "40px",
+          height: "40px",
+          borderRadius: "12px",
+          backgroundColor: "rgba(217,119,6,0.15)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        } },
+        React.createElement(
+          "svg",
+          { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: theme.primary, strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" },
+          React.createElement("path", { d: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20" }),
+          React.createElement("path", { d: "M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" })
+        )
+      ),
+      React.createElement(
+        "div",
+        null,
+        React.createElement("div", { style: { fontSize: "13px", fontWeight: 600, color: theme.text } }, "Wissen"),
+        React.createElement("div", { style: { fontSize: "10px", color: theme.mutedText, marginTop: "2px" } }, KNOWLEDGE_BASE.length + " Chunks")
+      )
+    ), React.createElement(
+      "div",
+      {
+        onClick: function() {
+          if (companionConnected) {
+            setShowFeed(!showFeed);
+          } else if (apiKey) {
+            setShowQrModal(true);
+          }
+        },
+        style: {
+          backgroundColor: theme.glassCardBg,
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: companionConnected ? "1px solid rgba(34,197,94,0.3)" : "1px solid " + theme.glassCardBorder,
+          borderRadius: "16px",
+          padding: "14px",
+          cursor: apiKey ? "pointer" : "not-allowed",
+          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          textAlign: "center",
+          minHeight: "100px",
+          justifyContent: "center",
+          opacity: apiKey ? 1 : 0.5
+        },
+        onMouseEnter: function(e) {
+          if (apiKey) e.currentTarget.style.backgroundColor = theme.glassHighlight;
+        },
+        onMouseLeave: function(e) {
+          e.currentTarget.style.backgroundColor = theme.glassCardBg;
+        },
+        onMouseDown: function(e) {
+          if (apiKey) e.currentTarget.style.transform = "scale(0.95)";
+        },
+        onMouseUp: function(e) {
+          e.currentTarget.style.transform = "scale(1)";
+        }
+      },
+      React.createElement(
+        "div",
+        { style: {
+          width: "40px",
+          height: "40px",
+          borderRadius: "12px",
+          backgroundColor: companionConnected ? "rgba(34,197,94,0.15)" : "rgba(217,119,6,0.15)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        } },
+        React.createElement(
+          "svg",
+          { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: companionConnected ? "#22c55e" : theme.primary, strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" },
+          React.createElement("rect", { x: "5", y: "2", width: "14", height: "20", rx: "2", ry: "2" }),
+          React.createElement("line", { x1: "12", y1: "18", x2: "12.01", y2: "18" })
+        )
+      ),
+      React.createElement(
+        "div",
+        null,
+        React.createElement(
+          "div",
+          { style: { fontSize: "13px", fontWeight: 600, color: companionConnected ? "#22c55e" : theme.text } },
+          companionConnected ? "Live" : "Handy"
+        ),
+        React.createElement(
+          "div",
+          { style: { fontSize: "10px", color: theme.mutedText, marginTop: "2px" } },
+          companionConnected ? "Feed anzeigen" : apiKey ? "QR-Code scannen" : "Erst API-Key"
+        )
+      )
+    ), React.createElement(
+      "div",
+      {
+        onClick: function() {
+          if (apiActive) {
+            var ta = document.querySelector(".cowan-widget-input");
+            if (ta) ta.focus();
+          }
+        },
+        style: {
+          backgroundColor: theme.glassCardBg,
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: "1px solid " + theme.glassCardBorder,
+          borderRadius: "16px",
+          padding: "14px",
+          cursor: apiActive ? "pointer" : "not-allowed",
+          transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          textAlign: "center",
+          minHeight: "100px",
+          justifyContent: "center",
+          opacity: apiActive ? 1 : 0.5
+        },
+        onMouseEnter: function(e) {
+          if (apiActive) e.currentTarget.style.backgroundColor = theme.glassHighlight;
+        },
+        onMouseLeave: function(e) {
+          e.currentTarget.style.backgroundColor = theme.glassCardBg;
+        },
+        onMouseDown: function(e) {
+          if (apiActive) e.currentTarget.style.transform = "scale(0.95)";
+        },
+        onMouseUp: function(e) {
+          e.currentTarget.style.transform = "scale(1)";
+        }
+      },
+      React.createElement(
+        "div",
+        { style: {
+          width: "40px",
+          height: "40px",
+          borderRadius: "12px",
+          backgroundColor: "rgba(217,119,6,0.15)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        } },
+        React.createElement(
+          "svg",
+          { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: theme.primary, strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" },
+          React.createElement("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })
+        )
+      ),
+      React.createElement(
+        "div",
+        null,
+        React.createElement("div", { style: { fontSize: "13px", fontWeight: 600, color: theme.text } }, "Frage stellen"),
+        React.createElement(
+          "div",
+          { style: { fontSize: "10px", color: theme.mutedText, marginTop: "2px" } },
+          apiActive ? "Chat oeffnen" : "Erst API-Key"
+        )
+      )
+    )), !apiActive && React.createElement(
+      "div",
+      { style: {
+        textAlign: "center",
+        marginTop: "12px",
+        fontSize: "10px",
+        color: theme.mutedText,
+        lineHeight: 1.5
+      } },
+      React.createElement("a", {
+        href: "https://console.anthropic.com/settings/keys",
+        target: "_blank",
+        rel: "noopener noreferrer",
+        style: { color: theme.primary, textDecoration: "underline" }
+      }, "Key erstellen bei Anthropic"),
+      " \u2013 bleibt lokal gespeichert"
+    )), /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
       top: 0,
       left: 0,
@@ -2231,25 +2385,7 @@
         style: { background: "none", border: "none", fontWeight: 700, cursor: "pointer", color: "inherit", fontSize: "14px" }
       },
       "x"
-    ))), /* @__PURE__ */ React.createElement("div", { style: {
-      flexShrink: 0,
-      borderTop: apiActive || messageCount > 0 ? "none" : "1px solid " + theme.glassBorder,
-      opacity: apiActive || messageCount > 0 ? 0 : 1,
-      maxHeight: apiActive || messageCount > 0 ? 0 : "60px",
-      overflow: "hidden",
-      padding: apiActive || messageCount > 0 ? "0 12px" : "8px 12px",
-      transition: "opacity 1.5s ease, max-height 0.01s ease 2.5s, padding 0.01s ease 2.5s, border-top 0.01s ease 2.5s"
-    } }, /* @__PURE__ */ React.createElement("div", { style: {
-      padding: "8px 10px",
-      borderRadius: "12px",
-      backgroundColor: "rgba(139,0,0,0.12)",
-      color: "#fde8e8",
-      fontSize: "11px",
-      border: "1px solid rgba(220,38,38,0.25)",
-      backdropFilter: "blur(8px)",
-      WebkitBackdropFilter: "blur(8px)",
-      lineHeight: 1.4
-    } }, "Gib oben deinen Claude API-Key ein, um mit Cowan zu chatten. Den Key bekommst du unter console.anthropic.com.")), currentChapter && currentChapter.number && /* @__PURE__ */ React.createElement("div", { style: {
+    ))), currentChapter && currentChapter.number && /* @__PURE__ */ React.createElement("div", { style: {
       borderTop: "1px solid " + theme.border,
       padding: "6px 12px",
       flexShrink: 0,
@@ -2619,7 +2755,7 @@
   }
   var cowan_widget_default = CowanWidget;
 
-  // dashboard/.dashboard-input.tmp.jsx
+  // .dashboard-input.tmp.jsx
   var SAFE_VARS = [
     { key: "SERVER_IP", label: "Server-IP", placeholder: "z.B. 195.168.1.42", hint: "Deine Hostinger VPS IP" },
     { key: "TAILSCALE_IP", label: "Tailscale-IP", placeholder: "z.B. 100.64.0.3", hint: "tailscale ip -4" },
