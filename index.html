@@ -1875,9 +1875,9 @@
       flexDirection: "column",
       justifyContent: "center",
       padding: "16px 14px",
-      opacity: messageCount > 0 ? 0 : 1,
+      opacity: apiActive || messageCount > 0 ? 0 : 1,
       transition: "opacity 0.8s ease",
-      pointerEvents: messageCount > 0 ? "none" : "auto",
+      pointerEvents: apiActive || messageCount > 0 ? "none" : "auto",
       overflowY: "auto"
     } }, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: "16px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: theme.text } }, "Cowan"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "12px", color: theme.mutedText, marginTop: "2px" } }, "Dein Buch-Begleiter")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" } }, React.createElement(
       "div",
