@@ -1,6 +1,6 @@
 {
-  "version": "6.9.0",
+  "version": "6.10.1",
   "date": "2026-03-03",
-  "message": "Hummer-Branding: Favicon, Ladebildschirm, Mobile-Hinweis, Widget-Header alle auf Orange/Amber Gradient-Hummer umgestellt. Tab-Titel auf Dashboard. APP_VERSION Fix (6.2.4 auf 6.9.0).",
+  "message": "Bugfix: Handy-Kachel reagierte auf apiKey statt apiActive – wurde beim Tippen aktiviert statt nach Validierung.",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }
