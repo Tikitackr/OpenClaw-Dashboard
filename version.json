@@ -1,6 +1,6 @@
 {
-  "version": "6.2.4",
-  "date": "2026-02-27",
-  "message": "Glow-Upgrade, Smooth Transitions, dynamisches Widget-Theme bei API-on",
+  "version": "6.8.0",
+  "date": "2026-03-03",
+  "message": "n8n-Aufraeumen: Alle aktiven n8n-Referenzen durch Multi-Agent/Chefredakteur ersetzt. Dashboard_v6 bereinigt (Tasks, Sections, MASTERPROMPT, docker-compose). Test-Dateien archiviert. Batch 4: 3 neue Chunks im Widget.",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }
