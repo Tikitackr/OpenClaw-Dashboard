@@ -4278,7 +4278,10 @@ Erstelle das komplette Dashboard als eine einzige React-Komponente. Alle Daten i
           return r.json();
         }).then(function(data) {
           if (data.version && data.version !== APP_VERSION) {
-            setUpdateAvailable(data);
+            var dismissed = localStorage.getItem("openclaw_update_dismissed");
+            if (dismissed !== data.version) {
+              setUpdateAvailable(data);
+            }
           }
         }).catch(function() {
         });
@@ -4520,19 +4523,21 @@ http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE
       justifyContent: "center",
       gap: 10,
       boxShadow: "0 -2px 10px rgba(0,0,0,0.3)"
-    } }, /* @__PURE__ */ import_react4.default.createElement("span", null, "\u{1F504} Update verf\xFCgbar: v", updateAvailable.version, " \u2013 ", updateAvailable.message), /* @__PURE__ */ import_react4.default.createElement(
-      "a",
+    } }, /* @__PURE__ */ import_react4.default.createElement("span", null, "Update verf\xFCgbar: v", updateAvailable.version, " \u2013 ", updateAvailable.message), /* @__PURE__ */ import_react4.default.createElement(
+      "button",
       {
-        href: updateAvailable.url,
-        style: { color: "white", textDecoration: "underline", fontWeight: "bold" },
-        target: "_blank",
-        rel: "noopener noreferrer"
+        onClick: function() {
+          localStorage.setItem("openclaw_update_dismissed", updateAvailable.version);
+          window.location.reload();
+        },
+        style: { background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: 6, color: "white", cursor: "pointer", fontWeight: "bold", padding: "4px 12px", fontSize: 13 }
       },
       "Jetzt aktualisieren"
     ), /* @__PURE__ */ import_react4.default.createElement(
       "button",
       {
         onClick: function() {
+          localStorage.setItem("openclaw_update_dismissed", updateAvailable.version);
           setUpdateAvailable(null);
         },
         style: { background: "none", border: "none", color: "white", cursor: "pointer", fontSize: 18, marginLeft: 8, padding: "0 4px" }
