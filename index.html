@@ -3615,60 +3615,75 @@ Regel: NIE ohne menschliche Genehmigung posten.
     });
   };
   var stripComments = (code) => {
-    return code.split("\n").filter((line) => !line.trimStart().startsWith("#")).join("\n").trim();
+    return code.split("\n").filter((line) => !line.trimStart().startsWith("#")).map((line) => line.replace(/\s+#\s.*$/, "")).filter((line) => line.trim().length > 0).join("\n").trim();
+  };
+  var CopyLineButton = ({ text }) => {
+    const [copied, setCopied] = (0, import_react5.useState)(false);
+    const handleCopy = () => {
+      navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    };
+    return /* @__PURE__ */ import_react4.default.createElement("button", { onClick: handleCopy, className: "opacity-0 group-hover:opacity-100 transition-opacity ml-2 px-1.5 py-0.5 rounded text-gray-500 hover:text-gray-200 hover:bg-gray-700/50 flex-shrink-0", title: "Zeile kopieren", style: { userSelect: "none" } }, copied ? /* @__PURE__ */ import_react4.default.createElement(Check, { className: "w-3 h-3 text-green-400" }) : /* @__PURE__ */ import_react4.default.createElement(Copy, { className: "w-3 h-3" }));
   };
   var PersonalizedCodeBlock = ({ code, language = "bash", title, userVars = {} }) => {
-    const [copied, setCopied] = (0, import_react5.useState)(false);
-    const processed = (0, import_react5.useMemo)(() => interpolateCode(code, userVars), [code, userVars]);
-    const copyText = (0, import_react5.useMemo)(() => stripComments(interpolateCode(code, userVars)), [code, userVars]);
-    const hasUnfilledVars = /\$\{\w+\}/.test(copyText);
-    const handleCopy = () => {
-      navigator.clipboard.writeText(copyText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2e3);
-    };
-    const renderCode = () => {
-      const parts = [];
-      const original = code;
-      const regex = /\$\{(\w+)\}/g;
-      let lastIndex = 0;
-      let m;
-      while ((m = regex.exec(original)) !== null) {
-        if (m.index > lastIndex) {
-          parts.push({ type: "text", value: interpolateCode(original.slice(lastIndex, m.index), userVars) });
-        }
-        const varName = m[1];
-        const safeVar = SAFE_VARS.find((v) => v.key === varName);
-        const sensitiveVar = SENSITIVE_VARS.find((v) => v.key === varName);
+    const interpolated = (0, import_react5.useMemo)(() => interpolateCode(code, userVars), [code, userVars]);
+    const allCommands = (0, import_react5.useMemo)(() => stripComments(interpolated), [interpolated]);
+    const hasUnfilledVars = /\$\{\w+\}/.test(allCommands);
+    const renderVarSpan = (text) => {
+      var parts = [];
+      var regex = /\$\{(\w+)\}/g;
+      var lastIdx = 0;
+      var m;
+      while ((m = regex.exec(text)) !== null) {
+        if (m.index > lastIdx) parts.push({ type: "t", value: text.slice(lastIdx, m.index) });
+        var varName = m[1];
+        var safeVar = SAFE_VARS.find(function(v) {
+          return v.key === varName;
+        });
+        var sensitiveVar = SENSITIVE_VARS.find(function(v) {
+          return v.key === varName;
+        });
         if (sensitiveVar) {
-          parts.push({ type: "sensitive", value: `<${sensitiveVar.label}>`, label: sensitiveVar.label, varRef: "${" + varName + "}" });
+          parts.push({ type: "s", value: "${" + varName + "}", label: sensitiveVar.label });
         } else if (safeVar && userVars[varName]) {
-          parts.push({ type: "personal", value: userVars[varName], label: safeVar.label });
+          parts.push({ type: "p", value: userVars[varName], label: safeVar.label });
         } else if (safeVar) {
-          parts.push({ type: "placeholder", value: safeVar.placeholder, label: safeVar.label, varRef: "${" + varName + "}" });
+          parts.push({ type: "u", value: "${" + varName + "}", label: safeVar.label });
         } else {
-          parts.push({ type: "text", value: m[0] });
+          parts.push({ type: "t", value: m[0] });
         }
-        lastIndex = regex.lastIndex;
+        lastIdx = regex.lastIndex;
       }
-      if (lastIndex < original.length) {
-        parts.push({ type: "text", value: interpolateCode(original.slice(lastIndex), userVars) });
-      }
-      return parts;
+      if (lastIdx < text.length) parts.push({ type: "t", value: text.slice(lastIdx) });
+      return parts.map(function(p, i) {
+        if (p.type === "s") return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-red-900/40 text-red-400 px-1 rounded border border-red-800/50", title: p.label + " - Aus Passwort-Manager!" }, p.value);
+        if (p.type === "p") return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-green-900/40 text-green-400 px-1 rounded border border-green-800/50", title: p.label + " - Personalisiert" }, p.value);
+        if (p.type === "u") return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-yellow-900/40 text-yellow-400 px-1 rounded border border-yellow-800/50", title: p.label + ' - Unter "Meine Daten" eintragen' }, p.value);
+        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i }, p.value);
+      });
     };
-    const codeParts = renderCode();
-    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "my-3 bg-gray-950 rounded-lg border border-gray-700 overflow-hidden" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between px-3 sm:px-4 py-2 bg-gray-900 border-b border-gray-700" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react4.default.createElement(Terminal, { className: "w-3 h-3 text-gray-400" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-mono" }, language), title && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-500 hidden sm:inline" }, "- ", title)), /* @__PURE__ */ import_react4.default.createElement("button", { onClick: handleCopy, className: "flex items-center gap-1 text-xs text-gray-400 hover:text-gray-200 transition-colors" }, copied ? /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, /* @__PURE__ */ import_react4.default.createElement(Check, { className: "w-3 h-3 text-green-400" }), "Kopiert!") : /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, /* @__PURE__ */ import_react4.default.createElement(Copy, { className: "w-3 h-3" }), "Kopieren"))), /* @__PURE__ */ import_react4.default.createElement("pre", { className: "p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed" }, /* @__PURE__ */ import_react4.default.createElement("code", null, codeParts.map((part, i) => {
-      if (part.type === "sensitive") {
-        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-red-900/40 text-red-400 px-1 rounded border border-red-800/50", title: `${part.label} - Aus Passwort-Manager einf\xFCgen!` }, part.varRef);
+    var lines = interpolated.split("\n");
+    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "my-3 bg-gray-950 rounded-lg border border-gray-700 overflow-hidden" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center px-3 sm:px-4 py-2 bg-gray-900 border-b border-gray-700" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react4.default.createElement(Terminal, { className: "w-3 h-3 text-gray-400" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-mono" }, language), title && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-500 hidden sm:inline" }, "- ", title))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed font-mono" }, lines.map(function(line, i) {
+      var trimmed = line.trimStart();
+      var isComment = trimmed.startsWith("#");
+      var isEmpty = trimmed.length === 0;
+      if (isComment) {
+        return /* @__PURE__ */ import_react4.default.createElement("div", { key: i, className: "text-gray-500 py-0.5", style: { userSelect: "none" } }, line);
       }
-      if (part.type === "personal") {
-        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-green-900/40 text-green-400 px-1 rounded border border-green-800/50", title: `${part.label} - Personalisiert` }, part.value);
+      if (isEmpty) {
+        return /* @__PURE__ */ import_react4.default.createElement("div", { key: i, className: "h-2" });
       }
-      if (part.type === "placeholder") {
-        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-yellow-900/40 text-yellow-400 px-1 rounded border border-yellow-800/50", title: `${part.label} - Unter "Meine Daten" eintragen` }, part.varRef);
+      var cmdPart = line;
+      var commentPart = "";
+      var inlineMatch = line.match(/^(.+?)(\s+#\s.*)$/);
+      if (inlineMatch) {
+        cmdPart = inlineMatch[1];
+        commentPart = inlineMatch[2];
       }
-      return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "text-gray-200" }, part.value);
-    }))), hasUnfilledVars && /* @__PURE__ */ import_react4.default.createElement("div", { className: "px-3 sm:px-4 py-2 border-t border-gray-700 text-xs text-yellow-400/80" }, 'Trage deine Werte unter "Meine Daten" ein, dann werden die Befehle automatisch angepasst.'));
+      var copyVal = interpolateCode(cmdPart, userVars).replace(/\s+#\s.*$/, "");
+      return /* @__PURE__ */ import_react4.default.createElement("div", { key: i, className: "group flex items-center py-0.5 hover:bg-gray-800/50 rounded -mx-1 px-1" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-gray-200 flex-1" }, renderVarSpan(cmdPart), commentPart && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-gray-500", style: { userSelect: "none" } }, commentPart)), /* @__PURE__ */ import_react4.default.createElement(CopyLineButton, { text: copyVal }));
+    })), hasUnfilledVars && /* @__PURE__ */ import_react4.default.createElement("div", { className: "px-3 sm:px-4 py-2 border-t border-gray-700 text-xs text-yellow-400/80" }, 'Trage deine Werte unter "Meine Daten" ein, dann werden die Befehle automatisch angepasst.'));
   };
   var ProgressBar = ({ current, total, label, color }) => {
     const percent = total > 0 ? Math.round(current / total * 100) : 0;
