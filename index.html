@@ -3604,26 +3604,24 @@ Regel: NIE ohne menschliche Genehmigung posten.
     document.head.appendChild(s);
   };
   injectStyles();
-  var interpolateCode = (code, userVars, forCopy = false) => {
+  var interpolateCode = (code, userVars) => {
     return code.replace(/\$\{(\w+)\}/g, (match, varName) => {
       const safeVar = SAFE_VARS.find((v) => v.key === varName);
       const sensitiveVar = SENSITIVE_VARS.find((v) => v.key === varName);
       if (safeVar && userVars[varName]) {
         return userVars[varName];
       }
-      if (sensitiveVar) {
-        return forCopy ? match : `<${sensitiveVar.label}>`;
-      }
-      if (safeVar) {
-        return forCopy ? match : safeVar.placeholder;
-      }
       return match;
     });
+  };
+  var stripComments = (code) => {
+    return code.split("\n").filter((line) => !line.trimStart().startsWith("#")).join("\n").trim();
   };
   var PersonalizedCodeBlock = ({ code, language = "bash", title, userVars = {} }) => {
     const [copied, setCopied] = (0, import_react5.useState)(false);
     const processed = (0, import_react5.useMemo)(() => interpolateCode(code, userVars), [code, userVars]);
-    const copyText = (0, import_react5.useMemo)(() => interpolateCode(code, userVars, true), [code, userVars]);
+    const copyText = (0, import_react5.useMemo)(() => stripComments(interpolateCode(code, userVars)), [code, userVars]);
+    const hasUnfilledVars = /\$\{\w+\}/.test(copyText);
     const handleCopy = () => {
       navigator.clipboard.writeText(copyText);
       setCopied(true);
@@ -3643,11 +3641,11 @@ Regel: NIE ohne menschliche Genehmigung posten.
         const safeVar = SAFE_VARS.find((v) => v.key === varName);
         const sensitiveVar = SENSITIVE_VARS.find((v) => v.key === varName);
         if (sensitiveVar) {
-          parts.push({ type: "sensitive", value: `<${sensitiveVar.label}>`, label: sensitiveVar.label });
+          parts.push({ type: "sensitive", value: `<${sensitiveVar.label}>`, label: sensitiveVar.label, varRef: "${" + varName + "}" });
         } else if (safeVar && userVars[varName]) {
           parts.push({ type: "personal", value: userVars[varName], label: safeVar.label });
         } else if (safeVar) {
-          parts.push({ type: "placeholder", value: safeVar.placeholder, label: safeVar.label });
+          parts.push({ type: "placeholder", value: safeVar.placeholder, label: safeVar.label, varRef: "${" + varName + "}" });
         } else {
           parts.push({ type: "text", value: m[0] });
         }
@@ -3661,16 +3659,16 @@ Regel: NIE ohne menschliche Genehmigung posten.
     const codeParts = renderCode();
     return /* @__PURE__ */ import_react4.default.createElement("div", { className: "my-3 bg-gray-950 rounded-lg border border-gray-700 overflow-hidden" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between px-3 sm:px-4 py-2 bg-gray-900 border-b border-gray-700" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center gap-2" }, /* @__PURE__ */ import_react4.default.createElement(Terminal, { className: "w-3 h-3 text-gray-400" }), /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-mono" }, language), title && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-500 hidden sm:inline" }, "- ", title)), /* @__PURE__ */ import_react4.default.createElement("button", { onClick: handleCopy, className: "flex items-center gap-1 text-xs text-gray-400 hover:text-gray-200 transition-colors" }, copied ? /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, /* @__PURE__ */ import_react4.default.createElement(Check, { className: "w-3 h-3 text-green-400" }), "Kopiert!") : /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, /* @__PURE__ */ import_react4.default.createElement(Copy, { className: "w-3 h-3" }), "Kopieren"))), /* @__PURE__ */ import_react4.default.createElement("pre", { className: "p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed" }, /* @__PURE__ */ import_react4.default.createElement("code", null, codeParts.map((part, i) => {
       if (part.type === "sensitive") {
-        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-red-900/40 text-red-400 px-1 rounded border border-red-800/50", title: `${part.label} - Aus Passwort-Manager einf\xFCgen!` }, part.value);
+        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-red-900/40 text-red-400 px-1 rounded border border-red-800/50", title: `${part.label} - Aus Passwort-Manager einf\xFCgen!` }, part.varRef);
       }
       if (part.type === "personal") {
         return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-green-900/40 text-green-400 px-1 rounded border border-green-800/50", title: `${part.label} - Personalisiert` }, part.value);
       }
       if (part.type === "placeholder") {
-        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-yellow-900/40 text-yellow-400 px-1 rounded border border-yellow-800/50", title: `${part.label} - Unter "Meine Daten" eintragen` }, part.value);
+        return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "bg-yellow-900/40 text-yellow-400 px-1 rounded border border-yellow-800/50", title: `${part.label} - Unter "Meine Daten" eintragen` }, part.varRef);
       }
       return /* @__PURE__ */ import_react4.default.createElement("span", { key: i, className: "text-gray-200" }, part.value);
-    }))));
+    }))), hasUnfilledVars && /* @__PURE__ */ import_react4.default.createElement("div", { className: "px-3 sm:px-4 py-2 border-t border-gray-700 text-xs text-yellow-400/80" }, 'Trage deine Werte unter "Meine Daten" ein, dann werden die Befehle automatisch angepasst.'));
   };
   var ProgressBar = ({ current, total, label, color }) => {
     const percent = total > 0 ? Math.round(current / total * 100) : 0;
