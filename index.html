@@ -3604,7 +3604,7 @@ Regel: NIE ohne menschliche Genehmigung posten.
     document.head.appendChild(s);
   };
   injectStyles();
-  var interpolateCode = (code, userVars) => {
+  var interpolateCode = (code, userVars, forCopy = false) => {
     return code.replace(/\$\{(\w+)\}/g, (match, varName) => {
       const safeVar = SAFE_VARS.find((v) => v.key === varName);
       const sensitiveVar = SENSITIVE_VARS.find((v) => v.key === varName);
@@ -3612,10 +3612,10 @@ Regel: NIE ohne menschliche Genehmigung posten.
         return userVars[varName];
       }
       if (sensitiveVar) {
-        return `<${sensitiveVar.label}>`;
+        return forCopy ? match : `<${sensitiveVar.label}>`;
       }
       if (safeVar) {
-        return safeVar.placeholder;
+        return forCopy ? match : safeVar.placeholder;
       }
       return match;
     });
@@ -3623,8 +3623,9 @@ Regel: NIE ohne menschliche Genehmigung posten.
   var PersonalizedCodeBlock = ({ code, language = "bash", title, userVars = {} }) => {
     const [copied, setCopied] = (0, import_react5.useState)(false);
     const processed = (0, import_react5.useMemo)(() => interpolateCode(code, userVars), [code, userVars]);
+    const copyText = (0, import_react5.useMemo)(() => interpolateCode(code, userVars, true), [code, userVars]);
     const handleCopy = () => {
-      navigator.clipboard.writeText(processed);
+      navigator.clipboard.writeText(copyText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2e3);
     };
