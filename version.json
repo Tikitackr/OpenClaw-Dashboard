@@ -1,6 +1,6 @@
 {
-  "version": "6.10.1",
-  "date": "2026-03-03",
-  "message": "Bugfix: Handy-Kachel reagierte auf apiKey statt apiActive – wurde beim Tippen aktiviert statt nach Validierung.",
+  "version": "6.12.0",
+  "date": "2026-03-10",
+  "message": "Tailscale Serve: HTTPS-Zugang statt HTTP:18789. Neue Variablen PORT + TAILSCALE_HOSTNAME. Neuer Task s1-tailscale-serve. Alle Snippets + Vorschau aktualisiert.",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }

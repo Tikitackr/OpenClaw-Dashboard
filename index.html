@@ -2829,6 +2829,8 @@
   var SAFE_VARS = [
     { key: "SERVER_IP", label: "Server-IP", placeholder: "z.B. 195.168.1.42", hint: "Deine Hostinger VPS IP" },
     { key: "TAILSCALE_IP", label: "Tailscale-IP", placeholder: "z.B. 100.64.0.3", hint: "tailscale ip -4" },
+    { key: "TAILSCALE_HOSTNAME", label: "Tailscale-Hostname", placeholder: "z.B. srv1234.tail5678.ts.net", hint: "tailscale status \u2192 FQDN" },
+    { key: "PORT", label: "OpenClaw Port", placeholder: "z.B. 52127", hint: "Docker Manager \u2192 Container \u2192 Port" },
     { key: "TELEGRAM_BOT_NAME", label: "Telegram Bot-Name", placeholder: "z.B. MeinOpenClawBot", hint: "Von @BotFather" },
     { key: "TELEGRAM_ID", label: "Telegram-ID", placeholder: "z.B. 123456789", hint: "Deine numerische Chat-ID" },
     { key: "PROJECT_PATH", label: "Projekt-Pfad", placeholder: "z.B. /opt/openclaw", hint: "Ordner auf dem VPS" },
@@ -2863,7 +2865,7 @@
     var s = SERVICE_LINKS[key];
     return s && s.affiliate !== null;
   }
-  var APP_VERSION = "6.11.0";
+  var APP_VERSION = "6.12.0";
   var VERSION_CHECK_URL = "https://tikitackr.github.io/OpenClaw-Dashboard/version.json";
   var SPRINT_TASKS = {
     sprint1: [
@@ -2876,6 +2878,7 @@
       "s1-tailscale-mac",
       "s1-tailscale-vps",
       "s1-tailscale-verify",
+      "s1-tailscale-serve",
       "s1-firewall",
       "s1-dashboard-test",
       "s1-api",
@@ -3081,9 +3084,14 @@ sudo tailscale up
 # Link im Terminal \xF6ffnen und best\xE4tigen!
 
 tailscale ip -4  # => \${TAILSCALE_IP}` },
+        { title: "Tailscale Serve aktivieren", lang: "bash", code: `# HTTPS-Zugang zum Dashboard einrichten:
+sudo tailscale serve --bg http://localhost:\${PORT}
+
+# Deine HTTPS-URL wird angezeigt:
+# https://\${TAILSCALE_HOSTNAME}/` },
         { title: "Verbindung testen (von deinem Mac/PC)", lang: "bash", code: `ping \${TAILSCALE_IP}` },
-        { title: "Dashboard via Tailscale \xF6ffnen", lang: "bash", code: `# Im Browser:
-http://\${TAILSCALE_IP}:18789` },
+        { title: "Dashboard via Tailscale \xF6ffnen", lang: "bash", code: `# Im Browser (HTTPS!):
+https://\${TAILSCALE_HOSTNAME}/` },
         { title: "WICHTIG: allowFrom setzen!", lang: "json", code: `{
   "channels": {
     "telegram": {
@@ -3194,9 +3202,10 @@ docker compose up -d
 # 5. Tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up
+sudo tailscale serve --bg http://localhost:\${PORT}
 
-# 6. Testen
-curl http://\${TAILSCALE_IP}:18789` }
+# 6. Testen (HTTPS!)
+# Im Browser: https://\${TAILSCALE_HOSTNAME}/` }
       ]
     },
     14: {
@@ -3537,8 +3546,9 @@ Regel: NIE ohne menschliche Genehmigung posten.
     { id: "s1-tailscale-mac", title: "Tailscale auf Mac/PC", desc: "App Store Tailscale", tab: "sprint1" },
     { id: "s1-tailscale-vps", title: "Tailscale auf VPS", desc: "SSH install tailscale up", tab: "sprint1" },
     { id: "s1-tailscale-verify", title: "Verbindung testen", desc: "ping TAILSCALE-IP", tab: "sprint1" },
-    { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "18789 bleibt zu nur Tailscale", tab: "sprint1" },
-    { id: "s1-dashboard-test", title: "Dashboard testen", desc: "http TAILSCALE-IP 18789", tab: "sprint1" },
+    { id: "s1-tailscale-serve", title: "Tailscale Serve aktivieren", desc: "HTTPS-Zugang tailscale serve", tab: "sprint1" },
+    { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "Kein Port offen nur Tailscale", tab: "sprint1" },
+    { id: "s1-dashboard-test", title: "Dashboard testen", desc: "https TAILSCALE-HOSTNAME", tab: "sprint1" },
     { id: "s1-api", title: "Claude API testen", desc: "Dashboard Test-Nachricht", tab: "sprint1" },
     { id: "s1-telegram", title: "Telegram Bot", desc: "BotFather newbot Token", tab: "sprint1" },
     { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", tab: "sprint1" },
@@ -3811,7 +3821,8 @@ Regel: NIE ohne menschliche Genehmigung posten.
 cd \${PROJECT_PATH}
 export ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY}
 docker compose up -d
-curl http://\${TAILSCALE_IP}:18789`,
+sudo tailscale serve --bg http://localhost:\${PORT}
+# https://\${TAILSCALE_HOSTNAME}/`,
         language: "bash",
         title: "Beispiel-Snippet",
         userVars: localVars
@@ -4426,8 +4437,11 @@ sudo tailscale up
 
 # Link \xF6ffnen und best\xE4tigen
 
-tailscale ip -4  # Diese IP notieren!`, title: "Tailscale VPS", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-tailscale-verify", title: "Verbindung testen", desc: "ping TAILSCALE-IP", onToggle: toggleTask, done: tasks["s1-tailscale-verify"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `ping \${TAILSCALE_IP}`, title: "Ping-Test", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "18789 bleibt zu - nur Tailscale", onToggle: toggleTask, done: tasks["s1-firewall"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-dashboard-test", title: "Dashboard testen", desc: "http://TAILSCALE-IP:18789", onToggle: toggleTask, done: tasks["s1-dashboard-test"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `# Im Browser \xF6ffnen:
-http://\${TAILSCALE_IP}:18789`, title: "Dashboard URL", userVars })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Settings, title: "API & Telegram" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-api", title: "Claude API testen", desc: "Dashboard - Test-Nachricht", onToggle: toggleTask, done: tasks["s1-api"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-telegram", title: "Telegram Bot", desc: "@BotFather - /newbot - Token", onToggle: toggleTask, done: tasks["s1-telegram"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", onToggle: toggleTask, done: tasks["s1-security"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-red-900/20 border border-red-700 rounded p-3 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `{
+tailscale ip -4  # Diese IP notieren!`, title: "Tailscale VPS", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-tailscale-verify", title: "Verbindung testen", desc: "ping TAILSCALE-IP", onToggle: toggleTask, done: tasks["s1-tailscale-verify"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `ping \${TAILSCALE_IP}`, title: "Ping-Test", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-tailscale-serve", title: "Tailscale Serve aktivieren", desc: "HTTPS-Zugang einrichten", onToggle: toggleTask, done: tasks["s1-tailscale-serve"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `# HTTPS-Zugang zum Dashboard:
+sudo tailscale serve --bg http://localhost:\${PORT}
+
+# Deine URL: https://\${TAILSCALE_HOSTNAME}/`, title: "Tailscale Serve", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "Kein Port offen - nur Tailscale", onToggle: toggleTask, done: tasks["s1-firewall"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-dashboard-test", title: "Dashboard testen", desc: "https://TAILSCALE-HOSTNAME", onToggle: toggleTask, done: tasks["s1-dashboard-test"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `# Im Browser \xF6ffnen (HTTPS!):
+https://\${TAILSCALE_HOSTNAME}/`, title: "Dashboard URL", userVars })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Settings, title: "API & Telegram" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-api", title: "Claude API testen", desc: "Dashboard - Test-Nachricht", onToggle: toggleTask, done: tasks["s1-api"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-telegram", title: "Telegram Bot", desc: "@BotFather - /newbot - Token", onToggle: toggleTask, done: tasks["s1-telegram"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", onToggle: toggleTask, done: tasks["s1-security"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-red-900/20 border border-red-700 rounded p-3 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `{
   "channels": {
     "telegram": {
       "botToken": "\${TELEGRAM_BOT_TOKEN}",
