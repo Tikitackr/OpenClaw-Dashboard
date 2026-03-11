@@ -1687,6 +1687,14 @@
         sendMessage();
       }
     };
+    var syncClearServerData = function() {
+      if (!propsSyncUrl || !propsSyncToken) return;
+      var headers = { "Authorization": "Bearer " + propsSyncToken };
+      fetch(propsSyncUrl + "/handy-events.json", { method: "DELETE", headers }).catch(function() {
+      });
+      fetch(propsSyncUrl + "/dashboard-state.json", { method: "DELETE", headers }).catch(function() {
+      });
+    };
     var resetConversation = function() {
       setIsTyping(false);
       setTypingIndex(0);
@@ -1697,6 +1705,13 @@
       setTotalTokens({ input: 0, output: 0 });
       setTotalCost(0);
       setExpandedChunks({});
+      syncClearServerData();
+      setCompanionConnected(false);
+      setCompanionFeed([]);
+      setReadingProgress({ completedChapters: [], currentChapter: 1, overallPercent: 0 });
+      readingProgressRef.current = { completedChapters: [], currentChapter: 1, overallPercent: 0 };
+      lastKnownEventsRef.current = 0;
+      setSyncError(null);
     };
     var exportableMessages = messages.filter(function(m) {
       return !m.isWelcome;
