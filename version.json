@@ -1,6 +1,6 @@
 {
-  "version": "6.13.0",
+  "version": "6.14.0",
   "date": "2026-03-11",
-  "message": "Phase 4 Sync-Modul: Echte Events vom Handy im Feed statt Demo. syncReadHandyEvents + syncWriteDashboardState + Polling (5s). QR-Code mit Sync-URL+Token. Neue SAFE_VARS: SYNC_URL + SYNC_TOKEN.",
+  "message": "SYNC_TOKEN als SAFE_VAR (Eingabefeld in Meine Daten). Phase 4 Snippets: setup-sync.sh, Health-Check, Sync-Test. 4 neue Tasks (s1-sync-*).",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }

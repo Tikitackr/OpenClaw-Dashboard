@@ -1184,6 +1184,9 @@
     var _showFeed = (0, import_react3.useState)(false);
     var showFeed = _showFeed[0];
     var setShowFeed = _showFeed[1];
+    var _readingProgress = (0, import_react3.useState)({ completedChapters: [], currentChapter: 1, overallPercent: 0 });
+    var readingProgress = _readingProgress[0];
+    var setReadingProgress = _readingProgress[1];
     var _syncError = (0, import_react3.useState)(null);
     var syncError = _syncError[0];
     var setSyncError = _syncError[1];
@@ -1209,7 +1212,7 @@
             return [{ icon: "\u{1F4F1}", text: "Companion verbunden", time: "gerade eben", type: "system" }].concat(prev);
           });
         }
-        var iconMap = { page_scan: "\u{1F4D6}", voice_command: "\u{1F399}\uFE0F", question: "\u2753" };
+        var iconMap = { page_scan: "\u{1F4D6}", voice_command: "\u{1F399}\uFE0F", question: "\u2753", connected: "\u{1F4F1}" };
         newEvents.forEach(function(evt) {
           var feedIcon = iconMap[evt.type] || "\u{1F4F1}";
           var feedText = evt.details || evt.transcript || evt.question || evt.type;
@@ -1217,21 +1220,40 @@
           setCompanionFeed(function(prev) {
             return [{ icon: feedIcon, text: feedText, time: timeStr, type: evt.type }].concat(prev).slice(0, 20);
           });
+          var chapterToMark = 0;
+          if (evt.type === "voice_command" && evt.command === "kapitel_complete" && evt.chapter > 0) {
+            chapterToMark = evt.chapter;
+          }
+          if (evt.type === "page_scan" && evt.action === "mark_read" && evt.chapter > 0) {
+            chapterToMark = evt.chapter;
+          }
+          if (chapterToMark > 0) {
+            setReadingProgress(function(prev) {
+              var completed = prev.completedChapters.slice();
+              if (completed.indexOf(chapterToMark) === -1) {
+                completed.push(chapterToMark);
+                completed.sort(function(a, b) {
+                  return a - b;
+                });
+              }
+              return { completedChapters: completed, currentChapter: chapterToMark + 1, overallPercent: Math.round(completed.length / 15 * 100) };
+            });
+          }
         });
       }).catch(function(err) {
         setSyncError("Sync-Fehler");
       });
     };
-    var syncWriteDashboardState = function(progress) {
+    var syncWriteDashboardState = function(progressOverride) {
       if (!propsSyncUrl || !propsSyncToken) return;
+      var prog = progressOverride || readingProgress;
       var payload = {
         lastUpdate: (/* @__PURE__ */ new Date()).toISOString(),
-        progress: progress || {
+        progress: {
           totalChapters: 15,
-          completedChapters: [],
-          currentChapter: 1,
-          currentStep: 1,
-          overallPercent: 0
+          completedChapters: prog.completedChapters || [],
+          currentChapter: prog.currentChapter || 1,
+          overallPercent: prog.overallPercent || 0
         },
         apiStatus: apiKey ? "active" : "inactive",
         pendingNotifications: []
@@ -1255,6 +1277,7 @@
       });
       var interval = setInterval(function() {
         syncReadHandyEvents();
+        syncWriteDashboardState();
       }, 5e3);
       return function() {
         clearInterval(interval);
@@ -2952,7 +2975,7 @@
     var s = SERVICE_LINKS[key];
     return s && s.affiliate !== null;
   }
-  var APP_VERSION = "6.13.0";
+  var APP_VERSION = "6.14.0";
   var VERSION_CHECK_URL = "https://tikitackr.github.io/OpenClaw-Dashboard/version.json";
   var SPRINT_TASKS = {
     sprint1: [
@@ -2968,6 +2991,10 @@
       "s1-tailscale-serve",
       "s1-firewall",
       "s1-dashboard-test",
+      "s1-sync-setup",
+      "s1-sync-test",
+      "s1-sync-dashboard",
+      "s1-sync-companion",
       "s1-api",
       "s1-telegram",
       "s1-security",
@@ -3636,6 +3663,10 @@ Regel: NIE ohne menschliche Genehmigung posten.
     { id: "s1-tailscale-serve", title: "Tailscale Serve aktivieren", desc: "HTTPS-Zugang tailscale serve", tab: "sprint1" },
     { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "Kein Port offen nur Tailscale", tab: "sprint1" },
     { id: "s1-dashboard-test", title: "Dashboard testen", desc: "https TAILSCALE-HOSTNAME", tab: "sprint1" },
+    { id: "s1-sync-setup", title: "Sync-Server installieren", desc: "setup-sync.sh ausfuehren", tab: "sprint1" },
+    { id: "s1-sync-test", title: "Health-Check testen", desc: "curl SYNC_URL/health", tab: "sprint1" },
+    { id: "s1-sync-dashboard", title: "Sync-Daten eintragen", desc: "SYNC_URL + SYNC_TOKEN in Meine Daten", tab: "sprint1" },
+    { id: "s1-sync-companion", title: "Companion testen", desc: "QR-Code scannen Kachel gruen", tab: "sprint1" },
     { id: "s1-api", title: "Claude API testen", desc: "Dashboard Test-Nachricht", tab: "sprint1" },
     { id: "s1-telegram", title: "Telegram Bot", desc: "BotFather newbot Token", tab: "sprint1" },
     { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", tab: "sprint1" },
@@ -4542,7 +4573,18 @@ tailscale ip -4  # Diese IP notieren!`, title: "Tailscale VPS", userVars }), /* 
 sudo tailscale serve --bg http://localhost:\${PORT}
 
 # Deine URL: https://\${TAILSCALE_HOSTNAME}/`, title: "Tailscale Serve", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-firewall", title: "Port NICHT \xF6ffnen!", desc: "Kein Port offen - nur Tailscale", onToggle: toggleTask, done: tasks["s1-firewall"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-dashboard-test", title: "Dashboard testen", desc: "https://TAILSCALE-HOSTNAME", onToggle: toggleTask, done: tasks["s1-dashboard-test"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `# Im Browser \xF6ffnen (HTTPS!):
-https://\${TAILSCALE_HOSTNAME}/`, title: "Dashboard URL", userVars })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Settings, title: "API & Telegram" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-api", title: "Claude API testen", desc: "Dashboard - Test-Nachricht", onToggle: toggleTask, done: tasks["s1-api"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-telegram", title: "Telegram Bot", desc: "@BotFather - /newbot - Token", onToggle: toggleTask, done: tasks["s1-telegram"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", onToggle: toggleTask, done: tasks["s1-security"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-red-900/20 border border-red-700 rounded p-3 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `{
+https://\${TAILSCALE_HOSTNAME}/`, title: "Dashboard URL", userVars })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Zap, title: "Sync-Server (Phase 4)" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-sync-setup", title: "Sync-Server installieren", desc: "Ein Befehl - alles automatisch", onToggle: toggleTask, done: tasks["s1-sync-setup"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `# Sync-Server mit einem Befehl installieren:
+curl -sL https://raw.githubusercontent.com/tikitackr/OpenClaw-Website/main/setup-sync.sh | bash
+
+# WICHTIG: Notiere dir SYNC_URL und SYNC_TOKEN!
+# Trage beide unter "Meine Daten" im Dashboard ein.`, title: "Setup-Script", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-sync-test", title: "Health-Check testen", desc: "Sync-Server erreichbar?", onToggle: toggleTask, done: tasks["s1-sync-test"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `# Health-Check (ohne Token):
+curl -k \${SYNC_URL}/health
+
+# Schreib-Test (mit Token):
+curl -k -X PUT \${SYNC_URL}/test.json -H "Authorization: Bearer \${SYNC_TOKEN}" -H "Content-Type: application/json" -d '{"test": true}'
+
+# Lese-Test:
+curl -k \${SYNC_URL}/test.json -H "Authorization: Bearer \${SYNC_TOKEN}"`, title: "Sync-Server testen", userVars }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-sync-dashboard", title: "Sync-Daten im Dashboard eintragen", desc: "SYNC_URL + SYNC_TOKEN unter Meine Daten", onToggle: toggleTask, done: tasks["s1-sync-dashboard"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-sync-companion", title: "Companion testen", desc: "QR-Code scannen \u2192 Handy-Kachel gr\xFCn", onToggle: toggleTask, done: tasks["s1-sync-companion"], filter: taskFilter })), /* @__PURE__ */ import_react4.default.createElement(Section, { icon: Settings, title: "API & Telegram" }, /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-api", title: "Claude API testen", desc: "Dashboard - Test-Nachricht", onToggle: toggleTask, done: tasks["s1-api"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-telegram", title: "Telegram Bot", desc: "@BotFather - /newbot - Token", onToggle: toggleTask, done: tasks["s1-telegram"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement(TaskItem, { id: "s1-security", title: "allowFrom setzen!", desc: "Nur DEINE Telegram-ID", onToggle: toggleTask, done: tasks["s1-security"], filter: taskFilter }), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bg-red-900/20 border border-red-700 rounded p-3 mb-2" }, /* @__PURE__ */ import_react4.default.createElement(PersonalizedCodeBlock, { code: `{
   "channels": {
     "telegram": {
       "botToken": "\${TELEGRAM_BOT_TOKEN}",
