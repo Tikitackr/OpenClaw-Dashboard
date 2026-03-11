@@ -1204,50 +1204,53 @@
         setSyncError(null);
         var isOnline = false;
         if (data.lastUpdate) {
-          var lastSeen = new Date(data.lastUpdate).getTime();
-          var now = Date.now();
-          isOnline = now - lastSeen < 3e4;
+          isOnline = Date.now() - new Date(data.lastUpdate).getTime() < 3e4;
         }
         if (isOnline && !companionConnected) {
           setCompanionConnected(true);
           setShowFeed(true);
-          setCompanionFeed(function(prev) {
-            return [{ icon: "\u{1F4F1}", text: "Companion verbunden", time: "gerade eben", type: "system" }].concat(prev);
-          });
         } else if (!isOnline && companionConnected) {
           setCompanionConnected(false);
+        }
+        var allCompleted = [];
+        data.events.forEach(function(evt) {
+          var ch = 0;
+          if (evt.type === "voice_command" && evt.command === "kapitel_complete" && evt.chapter > 0) ch = evt.chapter;
+          if (evt.type === "page_scan" && evt.action === "mark_read" && evt.chapter > 0) ch = evt.chapter;
+          if (ch > 0 && allCompleted.indexOf(ch) === -1) allCompleted.push(ch);
+        });
+        if (allCompleted.length > 0) {
+          allCompleted.sort(function(a, b) {
+            return a - b;
+          });
+          setReadingProgress({ completedChapters: allCompleted, currentChapter: allCompleted[allCompleted.length - 1] + 1, overallPercent: Math.round(allCompleted.length / 15 * 100) });
+        }
+        if (data.dailySummary && data.dailySummary.chaptersRead && data.dailySummary.chaptersRead.length > 0) {
+          data.dailySummary.chaptersRead.forEach(function(ch) {
+            if (allCompleted.indexOf(ch) === -1) allCompleted.push(ch);
+          });
+          allCompleted.sort(function(a, b) {
+            return a - b;
+          });
+          setReadingProgress({ completedChapters: allCompleted, currentChapter: allCompleted[allCompleted.length - 1] + 1, overallPercent: Math.round(allCompleted.length / 15 * 100) });
         }
         var newEvents = data.events.slice(lastKnownEventsRef.current);
         if (newEvents.length === 0) return;
         lastKnownEventsRef.current = data.events.length;
-        var iconMap = { page_scan: "\u{1F4D6}", voice_command: "\u{1F399}\uFE0F", question: "\u2753", connected: "\u{1F4F1}" };
-        newEvents.forEach(function(evt) {
-          var feedIcon = iconMap[evt.type] || "\u{1F4F1}";
-          var feedText = evt.details || evt.transcript || evt.question || evt.type;
-          var timeStr = evt.timestamp ? new Date(evt.timestamp).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "gerade eben";
-          setCompanionFeed(function(prev) {
-            return [{ icon: feedIcon, text: feedText, time: timeStr, type: evt.type }].concat(prev).slice(0, 20);
-          });
-          var chapterToMark = 0;
-          if (evt.type === "voice_command" && evt.command === "kapitel_complete" && evt.chapter > 0) {
-            chapterToMark = evt.chapter;
-          }
-          if (evt.type === "page_scan" && evt.action === "mark_read" && evt.chapter > 0) {
-            chapterToMark = evt.chapter;
-          }
-          if (chapterToMark > 0) {
-            setReadingProgress(function(prev) {
-              var completed = prev.completedChapters.slice();
-              if (completed.indexOf(chapterToMark) === -1) {
-                completed.push(chapterToMark);
-                completed.sort(function(a, b) {
-                  return a - b;
-                });
-              }
-              return { completedChapters: completed, currentChapter: chapterToMark + 1, overallPercent: Math.round(completed.length / 15 * 100) };
-            });
-          }
+        var iconMap = { page_scan: "\u{1F4D6}", voice_command: "\u{1F399}\uFE0F", question: "\u2753" };
+        var feedEvents = newEvents.filter(function(evt) {
+          return evt.type !== "connected";
         });
+        if (feedEvents.length > 0) {
+          feedEvents.forEach(function(evt) {
+            var feedIcon = iconMap[evt.type] || "\u{1F4F1}";
+            var feedText = evt.details || evt.transcript || evt.question || evt.type;
+            var timeStr = evt.timestamp ? new Date(evt.timestamp).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "gerade eben";
+            setCompanionFeed(function(prev) {
+              return [{ icon: feedIcon, text: feedText, time: timeStr, type: evt.type }].concat(prev).slice(0, 20);
+            });
+          });
+        }
       }).catch(function(err) {
         setSyncError("Sync-Fehler");
       });
