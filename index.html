@@ -1187,6 +1187,7 @@
     var _readingProgress = (0, import_react3.useState)({ completedChapters: [], currentChapter: 1, overallPercent: 0 });
     var readingProgress = _readingProgress[0];
     var setReadingProgress = _readingProgress[1];
+    var readingProgressRef = (0, import_react3.useRef)({ completedChapters: [], currentChapter: 1, overallPercent: 0 });
     var _syncError = (0, import_react3.useState)(null);
     var syncError = _syncError[0];
     var setSyncError = _syncError[1];
@@ -1219,20 +1220,18 @@
           if (evt.type === "page_scan" && evt.action === "mark_read" && evt.chapter > 0) ch = evt.chapter;
           if (ch > 0 && allCompleted.indexOf(ch) === -1) allCompleted.push(ch);
         });
-        if (allCompleted.length > 0) {
-          allCompleted.sort(function(a, b) {
-            return a - b;
-          });
-          setReadingProgress({ completedChapters: allCompleted, currentChapter: allCompleted[allCompleted.length - 1] + 1, overallPercent: Math.round(allCompleted.length / 15 * 100) });
-        }
         if (data.dailySummary && data.dailySummary.chaptersRead && data.dailySummary.chaptersRead.length > 0) {
           data.dailySummary.chaptersRead.forEach(function(ch) {
             if (allCompleted.indexOf(ch) === -1) allCompleted.push(ch);
           });
+        }
+        if (allCompleted.length > 0) {
           allCompleted.sort(function(a, b) {
             return a - b;
           });
-          setReadingProgress({ completedChapters: allCompleted, currentChapter: allCompleted[allCompleted.length - 1] + 1, overallPercent: Math.round(allCompleted.length / 15 * 100) });
+          var newProg = { completedChapters: allCompleted, currentChapter: allCompleted[allCompleted.length - 1] + 1, overallPercent: Math.round(allCompleted.length / 15 * 100) };
+          setReadingProgress(newProg);
+          readingProgressRef.current = newProg;
         }
         var newEvents = data.events.slice(lastKnownEventsRef.current);
         if (newEvents.length === 0) return;
@@ -1257,7 +1256,7 @@
     };
     var syncWriteDashboardState = function(progressOverride) {
       if (!propsSyncUrl || !propsSyncToken) return;
-      var prog = progressOverride || readingProgress;
+      var prog = progressOverride || readingProgressRef.current;
       var payload = {
         lastUpdate: (/* @__PURE__ */ new Date()).toISOString(),
         progress: {
@@ -1867,7 +1866,7 @@
         animation: "companionPulse 2s ease-in-out infinite"
       } }), /* @__PURE__ */ React.createElement("span", { style: { color: "#22c55e", fontWeight: 700 } }, "Companion verbunden"), companionFeed.length > 0 && /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText } }, "\u2013 " + companionFeed[0].text)),
       /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText, fontSize: "10px", transition: "transform 0.2s", transform: showFeed ? "rotate(180deg)" : "rotate(0deg)" } }, "\u25BC")
-    ), showFeed && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 8px 12px", maxHeight: "120px", overflowY: "auto" } }, companionFeed.map(function(event, idx) {
+    ), readingProgress.completedChapters.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 6px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "3px" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "10px", color: theme.mutedText } }, "Lesefortschritt"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "10px", fontWeight: 700, color: "#a78bfa" } }, readingProgress.overallPercent, "%")), /* @__PURE__ */ React.createElement("div", { style: { height: "4px", borderRadius: "2px", backgroundColor: "rgba(139,92,246,0.15)", overflow: "hidden" } }, /* @__PURE__ */ React.createElement("div", { style: { height: "100%", borderRadius: "2px", background: "linear-gradient(90deg, #8b5cf6, #6366f1, #06b6d4)", width: readingProgress.overallPercent + "%", transition: "width 0.5s ease", boxShadow: readingProgress.overallPercent > 0 ? "0 0 6px rgba(139,92,246,0.4)" : "none" } })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "9px", color: theme.mutedText, marginTop: "2px" } }, readingProgress.completedChapters.length, " von 15 Kapiteln gelesen")), showFeed && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 8px 12px", maxHeight: "120px", overflowY: "auto" } }, companionFeed.map(function(event, idx) {
       return /* @__PURE__ */ React.createElement("div", { key: idx, style: {
         display: "flex",
         alignItems: "center",
@@ -2986,7 +2985,7 @@
     var s = SERVICE_LINKS[key];
     return s && s.affiliate !== null;
   }
-  var APP_VERSION = "6.14.0";
+  var APP_VERSION = "6.14.1";
   var VERSION_CHECK_URL = "https://tikitackr.github.io/OpenClaw-Dashboard/version.json";
   var SPRINT_TASKS = {
     sprint1: [

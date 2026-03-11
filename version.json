@@ -1,6 +1,6 @@
 {
-  "version": "6.14.0",
+  "version": "6.14.1",
   "date": "2026-03-11",
-  "message": "SYNC_TOKEN als SAFE_VAR (Eingabefeld in Meine Daten). Phase 4 Snippets: setup-sync.sh, Health-Check, Sync-Test. 4 neue Tasks (s1-sync-*).",
+  "message": "Fix Lesefortschritt: readingProgressRef gegen Race-Condition, sichtbarer Fortschrittsbalken im Widget, Merge statt Overwrite bei Sync.",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }
