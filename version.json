@@ -1,6 +1,6 @@
 {
-  "version": "6.12.0",
-  "date": "2026-03-10",
-  "message": "Tailscale Serve: HTTPS-Zugang statt HTTP:18789. Neue Variablen PORT + TAILSCALE_HOSTNAME. Neuer Task s1-tailscale-serve. Alle Snippets + Vorschau aktualisiert.",
+  "version": "6.13.0",
+  "date": "2026-03-11",
+  "message": "Phase 4 Sync-Modul: Echte Events vom Handy im Feed statt Demo. syncReadHandyEvents + syncWriteDashboardState + Polling (5s). QR-Code mit Sync-URL+Token. Neue SAFE_VARS: SYNC_URL + SYNC_TOKEN.",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }
