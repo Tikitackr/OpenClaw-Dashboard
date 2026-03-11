@@ -1202,16 +1202,24 @@
       }).then(function(data) {
         if (!data || !data.events) return;
         setSyncError(null);
-        var newEvents = data.events.slice(lastKnownEventsRef.current);
-        if (newEvents.length === 0) return;
-        lastKnownEventsRef.current = data.events.length;
-        if (!companionConnected) {
+        var isOnline = false;
+        if (data.lastUpdate) {
+          var lastSeen = new Date(data.lastUpdate).getTime();
+          var now = Date.now();
+          isOnline = now - lastSeen < 3e4;
+        }
+        if (isOnline && !companionConnected) {
           setCompanionConnected(true);
           setShowFeed(true);
           setCompanionFeed(function(prev) {
             return [{ icon: "\u{1F4F1}", text: "Companion verbunden", time: "gerade eben", type: "system" }].concat(prev);
           });
+        } else if (!isOnline && companionConnected) {
+          setCompanionConnected(false);
         }
+        var newEvents = data.events.slice(lastKnownEventsRef.current);
+        if (newEvents.length === 0) return;
+        lastKnownEventsRef.current = data.events.length;
         var iconMap = { page_scan: "\u{1F4D6}", voice_command: "\u{1F399}\uFE0F", question: "\u2753", connected: "\u{1F4F1}" };
         newEvents.forEach(function(evt) {
           var feedIcon = iconMap[evt.type] || "\u{1F4F1}";
