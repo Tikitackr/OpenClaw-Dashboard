@@ -1178,6 +1178,9 @@
     var _companionConnected = (0, import_react3.useState)(false);
     var companionConnected = _companionConnected[0];
     var setCompanionConnected = _companionConnected[1];
+    var _companionConnectionLost = (0, import_react3.useState)(false);
+    var companionConnectionLost = _companionConnectionLost[0];
+    var setCompanionConnectionLost = _companionConnectionLost[1];
     var _companionFeed = (0, import_react3.useState)([]);
     var companionFeed = _companionFeed[0];
     var setCompanionFeed = _companionFeed[1];
@@ -1209,30 +1212,48 @@
         }
         if (isOnline && !companionConnected) {
           setCompanionConnected(true);
+          setCompanionConnectionLost(false);
           setShowFeed(true);
         } else if (!isOnline && companionConnected) {
           setCompanionConnected(false);
+          setCompanionConnectionLost(true);
         }
         var allCompleted = [];
+        var undoneChapters = [];
         data.events.forEach(function(evt) {
           var ch = 0;
           if (evt.type === "voice_command" && evt.command === "kapitel_complete" && evt.chapter > 0) ch = evt.chapter;
           if (evt.type === "page_scan" && evt.action === "mark_read" && evt.chapter > 0) ch = evt.chapter;
           if (ch > 0 && allCompleted.indexOf(ch) === -1) allCompleted.push(ch);
+          if (evt.type === "voice_command" && evt.command === "chapter_undo" && evt.chapter > 0) {
+            undoneChapters.push(evt.chapter);
+          }
         });
+        if (undoneChapters.length > 0) {
+          allCompleted = allCompleted.filter(function(ch) {
+            return undoneChapters.indexOf(ch) === -1;
+          });
+        }
         if (data.dailySummary && data.dailySummary.chaptersRead && data.dailySummary.chaptersRead.length > 0) {
           data.dailySummary.chaptersRead.forEach(function(ch) {
             if (allCompleted.indexOf(ch) === -1) allCompleted.push(ch);
           });
         }
-        if (allCompleted.length > 0) {
-          allCompleted.sort(function(a, b) {
-            return a - b;
+        var currentCompleted = readingProgressRef.current.completedChapters || [];
+        allCompleted.forEach(function(ch) {
+          if (currentCompleted.indexOf(ch) === -1) currentCompleted = currentCompleted.concat([ch]);
+        });
+        if (undoneChapters.length > 0) {
+          currentCompleted = currentCompleted.filter(function(ch) {
+            return undoneChapters.indexOf(ch) === -1;
           });
-          var newProg = { completedChapters: allCompleted, currentChapter: allCompleted[allCompleted.length - 1] + 1, overallPercent: Math.round(allCompleted.length / 15 * 100) };
-          setReadingProgress(newProg);
-          readingProgressRef.current = newProg;
         }
+        currentCompleted.sort(function(a, b) {
+          return a - b;
+        });
+        var newProg = { completedChapters: currentCompleted, currentChapter: currentCompleted.length > 0 ? currentCompleted[currentCompleted.length - 1] + 1 : 1, overallPercent: Math.round(currentCompleted.length / 15 * 100) };
+        setReadingProgress(newProg);
+        readingProgressRef.current = newProg;
         var newEvents = data.events.slice(lastKnownEventsRef.current);
         if (newEvents.length === 0) return;
         lastKnownEventsRef.current = data.events.length;
@@ -1275,10 +1296,34 @@
       }).catch(function() {
       });
     };
+    var syncReadDashboardState = function() {
+      if (!propsSyncUrl || !propsSyncToken) return;
+      fetch(propsSyncUrl + "/dashboard-state.json", {
+        headers: { "Authorization": "Bearer " + propsSyncToken }
+      }).then(function(res) {
+        if (res.ok) return res.json();
+        if (res.status === 404) return null;
+        throw new Error("Status " + res.status);
+      }).then(function(data) {
+        if (!data || !data.progress) return;
+        var prog = data.progress;
+        if (prog.completedChapters && prog.completedChapters.length > 0) {
+          var newProg = {
+            completedChapters: prog.completedChapters,
+            currentChapter: prog.currentChapter || 1,
+            overallPercent: prog.overallPercent || Math.round(prog.completedChapters.length / 15 * 100)
+          };
+          setReadingProgress(newProg);
+          readingProgressRef.current = newProg;
+        }
+      }).catch(function() {
+      });
+    };
     (0, import_react3.useEffect)(function() {
       if (!propsSyncUrl || !propsSyncToken) return;
       fetch(propsSyncUrl + "/health").then(function(res) {
         if (res.ok) {
+          syncReadDashboardState();
           syncReadHandyEvents();
           syncWriteDashboardState();
         }
@@ -1707,6 +1752,7 @@
       setExpandedChunks({});
       syncClearServerData();
       setCompanionConnected(false);
+      setCompanionConnectionLost(false);
       setCompanionFeed([]);
       setReadingProgress({ completedChapters: [], currentChapter: 1, overallPercent: 0 });
       readingProgressRef.current = { completedChapters: [], currentChapter: 1, overallPercent: 0 };
@@ -1850,7 +1896,7 @@
       fontSize: "14px",
       position: "relative",
       transition: "background-color 0.8s ease, color 0.5s ease"
-    } }, companionConnected && /* @__PURE__ */ React.createElement("div", { style: {
+    } }, (companionConnected || companionConnectionLost) && /* @__PURE__ */ React.createElement("div", { style: {
       borderBottom: "1px solid " + theme.glassBorder,
       backgroundColor: theme.glassCardBg,
       backdropFilter: "blur(12px)",
@@ -1877,11 +1923,57 @@
         width: "7px",
         height: "7px",
         borderRadius: "50%",
-        backgroundColor: "#22c55e",
-        animation: "companionPulse 2s ease-in-out infinite"
-      } }), /* @__PURE__ */ React.createElement("span", { style: { color: "#22c55e", fontWeight: 700 } }, "Companion verbunden"), companionFeed.length > 0 && /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText } }, "\u2013 " + companionFeed[0].text)),
+        backgroundColor: companionConnected ? "#22c55e" : "#f97316",
+        animation: companionConnected ? "companionPulse 2s ease-in-out infinite" : "none"
+      } }), /* @__PURE__ */ React.createElement("span", { style: { color: companionConnected ? "#22c55e" : "#f97316", fontWeight: 700 } }, companionConnected ? "Companion verbunden" : "Verbindung verloren"), companionFeed.length > 0 && /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText } }, "\u2013 " + companionFeed[0].text)),
       /* @__PURE__ */ React.createElement("span", { style: { color: theme.mutedText, fontSize: "10px", transition: "transform 0.2s", transform: showFeed ? "rotate(180deg)" : "rotate(0deg)" } }, "\u25BC")
-    ), readingProgress.completedChapters.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 6px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "3px" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "10px", color: theme.mutedText } }, "Lesefortschritt"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "10px", fontWeight: 700, color: "#a78bfa" } }, readingProgress.overallPercent, "%")), /* @__PURE__ */ React.createElement("div", { style: { height: "4px", borderRadius: "2px", backgroundColor: "rgba(139,92,246,0.15)", overflow: "hidden" } }, /* @__PURE__ */ React.createElement("div", { style: { height: "100%", borderRadius: "2px", background: "linear-gradient(90deg, #8b5cf6, #6366f1, #06b6d4)", width: readingProgress.overallPercent + "%", transition: "width 0.5s ease", boxShadow: readingProgress.overallPercent > 0 ? "0 0 6px rgba(139,92,246,0.4)" : "none" } })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "9px", color: theme.mutedText, marginTop: "2px" } }, readingProgress.completedChapters.length, " von 15 Kapiteln gelesen")), showFeed && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 8px 12px", maxHeight: "120px", overflowY: "auto" } }, companionFeed.map(function(event, idx) {
+    ), /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 6px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "10px", color: theme.mutedText } }, "Lesefortschritt"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "10px", fontWeight: 700, color: "#a78bfa" } }, readingProgress.overallPercent, "%")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "3px", flexWrap: "wrap" } }, Array.from({ length: 15 }, function(_, i) {
+      var chNum = i + 1;
+      var isRead = readingProgress.completedChapters.indexOf(chNum) !== -1;
+      return React.createElement("div", {
+        key: chNum,
+        onClick: function(e) {
+          e.stopPropagation();
+          setReadingProgress(function(prev) {
+            var completed = prev.completedChapters.slice();
+            var idx = completed.indexOf(chNum);
+            if (idx !== -1) {
+              completed.splice(idx, 1);
+            } else {
+              completed.push(chNum);
+              completed.sort(function(a, b) {
+                return a - b;
+              });
+            }
+            var newProg = {
+              completedChapters: completed,
+              currentChapter: completed.length > 0 ? completed[completed.length - 1] + 1 : 1,
+              overallPercent: Math.round(completed.length / 15 * 100)
+            };
+            readingProgressRef.current = newProg;
+            syncWriteDashboardState(newProg);
+            return newProg;
+          });
+        },
+        title: "Kapitel " + chNum + (isRead ? " (gelesen)" : " (ungelesen)"),
+        style: {
+          width: "22px",
+          height: "22px",
+          borderRadius: "4px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "9px",
+          fontWeight: 700,
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          backgroundColor: isRead ? "rgba(139,92,246,0.25)" : "rgba(255,255,255,0.06)",
+          border: isRead ? "1px solid rgba(139,92,246,0.5)" : "1px solid rgba(255,255,255,0.1)",
+          color: isRead ? "#a78bfa" : theme.mutedText,
+          boxShadow: isRead ? "0 0 6px rgba(139,92,246,0.2)" : "none"
+        }
+      }, chNum);
+    })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "9px", color: theme.mutedText, marginTop: "3px" } }, readingProgress.completedChapters.length, " von 15 Kapiteln gelesen")), showFeed && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 12px 8px 12px", maxHeight: "120px", overflowY: "auto" } }, companionFeed.map(function(event, idx) {
       return /* @__PURE__ */ React.createElement("div", { key: idx, style: {
         display: "flex",
         alignItems: "center",
@@ -2165,9 +2257,7 @@
       "div",
       {
         onClick: function() {
-          if (companionConnected) {
-            setShowFeed(!showFeed);
-          } else if (apiActive) {
+          if (apiActive) {
             setShowQrModal(true);
           }
         },
@@ -2175,7 +2265,7 @@
           background: "linear-gradient(180deg, rgba(40,52,72,0.6) 0%, " + theme.glassCardBg + " 100%)",
           backdropFilter: "blur(20px) saturate(160%)",
           WebkitBackdropFilter: "blur(20px) saturate(160%)",
-          border: companionConnected ? "1px solid rgba(34,197,94,0.3)" : "1px solid " + theme.glassCardBorder,
+          border: companionConnected ? "1px solid rgba(34,197,94,0.3)" : companionConnectionLost ? "1px solid rgba(249,115,22,0.4)" : "1px solid " + theme.glassCardBorder,
           borderRadius: "16px",
           padding: "14px",
           cursor: apiActive ? "pointer" : "not-allowed",
@@ -2209,15 +2299,15 @@
           width: "48px",
           height: "48px",
           borderRadius: "14px",
-          backgroundColor: companionConnected ? "rgba(34,197,94,0.15)" : "rgba(217,119,6,0.15)",
+          backgroundColor: companionConnected ? "rgba(34,197,94,0.15)" : companionConnectionLost ? "rgba(249,115,22,0.15)" : "rgba(217,119,6,0.15)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          boxShadow: companionConnected ? "0 0 12px rgba(34,197,94,0.2)" : "none"
+          boxShadow: companionConnected ? "0 0 12px rgba(34,197,94,0.2)" : companionConnectionLost ? "0 0 12px rgba(249,115,22,0.2)" : "none"
         } },
         React.createElement(
           "svg",
-          { width: "26", height: "26", viewBox: "0 0 24 24", fill: "none", stroke: companionConnected ? "#22c55e" : theme.primary, strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" },
+          { width: "26", height: "26", viewBox: "0 0 24 24", fill: "none", stroke: companionConnected ? "#22c55e" : companionConnectionLost ? "#f97316" : theme.primary, strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" },
           React.createElement("rect", { x: "5", y: "2", width: "14", height: "20", rx: "2", ry: "2" }),
           React.createElement("line", { x1: "12", y1: "18", x2: "12.01", y2: "18" })
         )
@@ -2227,13 +2317,13 @@
         null,
         React.createElement(
           "div",
-          { style: { fontSize: "13px", fontWeight: 600, color: companionConnected ? "#22c55e" : theme.text } },
-          companionConnected ? "Live" : "Handy"
+          { style: { fontSize: "13px", fontWeight: 600, color: companionConnected ? "#22c55e" : companionConnectionLost ? "#f97316" : theme.text } },
+          companionConnected ? "Live" : companionConnectionLost ? "Offline" : "Handy"
         ),
         React.createElement(
           "div",
-          { style: { fontSize: "10px", color: theme.mutedText, marginTop: "2px" } },
-          companionConnected ? "Feed anzeigen" : apiActive ? "QR-Code scannen" : "Erst API-Key"
+          { style: { fontSize: "10px", color: companionConnectionLost ? "#f97316" : theme.mutedText, marginTop: "2px" } },
+          companionConnected ? "Verbunden \u2013 QR/Feed" : companionConnectionLost ? "Verbindung verloren" : apiActive ? "QR-Code scannen" : "Erst API-Key"
         )
       )
     ), React.createElement(
@@ -2674,7 +2764,8 @@
             fontWeight: 700,
             fontSize: "13px",
             cursor: "pointer",
-            transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)"
+            transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+            marginBottom: "8px"
           },
           onMouseEnter: function(e) {
             e.currentTarget.style.transform = "scale(1.02)";
@@ -2690,6 +2781,43 @@
           }
         },
         "\u2705 Gescannt \u2013 Companion verbinden"
+      ), (companionConnectionLost || companionConnected) && propsSyncUrl && propsSyncToken && /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          onClick: function() {
+            syncClearServerData();
+            setCompanionConnected(false);
+            setCompanionConnectionLost(false);
+            setCompanionFeed([]);
+            setReadingProgress({ completedChapters: [], currentChapter: 1, overallPercent: 0 });
+            readingProgressRef.current = { completedChapters: [], currentChapter: 1, overallPercent: 0 };
+            lastKnownEventsRef.current = 0;
+            setSyncError(null);
+          },
+          style: {
+            width: "100%",
+            padding: "10px",
+            borderRadius: "10px",
+            border: "1px solid #e2e8f0",
+            background: "transparent",
+            color: "#64748b",
+            fontWeight: 600,
+            fontSize: "12px",
+            cursor: "pointer",
+            transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)"
+          },
+          onMouseEnter: function(e) {
+            e.currentTarget.style.background = "#f1f5f9";
+            e.currentTarget.style.color = "#f97316";
+            e.currentTarget.style.borderColor = "#f97316";
+          },
+          onMouseLeave: function(e) {
+            e.currentTarget.style.background = "transparent";
+            e.currentTarget.style.color = "#64748b";
+            e.currentTarget.style.borderColor = "#e2e8f0";
+          }
+        },
+        "\u{1F504} Neu verbinden (Sync zur\xFCcksetzen)"
       ))
     ), showChunkBrowser && /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
@@ -3000,7 +3128,7 @@
     var s = SERVICE_LINKS[key];
     return s && s.affiliate !== null;
   }
-  var APP_VERSION = "6.14.2";
+  var APP_VERSION = "6.15.0";
   var VERSION_CHECK_URL = "https://tikitackr.github.io/OpenClaw-Dashboard/version.json";
   var SPRINT_TASKS = {
     sprint1: [
