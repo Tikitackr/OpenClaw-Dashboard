@@ -2729,7 +2729,7 @@
           style: { background: "none", border: "none", color: "#94a3b8", fontSize: "18px", cursor: "pointer", fontWeight: 700, lineHeight: 1 }
         },
         "\u2715"
-      )), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "16px", backgroundColor: "#ffffff", padding: "8px", borderRadius: "8px" } }, /* @__PURE__ */ React.createElement(
+      )), companionConnected && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "6px", justifyContent: "center", padding: "8px 12px", marginBottom: "12px", backgroundColor: "rgba(34,197,94,0.1)", borderRadius: "8px", border: "1px solid rgba(34,197,94,0.3)" } }, /* @__PURE__ */ React.createElement("span", { style: { display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#22c55e" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "12px", fontWeight: 600, color: "#16a34a" } }, "Companion verbunden")), !companionConnected && companionConnectionLost && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "6px", justifyContent: "center", padding: "8px 12px", marginBottom: "12px", backgroundColor: "rgba(249,115,22,0.1)", borderRadius: "8px", border: "1px solid rgba(249,115,22,0.3)" } }, /* @__PURE__ */ React.createElement("span", { style: { display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#f97316" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "12px", fontWeight: 600, color: "#ea580c" } }, "Verbindung verloren \u2013 neu scannen")), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "16px", backgroundColor: "#ffffff", padding: "8px", borderRadius: "8px" } }, /* @__PURE__ */ React.createElement(
         "img",
         {
           src: getQrImageUrl(generateQrUrl()),
@@ -2750,7 +2750,7 @@
           style: { fontSize: "10px", color: "#64748b", padding: "8px", backgroundColor: "#f1f5f9", borderRadius: "6px", wordBreak: "break-all", cursor: "pointer", border: "1px solid #e2e8f0", marginBottom: "12px" }
         },
         generateQrUrl().slice(0, 70) + "..."
-      ), /* @__PURE__ */ React.createElement(
+      ), !(propsSyncUrl && propsSyncToken) && /* @__PURE__ */ React.createElement(
         "button",
         {
           onClick: activateCompanionDemo,
@@ -2781,7 +2781,7 @@
           }
         },
         "\u2705 Gescannt \u2013 Companion verbinden"
-      ), (companionConnectionLost || companionConnected) && propsSyncUrl && propsSyncToken && /* @__PURE__ */ React.createElement(
+      ), propsSyncUrl && propsSyncToken && !companionConnected && !companionConnectionLost && /* @__PURE__ */ React.createElement("div", { style: { fontSize: "11px", color: "#64748b", padding: "10px", backgroundColor: "#f8fafc", borderRadius: "8px", marginBottom: "8px", lineHeight: 1.5 } }, "Sync aktiv \u2013 nach dem Scannen verbindet sich der Companion automatisch."), (companionConnectionLost || companionConnected) && propsSyncUrl && propsSyncToken && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
         "button",
         {
           onClick: function() {
@@ -2818,7 +2818,7 @@
           }
         },
         "\u{1F504} Neu verbinden (Sync zur\xFCcksetzen)"
-      ))
+      ), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "9px", color: "#94a3b8", marginTop: "4px", lineHeight: 1.4 } }, "Loescht nur die Sync-Daten auf dem Server. Dein Chat bleibt erhalten.")))
     ), showChunkBrowser && /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
       top: 0,
