@@ -1,6 +1,6 @@
 {
-  "version": "6.15.0",
+  "version": "6.16.0",
   "date": "2026-03-12",
-  "message": "UX-Upgrade: Verbindungsverlust-Anzeige, QR immer zugaenglich, Neu-verbinden-Button, klickbare Kapitel-Kaestchen, State als SSOT, chapter_undo Support.",
+  "message": "QR-Code liefert TTS-URL mit (Port 8444). Server-TTS Unterstuetzung fuer Cowan Companion.",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }
