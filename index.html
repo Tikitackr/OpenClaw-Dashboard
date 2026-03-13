@@ -1183,6 +1183,10 @@
         var ttsUrl = propsSyncUrl.replace(/:8443\b/, ":8444");
         companionUrl += "&tts=" + encodeURIComponent(ttsUrl);
       }
+      if (propsSyncUrl) {
+        var realtimeUrl = propsSyncUrl.replace(/:8443\b/, ":8445");
+        companionUrl += "&realtime=" + encodeURIComponent(realtimeUrl);
+      }
       return companionUrl;
     };
     var getQrImageUrl = function(data) {
@@ -3141,7 +3145,7 @@
     var s = SERVICE_LINKS[key];
     return s && s.affiliate !== null;
   }
-  var APP_VERSION = "6.16.0";
+  var APP_VERSION = "6.17.0";
   var VERSION_CHECK_URL = "https://tikitackr.github.io/OpenClaw-Dashboard/version.json";
   var SPRINT_TASKS = {
     sprint1: [
