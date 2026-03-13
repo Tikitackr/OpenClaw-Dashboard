@@ -1183,10 +1183,6 @@
         var ttsUrl = propsSyncUrl.replace(/:8443\b/, ":8444");
         companionUrl += "&tts=" + encodeURIComponent(ttsUrl);
       }
-      if (propsSyncUrl) {
-        var realtimeUrl = propsSyncUrl.replace(/:8443\b/, ":8445");
-        companionUrl += "&realtime=" + encodeURIComponent(realtimeUrl);
-      }
       return companionUrl;
     };
     var getQrImageUrl = function(data) {
