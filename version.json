@@ -1,6 +1,6 @@
 {
-  "version": "6.17.0",
+  "version": "6.18.0",
   "date": "2026-03-13",
-  "message": "QR-Code liefert Realtime-URL mit (Port 8445). Phase 6 Unterstuetzung fuer Premium-Voice-Modus.",
+  "message": "S93: QR-Code Realtime-URL aktiviert (VPS deployed). Phase 6 Premium-Voice live.",
   "url": "https://tikitackr.github.io/OpenClaw-Dashboard/"
 }
